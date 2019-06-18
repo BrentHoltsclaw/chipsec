@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
 #Copyright (c) 2016, Google
+#Copyright (c) 2019, Intel Corporation
 #
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -17,13 +18,13 @@
 #
 
 
-import chipsec.logger
+from chipsec.logger import logger
 
 class BaseCommand:
 
     def __init__(self, argv, cs=None):
         self.argv = argv
-        self.logger = chipsec.logger.logger()
+        self.logger = logger()
         self.cs = cs
 
     def run(self):

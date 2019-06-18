@@ -35,7 +35,7 @@ import struct
 import os
 import string
 
-import chipsec.file
+from chipsec.file import get_main_dir as _get_main_dir
 
 BIT0 = 0x0001
 BIT1 = 0x0002
@@ -182,7 +182,7 @@ def unpack1(string, size):
 def get_version():
     version_files = ["VERSION", "CUSTOM_VERSION"]
     version_strs = []
-    chipsec_folder = os.path.abspath(chipsec.file.get_main_dir())
+    chipsec_folder = os.path.abspath(_get_main_dir())
     for fname in version_files:
         version_file = os.path.join(chipsec_folder, "chipsec", fname)
         if os.path.exists(version_file):

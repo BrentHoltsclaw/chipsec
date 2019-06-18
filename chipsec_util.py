@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2018, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -33,11 +33,12 @@ import importlib
 import imp
 import argparse
 
-from chipsec import defines
+from chipsec.defines import get_version as _get_version
 from chipsec.logger  import logger
 from chipsec.chipset import UnknownChipsetError
 from chipsec.testcase import ExitCode
-from chipsec import chipset
+from chipsec.chipset import Chipset_Code, pch_codes
+from chipsec.chipset import cs as _cs
 
 logger().UTIL_TRACE = True
 
@@ -72,7 +73,7 @@ class ChipsecUtil:
         self.parse_args()
 
     def init_cs(self):
-        self._cs = chipset.cs()
+        self._cs = _cs()
 
 
     def chipsec_util_help(self, command=None):
@@ -106,8 +107,8 @@ class ChipsecUtil:
         options.add_argument('-v','--verbose', help='verbose mode', action='store_true')
         options.add_argument('-d','--debug', help='debug mode', action='store_true')
         options.add_argument('-l','--log', help='output to log file')
-        options.add_argument('-p','--platform',dest='_platform', help='explicitly specify platform code',choices=chipset.Chipset_Code, type=str.upper)
-        options.add_argument('--pch',dest='_pch', help='explicitly specify PCH code',choices=chipset.pch_codes, type=str.upper)
+        options.add_argument('-p','--platform',dest='_platform', help='explicitly specify platform code', choices=Chipset_Code, type=str.upper)
+        options.add_argument('--pch',dest='_pch', help='explicitly specify PCH code', choices=pch_codes, type=str.upper)
         options.add_argument('-n', '--no_driver',dest='_no_driver', help="chipsec won't need kernel mode functions so don't load chipsec driver", action='store_true')
         options.add_argument('-i', '--ignore_platform',dest='_unkownPlatform', help='run chipsec even if the platform is not recognized', action='store_false')
         options.add_argument('_cmd_args',metavar='Command',nargs=argparse.REMAINDER,help="All numeric values are in hex. <width> can be one of {1, byte, 2, word, 4, dword}")
@@ -224,7 +225,7 @@ class ChipsecUtil:
                       "##  CHIPSEC: Platform Hardware Security Assessment Framework  ##\n"
                       "##                                                            ##\n"
                       "################################################################" )
-        logger().log( "[CHIPSEC] Version {}".format(defines.get_version()) )
+        logger().log( "[CHIPSEC] Version {}".format(_get_version()) )
 
 def main(argv=None):
     chipsecUtil = ChipsecUtil(argv if argv else sys.argv[1:])

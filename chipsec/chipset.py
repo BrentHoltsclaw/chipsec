@@ -44,7 +44,7 @@ from chipsec.hal import cpu, io, iobar, mmio, msgbus, msr, pci, physmem, ucode, 
 from chipsec.cfg.common import Cfg
 from chipsec.logger import logger
 
-import chipsec.file
+from chipsec.file import get_main_dir as _get_main_dir
 
 import importlib
 import traceback
@@ -335,7 +335,7 @@ def print_supported_chipsets():
 
 
 def f_xml(self, x):
-    XMLFILE_RE = re.compile("^\w+\.xml")
+    XMLFILE_RE = re.compile(r"^\w+\.xml")
     return ( x.find('common') == -1 and XMLFILE_RE.match(x) )
 def map_xmlname(self, x):
     return x.split('.')[0]
@@ -518,7 +518,7 @@ class Chipset:
     def init_xml_configuration( self ):
         # Create a sorted config file list (xml only)
         _cfg_files = []
-        _cfg_path = os.path.join( chipsec.file.get_main_dir(), 'chipsec/cfg' )
+        _cfg_path = os.path.join( _get_main_dir(), 'chipsec/cfg' )
         for root, subdirs, files in os.walk(_cfg_path):
             _cfg_files.extend([os.path.join(root, x) for x in files if fnmatch.fnmatch(x, '*.xml')])
         _cfg_files.sort()

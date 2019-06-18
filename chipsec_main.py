@@ -63,12 +63,13 @@ except:
 import chipsec.file
 import chipsec.module
 import chipsec.result_deltas
-from chipsec import defines
-from chipsec import module_common
-from chipsec import chipset
-from chipsec.helper import oshelper
+from chipsec.defines import get_version as _get_version
+from chipsec.module_common import getModuleResultName, ModuleResult
+from chipsec.chipset import Chipset_Code, pch_codes, CHIPSET_ID_UNKNOWN, UnknownChipsetError
+from chipsec.chipset import cs as _cs
+from chipsec.helper.oshelper import avail_helpers, OsHelperError
 from chipsec.logger import logger
-from chipsec.testcase import *
+from chipsec.testcase import ExitCode, TestCase
 
 try:
   import importlib
@@ -86,13 +87,13 @@ class ChipsecMain:
         self.Loaded_Modules        = []
         self.AVAILABLE_TAGS        = []
         self.MODPATH_RE            = re.compile(r"^\w+(\.\w+)*$")
-        self.version               = defines.get_version()
+        self.version               = _get_version()
 
         self.argv = argv
         self.parse_args()
         
     def init_cs(self):
-        self._cs = chipset.cs()
+        self._cs = _cs()
 
     def print_banner(self):
         """
@@ -148,13 +149,13 @@ class ChipsecMain:
     def run_module( self, modx, module_argv ):
         result = None
         try:
-            if not modx.do_import(): return module_common.ModuleResult.ERROR
+            if not modx.do_import(): return ModuleResult.ERROR
             if logger().DEBUG and not self._list_tags: logger().log( "[*] Module path: {}".format(modx.get_location()) )
 
             if self.verify_module_tags( modx ):
                 result = modx.run( module_argv )
             else:
-                return module_common.ModuleResult.SKIPPED
+                return ModuleResult.SKIPPED
         except BaseException as msg:
             if logger().DEBUG: logger().log_bad(traceback.format_exc())
             logger().log_error_check( "Exception occurred during {}.run(): '{}'".format(modx.get_name(), str(msg)) )
@@ -227,7 +228,7 @@ class ChipsecMain:
         # Load platform-specific modules from the corresponding platform module directory
         #
         chipset_path = os.path.join( self.Modules_Path, self._cs.code.lower() )
-        if (chipset.CHIPSET_ID_UNKNOWN != self._cs.id) and os.path.exists( chipset_path ):
+        if (CHIPSET_ID_UNKNOWN != self._cs.id) and os.path.exists( chipset_path ):
             logger().log( "[*] loading platform specific modules from \"{}\" ..".format(chipset_path.replace(os.getcwd(),'.')) )
             self.load_modules_from_path( chipset_path )
         else:
@@ -273,17 +274,17 @@ class ChipsecMain:
                 result = self.run_module( modx, modx_argv )
             except BaseException:
                 results.add_exception(modx)
-                result = module_common.ModuleResult.ERROR
+                result = ModuleResult.ERROR
                 if logger().DEBUG: logger().log_bad(traceback.format_exc())
                 if self.failfast: raise
 
             # Module uses the old API  display warning and try to run anyways
-            if result == module_common.ModuleResult.DEPRECATED:
+            if result == ModuleResult.DEPRECATED:
                 logger().error( 'Module {} does not inherit BaseModule class'.format(str(modx)) )
 
             # Populate results
 
-            test_result.add_result( module_common.getModuleResultName(result) )
+            test_result.add_result( getModuleResultName(result) )
             if modx_argv: test_result.add_arg( modx_argv )
 
             logger().end_module( modx.get_name() )
@@ -380,8 +381,8 @@ class ChipsecMain:
         options.add_argument('-d','--debug', help='debug mode', action='store_true')
         options.add_argument('-l','--log', help='output to log file')
         adv_options = parser.add_argument_group('Advanced Options')
-        adv_options.add_argument('-p','--platform',dest='_platform', help='explicitly specify platform code',choices=chipset.Chipset_Code, type=str.upper)
-        adv_options.add_argument('--pch',dest='_pch', help='explicitly specify PCH code',choices=chipset.pch_codes, type=str.upper)
+        adv_options.add_argument('-p','--platform',dest='_platform', help='explicitly specify platform code',choices=Chipset_Code, type=str.upper)
+        adv_options.add_argument('--pch',dest='_pch', help='explicitly specify PCH code',choices=pch_codes, type=str.upper)
         adv_options.add_argument('-n', '--no_driver',dest='_no_driver', help="chipsec won't need kernel mode functions so don't load chipsec driver", action='store_true')
         adv_options.add_argument('-i', '--ignore_platform',dest='_unknownPlatform', help='run chipsec even if the platform is not recognized', action='store_false')
         adv_options.add_argument('-j', '--json',dest='_json_out', help='specify filename for JSON output')
@@ -394,7 +395,7 @@ class ChipsecMain:
         adv_options.add_argument('--deltas',dest='_deltas_file', help='specifies a JSON log file to compute result deltas from')
         adv_options.add_argument('--record',dest='_to_file',help='run chipsec and clone helper results into JSON file')
         adv_options.add_argument('--replay',dest='_from_file', help='replay a chipsec run with JSON file')
-        adv_options.add_argument('--helper',dest='_driver_exists', help='specify OS Helper', choices=[i for i in oshelper.avail_helpers])
+        adv_options.add_argument('--helper',dest='_driver_exists', help='specify OS Helper', choices=[i for i in avail_helpers])
 
         parser.parse_args(self.argv,namespace=ChipsecMain)
  
@@ -450,7 +451,7 @@ class ChipsecMain:
 
         try:
             self._cs.init( self._platform, self._pch, (not self._no_driver), self._driver_exists, self._to_file, self._from_file )
-        except chipset.UnknownChipsetError as msg:
+        except UnknownChipsetError as msg:
             logger().error( "Platform is not supported ({}).".format(str(msg)) )
             if self._unknownPlatform:
                 logger().error( 'To run anyways please use -i command-line option\n\n' )
@@ -458,7 +459,7 @@ class ChipsecMain:
                 if self.failfast: raise msg
                 return  ExitCode.EXCEPTION
             logger().warn("Platform dependent functionality is likely to be incorrect")
-        except oshelper.OsHelperError as os_helper_error:
+        except OsHelperError as os_helper_error:
             logger().error(str(os_helper_error))
             if logger().DEBUG: logger().log_bad(traceback.format_exc())
             if self.failfast: raise os_helper_error

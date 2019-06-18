@@ -1,5 +1,5 @@
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2018, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -23,8 +23,8 @@ import os
 import sys
 import re
 import traceback
-import chipsec.logger
-from chipsec.module_common import ModuleResult
+from chipsec.logger import logger
+from chipsec.module_common import ModuleResult, BaseModule
 
 _importlib = True
 try:
@@ -32,11 +32,11 @@ try:
 except ImportError:
     _importlib = False
 
-MODPATH_RE      = re.compile("^\w+(\.\w+)*$")
+MODPATH_RE      = re.compile(r"^\w+(\.\w+)*$")
 
 class Module():
     def __init__(self,name):
-        self.logger = chipsec.logger.logger()
+        self.logger = logger()
         self.name = name
         self.module = None
         self.mod_obj = None
@@ -71,7 +71,7 @@ class Module():
             else:
                 module_argv = []
 
-            if isinstance(self.mod_obj,chipsec.module_common.BaseModule):
+            if isinstance(self.mod_obj,BaseModule):
                 if self.mod_obj.is_supported() :
                     result = self.mod_obj.run(module_argv)
                 else:
@@ -96,7 +96,7 @@ class Module():
                     if class_name.startswith('.'): class_name = class_name.replace('.','')
                     for iname, iref in self.module.__dict__.items():
                         if isinstance(iref, type): 
-                            if issubclass(iref, chipsec.module_common.BaseModule):
+                            if issubclass(iref, BaseModule):
                                 if iname.lower() == class_name.lower():
                                     self.mod_obj = iref()
                     if self.mod_obj == None:

@@ -22,12 +22,12 @@ import json
 import time
 import xml.etree.ElementTree as ET
 
-import chipsec.file
+from chipsec.file import read_file, write_file
 from chipsec.logger import logger
 from chipsec.defines import bytestostring
 
 def get_json_results(json_file):
-    file_data = chipsec.file.read_file(json_file)
+    file_data = read_file(json_file)
     if file_data == 0:
         return None
     try:
@@ -72,7 +72,7 @@ def display_deltas(deltas, hide_time, start_time):
 
 def log_deltas_json(deltas, outfile):
     deltas_json = json.dumps(deltas, sort_keys=True, indent=2, separators=(',', ': '))
-    chipsec.file.write_file(outfile, deltas_json)
+    write_file(outfile, deltas_json)
 
 def log_deltas_xml(deltas, outfile):
     xml_deltas = ET.ElementTree(ET.Element('deltas'))

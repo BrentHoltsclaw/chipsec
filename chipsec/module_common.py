@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2015, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 #
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -39,9 +39,8 @@ import sys
 import os
 from time import localtime, strftime
 
-import chipsec.logger
-import chipsec.chipset
-import chipsec.defines
+from chipsec.logger import logger
+from chipsec.chipset import cs as _cs
 
 class ModuleResult:
     FAILED        = 0
@@ -69,8 +68,8 @@ def getModuleResultName(res):
 
 class BaseModule(object):
     def __init__(self):
-        self.cs = chipsec.chipset.cs()
-        self.logger = chipsec.logger.logger()
+        self.cs = _cs()
+        self.logger = logger()
         self.res = ModuleResult.PASSED
 
     def is_supported(self):
