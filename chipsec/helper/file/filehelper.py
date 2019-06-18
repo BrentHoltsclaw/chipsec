@@ -22,11 +22,11 @@
 """
 Use results from a json file
 """
-
-import chipsec.file
-from chipsec.logger import *
-from chipsec.helper.oshelper import Helper
 import json
+
+from chipsec.file import read_file, write_file
+from chipsec.logger import logger
+from chipsec.helper.oshelper import Helper
 
 class FileCmds:
     def __init__(self, filename):
@@ -52,10 +52,10 @@ class FileCmds:
 
     def Save(self):
         js = json.dumps(self.data, sort_keys=False, indent=2, separators=(',', ': '), encoding='latin_1')
-        chipsec.file.write_file(self.filename,js)
+        write_file(self.filename,js)
 
     def Load(self):
-        file_data = chipsec.file.read_file(self.filename)
+        file_data = read_file(self.filename)
         if file_data == 0:
             logger().error("Unable to open JSON file: {}".format(self.filename))
             raise OsHelperError("Unable to open JSON file: {}".format(self.filename))

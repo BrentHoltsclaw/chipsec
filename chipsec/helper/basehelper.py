@@ -19,6 +19,8 @@
 #chipsec@intel.com
 #
 
+from chipsec.logger import logger
+
 # Base class for the helpers
 class Helper(object):
     class __metaclass__(type):

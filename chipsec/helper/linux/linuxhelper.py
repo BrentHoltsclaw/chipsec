@@ -45,11 +45,12 @@ import subprocess
 import sys
 import shutil
 
-from chipsec import defines
 from chipsec.helper.oshelper import OsHelperError, HWAccessViolationError, UnimplementedAPIError, UnimplementedNativeAPIError, get_tools_path
 from chipsec.helper.basehelper import Helper
 from chipsec.logger import logger, print_buffer
-import chipsec.file
+from chipsec.file import TOOLS_DIR, get_main_dir, read_file
+from chipsec.defines import unpack1, pack1, get_version, COMPRESSION_TYPE_TIANO, COMPRESSION_TYPE_BROTLI, COMPRESSION_TYPE_EFI_STANDARD, COMPRESSION_TYPE_LZMA, COMPRESSION_TYPE_NONE, COMPRESSION_TYPE_TIANO, COMPRESSION_TYPE_UEFI, COMPRESSION_TYPE_UNKNOWN, COMPRESSION_TYPES 
+from chipsec.hal.uefi_common import EFI_VARIABLE_NON_VOLATILE, EFI_VARIABLE_BOOTSERVICE_ACCESS, EFI_VARIABLE_RUNTIME_ACCESS, EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS, EFI_VARIABLE_HARDWARE_ERROR_RECORD, EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS, EFI_VARIABLE_APPEND_WRITE
 
 MSGBUS_MDR_IN_MASK  = 0x1
 MSGBUS_MDR_OUT_MASK = 0x2
@@ -77,10 +78,10 @@ IOCTL_VA2PA                    = 0x14
 IOCTL_MSGBUS_SEND_MESSAGE      = 0x15
 IOCTL_FREE_PHYSMEM             = 0x16
 
-LZMA  = os.path.join(os.path.dirname(sys.argv[0]),chipsec.file.TOOLS_DIR,"compression","bin","LzmaCompress")
-TIANO = os.path.join(os.path.dirname(sys.argv[0]),chipsec.file.TOOLS_DIR,"compression","bin","TianoCompress")
-EFI   = os.path.join(os.path.dirname(sys.argv[0]),chipsec.file.TOOLS_DIR,"compression","bin","TianoCompress")
-BROTLI = os.path.join(os.path.dirname(sys.argv[0]),chipsec.file.TOOLS_DIR,"compression","bin","Brotli")
+LZMA  = os.path.join(os.path.dirname(sys.argv[0]),TOOLS_DIR,"compression","bin","LzmaCompress")
+TIANO = os.path.join(os.path.dirname(sys.argv[0]),TOOLS_DIR,"compression","bin","TianoCompress")
+EFI   = os.path.join(os.path.dirname(sys.argv[0]),TOOLS_DIR,"compression","bin","TianoCompress")
+BROTLI = os.path.join(os.path.dirname(sys.argv[0]),TOOLS_DIR,"compression","bin","Brotli")
 
 class MemoryMapping(mmap.mmap):
     """Memory mapping based on Python's mmap.
@@ -103,8 +104,8 @@ class LinuxHelper(Helper):
     SUPPORT_KERNEL26_GET_PHYS_MEM_ACCESS_PROT = False
     DKMS_DIR = "/var/lib/dkms/"
 
-    decompression_oder_type1 = [chipsec.defines.COMPRESSION_TYPE_TIANO,chipsec.defines.COMPRESSION_TYPE_UEFI]
-    decompression_oder_type2 = [chipsec.defines.COMPRESSION_TYPE_TIANO,chipsec.defines.COMPRESSION_TYPE_UEFI,chipsec.defines.COMPRESSION_TYPE_LZMA,chipsec.defines.COMPRESSION_TYPE_BROTLI]
+    decompression_oder_type1 = [COMPRESSION_TYPE_TIANO,COMPRESSION_TYPE_UEFI]
+    decompression_oder_type2 = [COMPRESSION_TYPE_TIANO,COMPRESSION_TYPE_UEFI,COMPRESSION_TYPE_LZMA,COMPRESSION_TYPE_BROTLI]
 
     def __init__(self):
         super(LinuxHelper, self).__init__()
@@ -128,7 +129,7 @@ class LinuxHelper(Helper):
 ###############################################################################################
 
     def get_dkms_module_location(self):
-        version     = defines.get_version()
+        version     = get_version()
         from os import listdir
         from os.path import isdir, join
         p =  os.path.join( self.DKMS_DIR, self.MODULE_NAME, version , self.os_release)
@@ -157,7 +158,7 @@ class LinuxHelper(Helper):
             else:
                 a2 = "a2=0x{}".format(phys_mem_access_prot)
 
-        driver_path = os.path.join(chipsec.file.get_main_dir(), "chipsec", "helper" ,"linux", "chipsec.ko" )
+        driver_path = os.path.join(get_main_dir(), "chipsec", "helper" ,"linux", "chipsec.ko" )
         if not os.path.exists(driver_path):
             #check DKMS modules location
             driver_path = self.get_dkms_module_location()
@@ -416,7 +417,7 @@ class LinuxHelper(Helper):
         config.seek(offset)
         reg = config.read(size)
         config.close()
-        reg = defines.unpack1(reg, size)
+        reg = unpack1(reg, size)
         return reg
 
     def write_pci_reg( self, bus, device, function, offset, value, size = 4 ):
@@ -439,7 +440,7 @@ class LinuxHelper(Helper):
         except IOError as err:
             raise OsHelperError("Unable to open {}".format(device_path), err.errno)
         config.seek(offset)
-        config.write(defines.pack1(value, size))
+        config.write(pack1(value, size))
         config.close()
 
     def load_ucode_update( self, cpu_thread_id, ucode_update_buf):
@@ -561,7 +562,7 @@ class LinuxHelper(Helper):
         in_buf = struct.pack( "2"+self._pack, phys_address, size)
         out_buf = self.ioctl(IOCTL_RDMMIO, in_buf)
         reg = out_buf[:size]
-        return defines.unpack1(reg, size)
+        return unpack1(reg, size)
 
     def native_read_mmio_reg(self, bar_base, bar_size, offset, size):
         if bar_size is None: bar_size = offset + size
@@ -573,7 +574,7 @@ class LinuxHelper(Helper):
                 if not region: logger().error("Unable to map region {:08x}".format(bar_base))
             region.seek(bar_base + offset - region.start)
             reg = region.read(size)
-            return defines.unpack1(reg, size)
+            return unpack1(reg, size)
 
     def write_mmio_reg(self, phys_address, size, value):
         in_buf = struct.pack( "3"+self._pack, phys_address, size, value )
@@ -582,7 +583,7 @@ class LinuxHelper(Helper):
     def native_write_mmio_reg(self, bar_base, bar_size, offset, size, value):
         if bar_size is None: bar_size = offset + size
         if self.devmem_available():
-            reg = defines.pack1(value, size)
+            reg = pack1(value, size)
             region = self.memory_mapping(bar_base, bar_size)
             if not region:
                 self.native_map_io_space(bar_base, bar_size)
@@ -631,7 +632,7 @@ class LinuxHelper(Helper):
     #
 
     def get_affinity(self):
-        mpath = os.path.join(chipsec.file.get_main_dir( ), 'chipsec/helper/linux/')
+        mpath = os.path.join(get_main_dir( ), 'chipsec/helper/linux/')
         for i in os.listdir(mpath):
             if i.find("cores") == 0 and i.rfind(".so") > 4:
                 mpath += i
@@ -664,7 +665,7 @@ class LinuxHelper(Helper):
             return None
 
     def set_affinity(self, thread_id):
-        mpath = os.path.join(chipsec.file.get_main_dir( ), 'chipsec/helper/linux/')
+        mpath = os.path.join(get_main_dir( ), 'chipsec/helper/linux/')
         for i in os.listdir(mpath):
             if i.find("cores") == 0 and i.rfind(".so") > 4:
                 mpath += i
@@ -1053,14 +1054,14 @@ class LinuxHelper(Helper):
 
     def get_page_is_ram( self ):
         PROC_KALLSYMS = "/proc/kallsyms"
-        symarr = chipsec.file.read_file(PROC_KALLSYMS).splitlines()
+        symarr = read_file(PROC_KALLSYMS).splitlines()
         for line in symarr:
             if "page_is_ram" in line:
                return line.split(" ")[0]
 
     def get_phys_mem_access_prot( self ):
         PROC_KALLSYMS = "/proc/kallsyms"
-        symarr = chipsec.file.read_file(PROC_KALLSYMS).splitlines()
+        symarr = read_file(PROC_KALLSYMS).splitlines()
         for line in symarr:
             if "phys_mem_access_prot" in line:
                return line.split(" ")[0]
@@ -1094,19 +1095,19 @@ class LinuxHelper(Helper):
     # Compress binary file
     #
     def compress_file( self, FileName, OutputFileName, CompressionType ):
-        if not CompressionType in [i for i in chipsec.defines.COMPRESSION_TYPES]:
+        if not CompressionType in [i for i in COMPRESSION_TYPES]:
             return False
         encode_str = " -e -o {} ".format(OutputFileName)
-        if CompressionType == chipsec.defines.COMPRESSION_TYPE_NONE:
+        if CompressionType == COMPRESSION_TYPE_NONE:
             shutil.copyfile(FileName,OutputFileName)
             return True
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_TIANO:
+        elif CompressionType == COMPRESSION_TYPE_TIANO:
             encode_str = TIANO + encode_str
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_UEFI:
+        elif CompressionType == COMPRESSION_TYPE_UEFI:
             encode_str = EFI + encode_str + "--uefi "
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_LZMA:
+        elif CompressionType == COMPRESSION_TYPE_LZMA:
             encode_str = LZMA + encode_str
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_BROTLI:
+        elif CompressionType == COMPRESSION_TYPE_BROTLI:
             encode_str = BROTLI + encode_str
         encode_str += FileName
         data = subprocess.check_output(encode_str,shell=True)
@@ -1119,25 +1120,25 @@ class LinuxHelper(Helper):
     # Decompress binary
     #
     def decompress_file( self, CompressedFileName, OutputFileName, CompressionType ):
-        if not CompressionType in [i for i in chipsec.defines.COMPRESSION_TYPES]:
+        if not CompressionType in [i for i in COMPRESSION_TYPES]:
             return False
-        if CompressionType == chipsec.defines.COMPRESSION_TYPE_UNKNOWN:
+        if CompressionType == COMPRESSION_TYPE_UNKNOWN:
             data = self.unknown_decompress(CompressedFileName,OutputFileName)
             return data
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_EFI_STANDARD:
+        elif CompressionType == COMPRESSION_TYPE_EFI_STANDARD:
             data = self.unknown_efi_decompress(CompressedFileName,OutputFileName)
             return data
         decode_str = " -d -o {} ".format(OutputFileName)
-        if CompressionType == chipsec.defines.COMPRESSION_TYPE_NONE:
+        if CompressionType == COMPRESSION_TYPE_NONE:
             shutil.copyfile(CompressedFileName,OutputFileName)
             return True
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_TIANO:
+        elif CompressionType == COMPRESSION_TYPE_TIANO:
             decode_str = TIANO + decode_str
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_UEFI:
+        elif CompressionType == COMPRESSION_TYPE_UEFI:
             decode_str = EFI + decode_str + "--uefi"
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_LZMA:
+        elif CompressionType == COMPRESSION_TYPE_LZMA:
             decode_str = LZMA + decode_str
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_BROTLI:
+        elif CompressionType == COMPRESSION_TYPE_BROTLI:
             decode_str = BROTLI + decode_str
         decode_str += CompressedFileName
         try:

@@ -40,8 +40,8 @@ import shutil
 import traceback
 import sys
 
-import chipsec.file
-from chipsec.logger import *
+from chipsec.file import get_main_dir, TOOLS_DIR
+from chipsec.logger import logger
 from chipsec.helper.basehelper import Helper
 
 _importlib = True
@@ -53,7 +53,7 @@ except ImportError:
 
 avail_helpers = []
 
-ZIP_HELPER_RE = re.compile("^chipsec\/helper\/\w+\/\w+\.pyc$", re.IGNORECASE)
+ZIP_HELPER_RE = re.compile(r"^chipsec\/helper\/\w+\/\w+\.pyc$", re.IGNORECASE)
 def f_mod_zip(x):
     return ( x.find('__init__') == -1 and ZIP_HELPER_RE.match(x) )
 def map_modname_zip(x):
@@ -76,7 +76,7 @@ class UnimplementedNativeAPIError (UnimplementedAPIError):
         super(UnimplementedNativeAPIError,self).__init__(api_name)
 
 def get_tools_path():
-    return os.path.normpath( os.path.join(chipsec.file.get_main_dir(), chipsec.file.TOOLS_DIR) )
+    return os.path.normpath( os.path.join(get_main_dir(), TOOLS_DIR) )
 
 import chipsec.helper.helpers as chiphelpers
 

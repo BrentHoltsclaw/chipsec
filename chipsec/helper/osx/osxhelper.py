@@ -26,8 +26,8 @@ import subprocess
 import sys
 import shutil
 
-import chipsec
-import chipsec.defines
+from chipsec.file import TOOLS_DIR, get_main_dir
+from chipsec.defines import COMPRESSION_TYPE_TIANO, COMPRESSION_TYPE_BROTLI, COMPRESSION_TYPE_EFI_STANDARD, COMPRESSION_TYPE_LZMA, COMPRESSION_TYPE_NONE, COMPRESSION_TYPE_TIANO, COMPRESSION_TYPE_UEFI, COMPRESSION_TYPE_UNKNOWN, COMPRESSION_TYPES 
 from chipsec.helper.oshelper import OsHelperError, HWAccessViolationError, UnimplementedAPIError, UnimplementedNativeAPIError
 from chipsec.helper.basehelper import Helper
 from chipsec.logger import logger, print_buffer
@@ -69,10 +69,10 @@ _cpudes_msg_t_fmt    = "QQQQQQQ"
 _alloc_mem_msg_t_fmt = "QQQQ"
 
 
-LZMA  = os.path.join(chipsec.file.TOOLS_DIR,"compression","bin","LzmaCompress")
-TIANO = os.path.join(chipsec.file.TOOLS_DIR,"compression","bin","TianoCompress")
-EFI   = os.path.join(chipsec.file.TOOLS_DIR,"compression","bin","TianoCompress")
-BROTLI = os.path.join(chipsec.file.TOOLS_DIR,"compression","bin","Brotli")
+LZMA  = os.path.join(TOOLS_DIR,"compression","bin","LzmaCompress")
+TIANO = os.path.join(TOOLS_DIR,"compression","bin","TianoCompress")
+EFI   = os.path.join(TOOLS_DIR,"compression","bin","TianoCompress")
+BROTLI = os.path.join(TOOLS_DIR,"compression","bin","Brotli")
 
 class OSXHelper(Helper):
 
@@ -88,11 +88,11 @@ class OSXHelper(Helper):
         self.os_uname   = platform.uname()
         self.dev_fh = None
 
-    decompression_oder_type1 = [chipsec.defines.COMPRESSION_TYPE_TIANO,chipsec.defines.COMPRESSION_TYPE_UEFI]
-    decompression_oder_type2 = [chipsec.defines.COMPRESSION_TYPE_TIANO,chipsec.defines.COMPRESSION_TYPE_UEFI,chipsec.defines.COMPRESSION_TYPE_LZMA,chipsec.defines.COMPRESSION_TYPE_BROTLI]
+    decompression_oder_type1 = [COMPRESSION_TYPE_TIANO,COMPRESSION_TYPE_UEFI]
+    decompression_oder_type2 = [COMPRESSION_TYPE_TIANO,COMPRESSION_TYPE_UEFI,COMPRESSION_TYPE_LZMA,COMPRESSION_TYPE_BROTLI]
 
     def load_driver(self):
-        driver_path = os.path.join(chipsec.file.get_main_dir(), "chipsec",
+        driver_path = os.path.join(get_main_dir(), "chipsec",
                                    "helper", "osx", self.DRIVER_NAME)
         # Make sure the driver image and its subdirectories are owned by root.
         s = os.stat(driver_path)
@@ -117,7 +117,7 @@ class OSXHelper(Helper):
     def start(self, start_driver, driver_exists=False):
         if start_driver:
             if os.path.exists(self.DEVICE_NAME):
-                driver_path = os.path.join(chipsec.file.get_main_dir(), "chipsec",
+                driver_path = os.path.join(get_main_dir(), "chipsec",
                                            "helper", "osx", self.DRIVER_NAME)
                 subprocess.check_call(["kextunload", driver_path])
             self.load_driver()
@@ -129,7 +129,7 @@ class OSXHelper(Helper):
     def stop(self, start_driver):
         self.close()
         if self.driver_loaded:
-            driver_path = os.path.join(chipsec.file.get_main_dir(), "chipsec",
+            driver_path = os.path.join(get_main_dir(), "chipsec",
                                        "helper", "osx", self.DRIVER_NAME)
             subprocess.check_call(["kextunload", driver_path])
         if logger().DEBUG:
@@ -148,7 +148,7 @@ class OSXHelper(Helper):
                 self.driver_loaded = True
             except IOError as e:
                 raise OsHelperError("Unable to open the Chipsec device.\n"
-                                    "{}".format(str(e), e.errno))
+                                    "{}".format(str(e)), e.errno)
 
     def close(self):
         if self.dev_fh:
@@ -238,24 +238,24 @@ class OSXHelper(Helper):
     # Compress binary file
     #
     def compress_file( self, FileName, OutputFileName, CompressionType ):
-        if not CompressionType in [i for i in chipsec.defines.COMPRESSION_TYPES]:
+        if not CompressionType in [i for i in COMPRESSION_TYPES]:
             return False
         encode_str = " -e -o {} ".format(OutputFileName)
-        if CompressionType == chipsec.defines.COMPRESSION_TYPE_NONE:
+        if CompressionType == COMPRESSION_TYPE_NONE:
             shutil.copyfile(FileName,OutputFileName)
             return True
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_TIANO:
+        elif CompressionType == COMPRESSION_TYPE_TIANO:
             encode_str = TIANO + encode_str
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_UEFI:
+        elif CompressionType == COMPRESSION_TYPE_UEFI:
             encode_str = EFI + encode_str + "--uefi "
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_LZMA:
+        elif CompressionType == COMPRESSION_TYPE_LZMA:
             encode_str = LZMA + encode_str
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_BROTLI:
+        elif CompressionType == COMPRESSION_TYPE_BROTLI:
             encode_str = BROTLI + encode_str
         encode_str += FileName
         data = subprocess.call(encode_str,shell=True)
         if not data == 0 and logger().VERBOSE:
-            logger().error("Cannot decompress file({})".format(CompressedFileName))
+            logger().error("Cannot decompress file({})".format(FileName))
             return False
         return True
         
@@ -263,25 +263,25 @@ class OSXHelper(Helper):
     # Decompress binary
     #
     def decompress_file( self, CompressedFileName, OutputFileName, CompressionType ):
-        if not CompressionType in [i for i in chipsec.defines.COMPRESSION_TYPES]:
+        if not CompressionType in [i for i in COMPRESSION_TYPES]:
             return False
-        if CompressionType == chipsec.defines.COMPRESSION_TYPE_UNKNOWN:
+        if CompressionType == COMPRESSION_TYPE_UNKNOWN:
             data = self.unknown_decompress(CompressedFileName,OutputFileName)
             return data
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_EFI_STANDARD:
+        elif CompressionType == COMPRESSION_TYPE_EFI_STANDARD:
             data = self.unknown_efi_decompress(CompressedFileName,OutputFileName)
             return data
         decode_str = " -d -o {} ".format(OutputFileName)
-        if CompressionType == chipsec.defines.COMPRESSION_TYPE_NONE:
+        if CompressionType == COMPRESSION_TYPE_NONE:
             shutil.copyfile(CompressedFileName,OutputFileName)
             return True
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_TIANO:
+        elif CompressionType == COMPRESSION_TYPE_TIANO:
             decode_str = TIANO + decode_str
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_UEFI:
+        elif CompressionType == COMPRESSION_TYPE_UEFI:
             decode_str = EFI + decode_str + "--uefi "
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_LZMA:
+        elif CompressionType == COMPRESSION_TYPE_LZMA:
             decode_str = LZMA + decode_str
-        elif CompressionType == chipsec.defines.COMPRESSION_TYPE_BROTLI:
+        elif CompressionType == COMPRESSION_TYPE_BROTLI:
             decode_str = BROTLI + decode_str
         decode_str += CompressedFileName
         data = subprocess.call(decode_str,shell=True)

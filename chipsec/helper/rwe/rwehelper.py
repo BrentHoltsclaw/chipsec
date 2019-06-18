@@ -54,8 +54,8 @@ import win32api, win32process, win32security, win32file, win32serviceutil
 from chipsec.helper.oshelper import OsHelperError, HWAccessViolationError, UnimplementedAPIError, UnimplementedNativeAPIError, get_tools_path
 from chipsec.helper.basehelper import Helper
 from chipsec.logger import logger, print_buffer
-import chipsec.file
-import chipsec.defines
+from chipsec.file import get_main_dir, TOOLS_DIR, read_file
+from chipsec.defines import ToolType
 
 
 class PCI_BDF(Structure):
@@ -241,8 +241,8 @@ def _handle_error( err, hr=0 ):
 
 
 _tools = {
-  chipsec.defines.ToolType.TIANO_COMPRESS: 'TianoCompress.exe',
-  chipsec.defines.ToolType.LZMA_COMPRESS : 'LzmaCompress.exe'
+  ToolType.TIANO_COMPRESS: 'TianoCompress.exe',
+  ToolType.LZMA_COMPRESS : 'LzmaCompress.exe'
 }
 
 class RweHelper(Helper):

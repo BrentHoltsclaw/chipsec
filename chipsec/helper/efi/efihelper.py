@@ -35,13 +35,14 @@ On UEFI use the efi package functions
 import struct
 import sys
 import uuid
+import os
 
 try:
     import edk2        # for Python 2.7 on UEFI
 except ImportError:
     import efi as edk2 # for Python 2.4 on EFI 1.10
 
-import chipsec.defines
+from chipsec.defines import COMPRESSION_TYPE_LZMA, COMPRESSION_TYPE_TIANO
 from chipsec.logger import logger
 from chipsec.helper.oshelper import get_tools_path
 from chipsec.helper.basehelper import Helper
@@ -50,8 +51,8 @@ class EfiHelperError (RuntimeError):
     pass
 
 _tools = {
-  chipsec.defines.ToolType.TIANO_COMPRESS: 'TianoCompress.efi',
-  chipsec.defines.ToolType.LZMA_COMPRESS : 'LzmaCompress.efi'
+  COMPRESSION_TYPE_TIANO: 'TianoCompress.efi',
+  COMPRESSION_TYPE_LZMA : 'LzmaCompress.efi'
 }
 
 
