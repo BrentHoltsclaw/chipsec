@@ -35,16 +35,16 @@ Main UEFI component using platform specific and common UEFI functionality
 
 import struct
 import sys
+import os
 
 from collections import namedtuple
 import collections
 
 from chipsec.hal import hal_base, mmio, spi, uefi_platform
 from chipsec.hal.uefi_common import *
-from chipsec.logger import *
-from chipsec.file import *
-from chipsec.defines import COMPRESSION_TYPES
-from chipsec.defines import bytestostring
+from chipsec.logger import logger, print_buffer
+from chipsec.file import read_file, write_file
+from chipsec.defines import COMPRESSION_TYPES, bytestostring
 
 
 ########################################################################################################

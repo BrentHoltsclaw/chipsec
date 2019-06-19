@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2016, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -37,8 +37,9 @@ usage:
 import re
 import binascii
 
-from chipsec import defines
-from chipsec.hal.spi_uefi import *
+from chipsec.defines import is_printable
+from chipsec.logger import logger
+from chipsec.hal.spi_uefi import EFI_SECTION
 
 #
 # - EFI binaries are searched according to criteria defined by "match" rules.
@@ -116,7 +117,7 @@ def check_rules( efi, rules, entry_name, _log, bLog=True ):
             if m:
                 match_result |= MATCH_REGEXP
                 _str = m.group(0)
-                what = "bytes '{}'{}".format(binascii.hexlify(_str), " ('{}')".format(_str) if defines.is_printable(_str) else '')
+                what = "bytes '{}'{}".format(binascii.hexlify(_str), " ('{}')".format(_str) if is_printable(_str) else '')
                 offset = m.start()
         if (match_mask & MATCH_HASH_MD5) == MATCH_HASH_MD5:
             if efi.MD5 == rule['md5']: match_result |= MATCH_HASH_MD5

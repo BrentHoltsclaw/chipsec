@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2015, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -40,18 +40,18 @@ usage:
 
 import struct
 import sys
+import os
+from collections import namedtuple
 
-from chipsec.logger import *
-from chipsec.hal.physmem import *
-from chipsec.hal.msr import *
-from chipsec.file import *
+from chipsec.logger import logger
+from chipsec.file import read_file
+from chipsec.cfg.common import Cfg
 
 IA32_MSR_BIOS_UPDT_TRIG      = 0x79
 IA32_MSR_BIOS_SIGN_ID        = 0x8B
 IA32_MSR_BIOS_SIGN_ID_STATUS = 0x1
 
 
-from collections import namedtuple
 class UcodeUpdateHeader( namedtuple('UcodeUpdateHeader', 'header_version update_revision date processor_signature checksum loader_revision processor_flags data_size total_size reserved1 reserved2 reserved3') ):
     __slots__ = ()
     def __str__(self):

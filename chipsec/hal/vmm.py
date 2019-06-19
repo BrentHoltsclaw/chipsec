@@ -42,7 +42,8 @@ import sys
 import os.path
 
 from chipsec.logger import logger, pretty_print_hex_buffer
-import chipsec.hal.pcidb
+from chipsec.hal.pcidb import VENDORS, DEVICES
+from chipsec.hal.paging import c_extended_page_tables
 
 class VMMRuntimeError (RuntimeError):
     pass
@@ -57,8 +58,8 @@ class VMM:
         (self.membuf0_va, self.membuf0_pa) = (0, 0)
         (self.membuf1_va, self.membuf1_pa) = (0, 0)
 
-        chipsec.hal.pcidb.VENDORS[VIRTIO_VID] = VIRTIO_VENDOR_NAME
-        chipsec.hal.pcidb.DEVICES[VIRTIO_VID] = VIRTIO_DEVICES
+        VENDORS[VIRTIO_VID] = VIRTIO_VENDOR_NAME
+        DEVICES[VIRTIO_VID] = VIRTIO_DEVICES
 
 
     def __del__(self):
@@ -103,7 +104,7 @@ class VMM:
     #
     def dump_EPT_page_tables( self, eptp, pt_fname=None ):
         _orig_logname = logger().LOG_FILE_NAME
-        paging_ept = chipsec.hal.paging.c_extended_page_tables( self.cs )
+        paging_ept = c_extended_page_tables( self.cs )
         if logger().HAL: logger().log( '[vmm] dumping EPT paging hierarchy at EPTP 0x{:08X}...'.format(eptp) )
         if pt_fname is None: pt_fname = ('ept_{:08X}'.format(eptp))
         logger().set_log_file( pt_fname )

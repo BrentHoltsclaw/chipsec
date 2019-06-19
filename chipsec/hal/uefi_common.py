@@ -38,11 +38,9 @@ import codecs
 import uuid
 from collections import namedtuple
 
-from chipsec.file import *
-from chipsec.logger import *
+from chipsec.file import write_file, read_file
+from chipsec.logger import logger, dump_buffer
 from chipsec.defines import bytestostring
-
-#from chipsec.helper.oshelper import helper
 
 
 ################################################################################################

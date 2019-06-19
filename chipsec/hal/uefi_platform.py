@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2018, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -37,7 +37,7 @@ import string
 from collections import namedtuple
 from uuid import UUID
 
-from chipsec import defines
+from chipsec.defines import bytestostring, is_printable
 from chipsec.hal.uefi_common import *
 
 #################################################################################################
@@ -379,7 +379,7 @@ def getNVstore_NVAR( nvram_buf ):
     return l
 
 def getEFIvariables_NVAR( nvram_buf ):
-    start = defines.bytestostring(nvram_buf).find( NVAR_EFIvar_signature )
+    start = bytestostring(nvram_buf).find( NVAR_EFIvar_signature )
     nvram_size = len(nvram_buf)
     EFI_HDR_NVAR = "<4sH3sB"
     nvar_size = struct.calcsize(EFI_HDR_NVAR)
@@ -664,7 +664,7 @@ def isCorrectVSStype(nvram_buf, vss_type):
             name = nvram_buf[name_offset: name_offset + efi_var_hdr.NameSize]
             try:
                 name = unicode(name, "utf-16-le").split('\x00')[0]
-                valid_name = defines.is_printable(name)
+                valid_name = is_printable(name)
             except Exception as e:
                 pass
         if (valid_name):
@@ -1166,7 +1166,7 @@ def encode_s3bs_opcode_edkcompat( op ):
     elif S3BootScriptOpcode_EdkCompat.EFI_BOOT_SCRIPT_DISPATCH_OPCODE == op.opcode:
         encoded_opcode = struct.pack( '<Q', op.entrypoint )
 
-    elif S3BootScriptOpcode_EdkCompat.EFI_BOOT_SCRIPT_MEM_POLL_OPCODE == opcode:
+    elif S3BootScriptOpcode_EdkCompat.EFI_BOOT_SCRIPT_MEM_POLL_OPCODE == op.opcode:
         encoded_opcode = struct.pack( '<IQQQ', op.width, op.address, op.duration, op.looptimes )
 
     elif S3BootScriptOpcode_EdkCompat.EFI_BOOT_SCRIPT_TERMINATE_OPCODE == op.opcode:
