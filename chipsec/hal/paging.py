@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2018, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -39,15 +39,15 @@ import sys
 import time
 import struct
 
-import chipsec.defines
+from chipsec.defines import MASK_64b, BOUNDARY_4KB, BOUNDARY_2MB, BOUNDARY_1GB, BIT1, BIT2, BIT0, BIT7
 from chipsec.logger import logger
 
-ADDR_MASK  = chipsec.defines.MASK_64b
+ADDR_MASK  = MASK_64b
 MAXPHYADDR = 0x000FFFFFFFFFF000
 
-SIZE_4KB   = chipsec.defines.BOUNDARY_4KB
-SIZE_2MB   = chipsec.defines.BOUNDARY_2MB
-SIZE_1GB   = chipsec.defines.BOUNDARY_1GB
+SIZE_4KB   = BOUNDARY_4KB
+SIZE_2MB   = BOUNDARY_2MB
+SIZE_1GB   = BOUNDARY_1GB
 ADDR_4KB   = 0xFFFFFFFFFFFFF000 & MAXPHYADDR
 ADDR_2MB   = 0xFFFFFFFFFFE00000 & MAXPHYADDR
 ADDR_1GB   = 0xFFFFFFFFC0000000 & MAXPHYADDR

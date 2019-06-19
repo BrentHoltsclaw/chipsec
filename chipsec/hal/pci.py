@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2016, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -55,8 +55,8 @@ import itertools
 from chipsec import defines
 from chipsec.logger import logger, pretty_print_hex_buffer
 from chipsec.file import write_file
-from chipsec.cfg.common import *
-from chipsec.hal.pcidb import *
+from chipsec.cfg.common import Cfg
+from chipsec.hal.pcidb import VENDORS, DEVICES
 from chipsec.helper import oshelper
 
 

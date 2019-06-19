@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2016, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -46,7 +46,7 @@ http://en.wikipedia.org/wiki/Serial_presence_detect
 import struct
 from collections import namedtuple
 
-from chipsec.logger import *
+from chipsec.logger import logger, print_buffer
 
 SPD_SMBUS_ADDRESS = 0xA0 # A2, A4, A6, A8, AA, AC, AE
 SPD_SMBUS_ADDRESS_DIMM0 = SPD_SMBUS_ADDRESS
@@ -298,7 +298,7 @@ Base Configuration and DRAM Parameters
 #
 ###############################################################################
 
-class SPD:
+class SPD():
     def __init__( self, smbus ):
         self.smbus = smbus
 
