@@ -41,11 +41,13 @@ import sys
 from collections import defaultdict
 from collections import namedtuple
 
-from chipsec.logger import *
-from chipsec.file import *
+from chipsec.logger import logger, print_buffer
+from chipsec.file import read_file
 from chipsec.defines import bytestostring
 
-from chipsec.hal import acpi_tables, hal_base, uefi
+from chipsec.hal.uefi import UEFI as _UEFI
+from chipsec.hal.acpi_tables import ACPI_TABLE, XSDT, RSDT, FADT, APIC, DMAR, UEFI_TABLE, BGRT, HEST, ERST, EINJ, MSCT, RASF, SPMI, BERT, NFIT
+from chipsec.hal.hal_base import HALBase
 from chipsec.helper import oshelper
 
 class AcpiRuntimeError (RuntimeError):
@@ -133,61 +135,61 @@ ACPI_TABLE_SIG_OEM4 = 'OEM4'
 ACPI_TABLE_SIG_NFIT = 'NFIT'
 
 ACPI_TABLES = {
-  ACPI_TABLE_SIG_ROOT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_RSDT: acpi_tables.RSDT,
-  ACPI_TABLE_SIG_XSDT: acpi_tables.XSDT,
-  ACPI_TABLE_SIG_FACP: acpi_tables.FADT,
-  ACPI_TABLE_SIG_FACS: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_DSDT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_SSDT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_PSDT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_APIC: acpi_tables.APIC,
-  ACPI_TABLE_SIG_SBST: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_ECDT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_SRAT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_SLIC: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_SLIT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_BOOT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_CPEP: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_DBGP: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_ETDT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_HPET: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_MCFG: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_SPCR: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_SPMI: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_TCPA: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_WDAT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_WDRT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_WSPT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_WDDT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_ASF : acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_MSEG: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_DMAR: acpi_tables.DMAR,
-  ACPI_TABLE_SIG_UEFI: acpi_tables.UEFI_TABLE,
-  ACPI_TABLE_SIG_FPDT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_PCCT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_MSDM: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_BATB: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_BGRT: acpi_tables.BGRT,
-  ACPI_TABLE_SIG_LPIT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_ASPT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_FIDT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_HEST: acpi_tables.HEST,
-  ACPI_TABLE_SIG_BERT: acpi_tables.BERT,
-  ACPI_TABLE_SIG_ERST: acpi_tables.ERST,
-  ACPI_TABLE_SIG_EINJ: acpi_tables.EINJ,
-  ACPI_TABLE_SIG_TPM2: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_WSMT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_DBG2: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_NHLT: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_MSCT: acpi_tables.MSCT,
-  ACPI_TABLE_SIG_RASF: acpi_tables.RASF,
-  ACPI_TABLE_SIG_SPMI: acpi_tables.SPMI,
-  ACPI_TABLE_SIG_OEM1: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_OEM2: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_OEM3: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_OEM4: acpi_tables.ACPI_TABLE,
-  ACPI_TABLE_SIG_NFIT: acpi_tables.NFIT
+  ACPI_TABLE_SIG_ROOT: ACPI_TABLE,
+  ACPI_TABLE_SIG_RSDT: RSDT,
+  ACPI_TABLE_SIG_XSDT: XSDT,
+  ACPI_TABLE_SIG_FACP: FADT,
+  ACPI_TABLE_SIG_FACS: ACPI_TABLE,
+  ACPI_TABLE_SIG_DSDT: ACPI_TABLE,
+  ACPI_TABLE_SIG_SSDT: ACPI_TABLE,
+  ACPI_TABLE_SIG_PSDT: ACPI_TABLE,
+  ACPI_TABLE_SIG_APIC: APIC,
+  ACPI_TABLE_SIG_SBST: ACPI_TABLE,
+  ACPI_TABLE_SIG_ECDT: ACPI_TABLE,
+  ACPI_TABLE_SIG_SRAT: ACPI_TABLE,
+  ACPI_TABLE_SIG_SLIC: ACPI_TABLE,
+  ACPI_TABLE_SIG_SLIT: ACPI_TABLE,
+  ACPI_TABLE_SIG_BOOT: ACPI_TABLE,
+  ACPI_TABLE_SIG_CPEP: ACPI_TABLE,
+  ACPI_TABLE_SIG_DBGP: ACPI_TABLE,
+  ACPI_TABLE_SIG_ETDT: ACPI_TABLE,
+  ACPI_TABLE_SIG_HPET: ACPI_TABLE,
+  ACPI_TABLE_SIG_MCFG: ACPI_TABLE,
+  ACPI_TABLE_SIG_SPCR: ACPI_TABLE,
+  ACPI_TABLE_SIG_SPMI: ACPI_TABLE,
+  ACPI_TABLE_SIG_TCPA: ACPI_TABLE,
+  ACPI_TABLE_SIG_WDAT: ACPI_TABLE,
+  ACPI_TABLE_SIG_WDRT: ACPI_TABLE,
+  ACPI_TABLE_SIG_WSPT: ACPI_TABLE,
+  ACPI_TABLE_SIG_WDDT: ACPI_TABLE,
+  ACPI_TABLE_SIG_ASF : ACPI_TABLE,
+  ACPI_TABLE_SIG_MSEG: ACPI_TABLE,
+  ACPI_TABLE_SIG_DMAR: DMAR,
+  ACPI_TABLE_SIG_UEFI: UEFI_TABLE,
+  ACPI_TABLE_SIG_FPDT: ACPI_TABLE,
+  ACPI_TABLE_SIG_PCCT: ACPI_TABLE,
+  ACPI_TABLE_SIG_MSDM: ACPI_TABLE,
+  ACPI_TABLE_SIG_BATB: ACPI_TABLE,
+  ACPI_TABLE_SIG_BGRT: BGRT,
+  ACPI_TABLE_SIG_LPIT: ACPI_TABLE,
+  ACPI_TABLE_SIG_ASPT: ACPI_TABLE,
+  ACPI_TABLE_SIG_FIDT: ACPI_TABLE,
+  ACPI_TABLE_SIG_HEST: HEST,
+  ACPI_TABLE_SIG_BERT: BERT,
+  ACPI_TABLE_SIG_ERST: ERST,
+  ACPI_TABLE_SIG_EINJ: EINJ,
+  ACPI_TABLE_SIG_TPM2: ACPI_TABLE,
+  ACPI_TABLE_SIG_WSMT: ACPI_TABLE,
+  ACPI_TABLE_SIG_DBG2: ACPI_TABLE,
+  ACPI_TABLE_SIG_NHLT: ACPI_TABLE,
+  ACPI_TABLE_SIG_MSCT: MSCT,
+  ACPI_TABLE_SIG_RASF: RASF,
+  ACPI_TABLE_SIG_SPMI: SPMI,
+  ACPI_TABLE_SIG_OEM1: ACPI_TABLE,
+  ACPI_TABLE_SIG_OEM2: ACPI_TABLE,
+  ACPI_TABLE_SIG_OEM3: ACPI_TABLE,
+  ACPI_TABLE_SIG_OEM4: ACPI_TABLE,
+  ACPI_TABLE_SIG_NFIT: NFIT
 }
 
 ########################################################################################################
@@ -246,10 +248,10 @@ class RSDP():
 #
 ########################################################################################################
 
-class ACPI(hal_base.HALBase):
+class ACPI(HALBase):
     def __init__(self, cs):
         super(ACPI, self).__init__(cs)
-        self.uefi = uefi.UEFI(self.cs)
+        self.uefi = _UEFI(self.cs)
         self.tableList = defaultdict(list)
         self.get_ACPI_table_list()
 
@@ -487,7 +489,7 @@ class ACPI(hal_base.HALBase):
     def get_ACPI_table( self, name, isfile = False ):
         acpi_tables_data = []
         if isfile:
-            acpi_tables_data.append(chipsec.file.read_file( name ))
+            acpi_tables_data.append(read_file( name ))
         else:
             try:
                 # 1. Try to extract ACPI table(s) from physical memory

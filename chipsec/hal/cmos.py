@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2018, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@ import sys
 import time
 
 from chipsec.hal import hal_base
-import chipsec.logger
+from chipsec.logger import pretty_print_hex_buffer
 
 class CmosRuntimeError (RuntimeError):
     pass
@@ -97,6 +97,6 @@ class CMOS(hal_base.HALBase):
 
     def dump( self ):
         self.logger.log( "Low CMOS memory contents:" )
-        chipsec.logger.pretty_print_hex_buffer( self.dump_low() )
+        pretty_print_hex_buffer( self.dump_low() )
         self.logger.log( "\nHigh CMOS memory contents:" )
-        chipsec.logger.pretty_print_hex_buffer( self.dump_high() )
+        pretty_print_hex_buffer( self.dump_high() )

@@ -41,8 +41,8 @@ import struct
 from collections import namedtuple
 from uuid import UUID
 
-from chipsec.logger import *
-from chipsec.hal.uefi_common import GUID,guid_str
+from chipsec.logger import logger
+from chipsec.hal.uefi_common import GUID, guid_str
 from chipsec.defines import bytestostring
 
 class ACPI_TABLE():
