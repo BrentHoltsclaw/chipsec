@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2018, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -42,8 +42,7 @@ import struct
 import sys
 import time
 
-from chipsec.hal import hal_base
-from chipsec.logger import logger
+from chipsec.hal.hal_base import HALBase
 
 DEFAULT_IO_BAR_SIZE = 0x100
 
@@ -52,7 +51,7 @@ class IOBARRuntimeError (RuntimeError):
 class IOBARNotFoundError (RuntimeError):
     pass
 
-class IOBAR(hal_base.HALBase):
+class IOBAR(HALBase):
 
     def __init__(self, cs):
         super(IOBAR, self).__init__(cs)
@@ -65,7 +64,7 @@ class IOBAR(hal_base.HALBase):
         try:
             return (self.cs.Cfg.IO_BARS[ bar_name ] is not None)
         except KeyError:
-            if logger().HAL: logger().error( "'%s' I/O BAR definition not found in XML config" % bar_name)
+            if self.logger.HAL: self.logger.error( "'%s' I/O BAR definition not found in XML config" % bar_name)
             #raise IOBARNotFoundError, ('IOBARNotFound: %s' % bar_name)
             return False
 
@@ -93,13 +92,13 @@ class IOBAR(hal_base.HALBase):
 
         if 'fixed_address' in bar and base == empty_base:
             base = int(bar['fixed_address'],16)
-            if logger().HAL: logger().log('[iobar] Using fixed address for {}: 0x{:016X}'.format(bar_name, base))
+            if self.logger.HAL: self.logger.log('[iobar] Using fixed address for {}: 0x{:016X}'.format(bar_name, base))
 
         if 'mask'   in bar: base = base & int(bar['mask'],16)
         if 'offset' in bar: base = base + int(bar['offset'],16)
         size = int(bar['size'],16) if ('size' in bar) else DEFAULT_IO_BAR_SIZE
 
-        if logger().HAL: logger().log( '[iobar] {}: 0x{:04X} (size = 0x{:X})'.format(bar_name,base,size) )
+        if self.logger.HAL: self.logger.log( '[iobar] {}: 0x{:04X} (size = 0x{:X})'.format(bar_name,base,size) )
         return base, size
 
 
@@ -107,10 +106,10 @@ class IOBAR(hal_base.HALBase):
     # Read I/O register from I/O range defined by I/O BAR name
     #
     def read_IO_BAR_reg( self, bar_name, offset, size ):
-        if logger().HAL: logger().log('[iobar] read {} + 0x{:X} ({:d})'.format(bar_name, offset, size))
+        if self.logger.HAL: self.logger.log('[iobar] read {} + 0x{:X} ({:d})'.format(bar_name, offset, size))
         (bar_base,bar_size) = self.get_IO_BAR_base_address( bar_name )
         io_port = bar_base + offset
-        if offset > bar_size and logger().HAL: logger().warn( 'offset 0x{:X} is ouside {} size (0x{:X})'.format(offset,bar_name,size) )
+        if offset > bar_size and self.logger.HAL: self.logger.warn( 'offset 0x{:X} is ouside {} size (0x{:X})'.format(offset,bar_name,size) )
         value = self.cs.io._read_port( io_port, size )
         return value
 
@@ -119,9 +118,9 @@ class IOBAR(hal_base.HALBase):
     #
     def write_IO_BAR_reg( self, bar_name, offset, size, value ):
         (bar_base,bar_size) = self.get_IO_BAR_base_address( bar_name )
-        if logger().HAL: logger().log( '[iobar] write {} + 0x{:X} ({:d}): 0x{:X}'.format(bar_name,offset,size,value) )
+        if self.logger.HAL: self.logger.log( '[iobar] write {} + 0x{:X} ({:d}): 0x{:X}'.format(bar_name,offset,size,value) )
         io_port = bar_base + offset
-        if offset > bar_size and logger().HAL: logger().warn( 'offset 0x{:X} is ouside {} size (0x{:X})'.format(offset,bar_name,size) )
+        if offset > bar_size and self.logger.HAL: self.logger.warn( 'offset 0x{:X} is ouside {} size (0x{:X})'.format(offset,bar_name,size) )
         return self.cs.io._write_port( io_port, value, size )
 
 
@@ -140,10 +139,10 @@ class IOBAR(hal_base.HALBase):
 
 
     def list_IO_BARs( self ):
-        logger().log('')
-        logger().log( '--------------------------------------------------------------------------------' )
-        logger().log( ' I/O Range    | BAR Register   | Base             | Size     | En? | Description' )
-        logger().log( '--------------------------------------------------------------------------------' )
+        self.logger.log('')
+        self.logger.log( '--------------------------------------------------------------------------------' )
+        self.logger.log( ' I/O Range    | BAR Register   | Base             | Size     | En? | Description' )
+        self.logger.log( '--------------------------------------------------------------------------------' )
         for _bar_name in self.cs.Cfg.IO_BARS:
             if not self.is_IO_BAR_defined( _bar_name ): continue
             _bar = self.cs.Cfg.IO_BARS[ _bar_name ]
@@ -156,7 +155,7 @@ class IOBAR(hal_base.HALBase):
             else:
                 _s = '{:02X}:{:02X}.{:01X} + {}'.format( int(_bar['bus'],16),int(_bar['dev'],16),int(_bar['fun'],16),_bar['reg'] )
 
-            logger().log( ' {:12} | {:14} | {:016X} | {:08X} | {:d}   | {}'.format(_bar_name, _s, _base, _size, _en, _bar['desc']) )
+            self.logger.log( ' {:12} | {:14} | {:016X} | {:08X} | {:d}   | {}'.format(_bar_name, _s, _base, _size, _en, _bar['desc']) )
 
 
     #
@@ -178,8 +177,8 @@ class IOBAR(hal_base.HALBase):
         (range_base,range_size) = self.get_IO_BAR_base_address( bar_name )
         n = range_size/size
         fmt = '0{:d}X'.format(size*2)
-        logger().log("[iobar] I/O BAR {}:".format(bar_name))
+        self.logger.log("[iobar] I/O BAR {}:".format(bar_name))
         for i in range(n):
             reg = self.cs.io._read_port( range_base + i*size, size )
-            logger().log( '{:+04X}: {:{form}}'.format(i*size,r,form=fmt) )
+            self.logger.log( '{:+04X}: {:{form}}'.format(i*size,r,form=fmt) )
 
