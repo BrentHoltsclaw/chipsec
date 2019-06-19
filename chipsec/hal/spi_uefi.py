@@ -45,12 +45,12 @@ import random
 import binascii
 import json
 
-from chipsec.logger import *
-from chipsec.file import *
+from chipsec.logger import logger
+from chipsec.file import write_file, read_file
 
-from chipsec.cfg.common import *
+from chipsec.defines import COMPRESSION_TYPE_UNKNOWN, COMPRESSION_TYPE_EFI_STANDARD, COMPRESSION_TYPE_LZMA
 from chipsec.hal.uefi_common import *
-from chipsec.hal.uefi_platform import *
+from chipsec.hal.uefi_platform import NVAR_NVRAM_FS_FILE, FWType, EFI_PLATFORM_FS_GUIDS, EFI_NVRAM_GUIDS, ParsePFS, fw_types
 from chipsec.hal.uefi import identify_EFI_NVRAM
 
 CMD_UEFI_FILE_REMOVE        = 0
@@ -283,9 +283,9 @@ def build_efi_modules_tree( _uefi, fwtype, data, Size, offset, polarity ):
             if sec.Type in (EFI_SECTION_COMPRESSION, EFI_SECTION_GUID_DEFINED, EFI_SECTION_FIRMWARE_VOLUME_IMAGE):
                 if sec.Type == EFI_SECTION_COMPRESSION:
                     ul, ct = struct.unpack(EFI_COMPRESSION_SECTION, sec.Image[sec.HeaderSize:sec.HeaderSize+EFI_COMPRESSION_SECTION_size])
-                    d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.HeaderSize+EFI_COMPRESSION_SECTION_size:], chipsec.defines.COMPRESSION_TYPE_EFI_STANDARD, True )
+                    d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.HeaderSize+EFI_COMPRESSION_SECTION_size:], COMPRESSION_TYPE_EFI_STANDARD, True )
                     if (d is None) and not ct == 0:
-                        d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.HeaderSize+EFI_COMPRESSION_SECTION_size:], chipsec.defines.COMPRESSION_TYPE_UNKNOWN, True )
+                        d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.HeaderSize+EFI_COMPRESSION_SECTION_size:], COMPRESSION_TYPE_UNKNOWN, True )
                     if d:
                         sec.children = build_efi_modules_tree( _uefi, fwtype, d, len(d), 0, polarity )
                 elif sec.Type == EFI_SECTION_GUID_DEFINED:
@@ -293,12 +293,12 @@ def build_efi_modules_tree( _uefi, fwtype, data, Size, offset, polarity ):
                         sec.children = build_efi_modules_tree( _uefi, fwtype, sec.Image[sec.DataOffset:], Size - sec.DataOffset, 0, polarity )
                     elif sec.Guid == LZMA_CUSTOM_DECOMPRESS_GUID or sec.Guid == TIANO_DECOMPRESSED_GUID:
                         if sec.Guid == LZMA_CUSTOM_DECOMPRESS_GUID:
-                            d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.DataOffset:], chipsec.defines.COMPRESSION_TYPE_LZMA, True )
+                            d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.DataOffset:], COMPRESSION_TYPE_LZMA, True )
                         else:
-                            d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.DataOffset:], chipsec.defines.COMPRESSION_TYPE_EFI_STANDARD, True )
+                            d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.DataOffset:], COMPRESSION_TYPE_EFI_STANDARD, True )
                         if d is None:
                             sec.Comments = "Unable to decompress image"
-                            d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.HeaderSize+EFI_GUID_DEFINED_SECTION_size:], chipsec.defines.COMPRESSION_TYPE_UNKNOWN, True )
+                            d = decompress_section_data( _uefi, "", sec_fs_name, sec.Image[sec.HeaderSize+EFI_GUID_DEFINED_SECTION_size:], COMPRESSION_TYPE_UNKNOWN, True )
                         if d:
                             sec.children = build_efi_modules_tree( _uefi, fwtype, d, len(d), 0, polarity )
                     elif sec.Guid == EFI_CERT_TYPE_RSA_2048_SHA256_GUID:

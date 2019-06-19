@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2015, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -40,13 +40,12 @@ usage:
 import struct
 import sys
 import time
-
-from chipsec.logger import *
-from chipsec.file import *
-
-from chipsec.cfg.common import *
-from chipsec.hal import spi
 from binascii import hexlify
+
+from chipsec.logger import logger, print_buffer
+from chipsec.hal.spi import SPI_REGION_NUMBER_IN_FD, get_SPI_region, SPI_REGION_NAMES, FLASH_DESCRIPTOR, SPI_FLA_SHIFT, SPI_MASTER_NAMES
+from chipsec.defines import bytestostring
+
 
 SPI_FLASH_DESCRIPTOR_SIGNATURE = struct.pack('=I', 0x0FF0A55A )
 SPI_FLASH_DESCRIPTOR_SIZE      = 0x1000
@@ -77,16 +76,16 @@ def get_spi_regions( fd ):
     # Number of Regions (bits [26:24])
     nr   = ( ((flmap0 & 0xFF000000) >> 24) & 0x7 )
 
-    flregs = [None] * spi.SPI_REGION_NUMBER_IN_FD
-    for r in range( spi.SPI_REGION_NUMBER_IN_FD ):
+    flregs = [None] * SPI_REGION_NUMBER_IN_FD
+    for r in range( SPI_REGION_NUMBER_IN_FD ):
         flreg_off = frba + r*4
         flreg = struct.unpack_from( '=I', fd[flreg_off:flreg_off + 0x4] )[0]
-        (base,limit) = spi.get_SPI_region(flreg)
+        (base,limit) = get_SPI_region(flreg)
         notused = (base > limit)
-        flregs[r] = (r, spi.SPI_REGION_NAMES[r],flreg,base,limit,notused)
+        flregs[r] = (r, SPI_REGION_NAMES[r],flreg,base,limit,notused)
 
-    fd_size    = flregs[spi.FLASH_DESCRIPTOR][4] - flregs[spi.FLASH_DESCRIPTOR][3] + 1
-    fd_notused = flregs[spi.FLASH_DESCRIPTOR][5]
+    fd_size    = flregs[FLASH_DESCRIPTOR][4] - flregs[FLASH_DESCRIPTOR][3] + 1
+    fd_notused = flregs[FLASH_DESCRIPTOR][5]
     if fd_notused or (fd_size != SPI_FLASH_DESCRIPTOR_SIZE):
         return None
 
@@ -142,7 +141,7 @@ def parse_spi_flash_descriptor( cs, rom ):
     logger().log( '  Flash Region Base Address   : 0x{:08X}'.format(frba) )
     logger().log( '  Number of Flash Components  : {:d}'.format(nc) )
 
-    nr = spi.SPI_REGION_NUMBER_IN_FD
+    nr = SPI_REGION_NUMBER_IN_FD
     if cs.register_has_field('FLMAP0', 'NR'):
         nr = cs.get_register_field('FLMAP0', flmap0, 'NR')
         if nr == 0:
@@ -192,8 +191,8 @@ def parse_spi_flash_descriptor( cs, rom ):
         flreg_off = frba + r*4
         flreg = struct.unpack_from( '=I', fd[flreg_off:flreg_off + 0x4] )[0]
         if not cs.is_register_defined('FLREG{:d}'.format(r)): continue
-        base  = cs.get_register_field(('FLREG{:d}'.format(r)), flreg, 'RB' ) << spi.SPI_FLA_SHIFT
-        limit = cs.get_register_field(('FLREG{:d}'.format(r)), flreg, 'RL' ) << spi.SPI_FLA_SHIFT
+        base  = cs.get_register_field(('FLREG{:d}'.format(r)), flreg, 'RB' ) << SPI_FLA_SHIFT
+        limit = cs.get_register_field(('FLREG{:d}'.format(r)), flreg, 'RL' ) << SPI_FLA_SHIFT
         notused = '(not used)' if base > limit or flreg == 0xFFFFFFFF else ''
         flregs[r] = (flreg,base,limit,notused)
         logger().log( '+ 0x{:04X} FLREG{:d}   : 0x{:08X} {}'.format(flreg_off,r,flreg,notused) )
@@ -205,7 +204,7 @@ def parse_spi_flash_descriptor( cs, rom ):
     logger().log( ' Region                | FLREGx    | Base     | Limit   ' )
     logger().log( '--------------------------------------------------------' )
     for r in range(nr):
-        if flregs[r]: logger().log( '{:d} {:20s} | {:08X}  | {:08X} | {:08X} {}'.format(r, spi.SPI_REGION_NAMES[r],flregs[r][0],flregs[r][1],flregs[r][2],flregs[r][3]) )
+        if flregs[r]: logger().log( '{:d} {:20s} | {:08X}  | {:08X} | {:08X} {}'.format(r, SPI_REGION_NAMES[r],flregs[r][0],flregs[r][1],flregs[r][2],flregs[r][3]) )
 
     #
     # Flash Descriptor Master Section
@@ -228,14 +227,14 @@ def parse_spi_flash_descriptor( cs, rom ):
     logger().log( '--------------------------------------------------------' )
     s = ' Region                 '
     for m in range(nm):
-        if m in spi.SPI_MASTER_NAMES:
-            s = s + '| ' + ('{:9}'.format(spi.SPI_MASTER_NAMES[m]))
+        if m in SPI_MASTER_NAMES:
+            s = s + '| ' + ('{:9}'.format(SPI_MASTER_NAMES[m]))
         else:
             s = s + '| Master {:-2d}'.format(m)
     logger().log( s )
     logger().log( '--------------------------------------------------------' )
     for r in range(nr):
-        s = '{:-2d} {:20s} '.format(r, spi.SPI_REGION_NAMES[r])
+        s = '{:-2d} {:20s} '.format(r, SPI_REGION_NAMES[r])
         for m in range(nm):
             access_s = ''
             mask = (0x1 << r)
