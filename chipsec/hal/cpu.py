@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2016, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -38,7 +38,10 @@ import sys
 import os.path
 from collections import namedtuple
 
-from chipsec.hal import acpi, hal_base, paging
+from chipsec.hal.acpi import ACPI as _ACPI
+from chipsec.hal.acpi import ACPI_TABLE_SIG_APIC
+from chipsec.hal.paging import c_ia32e_page_tables
+from chipsec.hal.hal_base import HALBase
 from chipsec.logger import logger
 
 VMM_NONE    = 0
@@ -57,7 +60,7 @@ class CPURuntimeError (RuntimeError):
 #
 ########################################################################################################
 
-class CPU(hal_base.HALBase):
+class CPU(HALBase):
     def __init__(self, cs):
         super(CPU, self).__init__(cs)
         self.helper = cs.helper
@@ -117,9 +120,9 @@ class CPU(hal_base.HALBase):
     
     # determine number of logical processors in the core
     def get_number_threads_from_APIC_table(self):
-        _acpi = acpi.ACPI( self.cs )
+        _acpi = _ACPI( self.cs )
         dACPIID = {}
-        (table_header,APIC_object,table_header_blob,table_blob) = _acpi.get_parse_ACPI_table( acpi.ACPI_TABLE_SIG_APIC )
+        (table_header,APIC_object,table_header_blob,table_blob) = _acpi.get_parse_ACPI_table( ACPI_TABLE_SIG_APIC )
         for structure in APIC_object.apic_structs:
             if 0x00 == structure.Type:
                 if dACPIID.has_key( structure.APICID ) == False:
@@ -206,7 +209,7 @@ class CPU(hal_base.HALBase):
     #
     def dump_page_tables( self, cr3, pt_fname=None ):
         _orig_logname = logger().LOG_FILE_NAME
-        hpt = paging.c_ia32e_page_tables( self.cs )
+        hpt = c_ia32e_page_tables( self.cs )
         if logger().HAL: logger().log( '[cpu] dumping paging hierarchy at physical base (CR3) = 0x{:08X}...'.formatcr3 )
         if pt_fname is None: pt_fname = ('pt_{:08X}'.format(cr3))
         logger().set_log_file( pt_fname )

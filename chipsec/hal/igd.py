@@ -35,14 +35,14 @@ usage:
 import struct
 import sys
 
-from chipsec.hal import hal_base
+from chipsec.hal.hal_base import HALBase
 from chipsec.logger import print_buffer
 from chipsec.defines import bytestostring
 
 class IGDRuntimeError (RuntimeError):
     pass
 
-class IGD(hal_base.HALBase):
+class IGD(HALBase):
 
     def __init__(self, cs):
         super(IGD, self).__init__(cs)
