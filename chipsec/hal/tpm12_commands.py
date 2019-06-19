@@ -1,5 +1,5 @@
 #CHIPSEC: Platform Security Assessment Framework
-#Copyright (c) 2010-2018, Intel Corporation
+#Copyright (c) 2010-2019, Intel Corporation
 # 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@ TCG TPM v1.2 Specification
 """
 
 import struct
-from chipsec.logger import *
+from chipsec.logger import logger
 
 COMMAND_FORMAT = "=HIIIII"
 

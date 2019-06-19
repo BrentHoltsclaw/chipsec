@@ -1,5 +1,6 @@
 # CHIPSEC: Platform Security Assessment Framework
 # Copyright (c) 2017, Google Inc
+# Copyright (c) 2019, Intel Corporation
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -33,9 +34,7 @@ import binascii
 import collections
 import struct
 
-from chipsec import defines
-from chipsec import logger
-
+from chipsec.logger import logger
 
 class TcgPcrEvent(object):
     """An Event (TPM 1.2 format) as recorded in the SML."""
@@ -72,7 +71,7 @@ class TcgPcrEvent(object):
         pcr_index, event_type, digest, event_size = fields
         event = log.read(event_size)
         if len(event) != event_size:
-            logger.logger().warn("[tpm_eventlog] event data length "
+            logger().warn("[tpm_eventlog] event data length "
                                  "does not match the expected size")
         name = SML_EVENT_TYPE.get(event_type)
         kls = cls if isinstance(name, str) else name
@@ -99,7 +98,7 @@ class SCRTMVersion(TcgPcrEvent):
         try:
             _str += "\n\t+ version: {}".format(self.version.decode("utf-16"))
         except:
-            if logger().HAL: logger.logger().warn("[tpm_eventlog] CRTM Version is not "
+            if logger().HAL: logger().warn("[tpm_eventlog] CRTM Version is not "
                                  "a valid string")
         return _str
 
@@ -185,4 +184,4 @@ class PcrLogParser(object):
 def parse(log):
     """Simple wrapper around PcrLogParser."""
     for event in PcrLogParser(log):
-        logger.logger().log(event)
+        logger().log(event)
