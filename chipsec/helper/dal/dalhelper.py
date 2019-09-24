@@ -22,6 +22,7 @@
 
 """
 Intel DFx Abstraction Layer (DAL) helper
+Intel SVT Closed Chassis Adapter (CCA) / Intel Direct Connect Interface (DCI) helper
 
 From the Intel(R) DFx Abstraction Layer Python* Command Line Interface User Guide
 
@@ -31,9 +32,18 @@ import struct
 import sys
 
 from chipsec.logger import logger
-import itpii
 from ctypes import *
 from chipsec.helper.basehelper import Helper
+try:
+    import itpii as cli
+    loaded = True
+except ImportError:
+    pass
+if not loaded:
+    try:
+        import ipccli as cli
+    except ImportError:
+        raise Exception('Unable to import cli helper please install Intel System Studio and Intel System Debugger')
 
 SYSTEM_HALTED = True
 
@@ -44,7 +54,7 @@ class DALHelperError (RuntimeError):
 class DALHelper(Helper):
     def __init__(self):
         super(DALHelper, self).__init__()
-        self.base = itpii.baseaccess()
+        self.base = cli.baseaccess()
         if logger().DEBUG:
             logger().log('[helper] DAL Helper')
         if not len(self.base.threads):
@@ -169,7 +179,7 @@ class DALHelper(Helper):
         format = {1: 'B', 2: 'H', 4: 'L', 8:'Q'}
         while width >= 1 :
             while (length - ptr) >= width :
-                v = self.base.threads[self.find_thread()].mem(itpii.Address((phys_address + ptr),itpii.AddressType.physical), width)
+                v = self.base.threads[self.find_thread()].mem(cli.Address((phys_address + ptr),cli.AddressType.physical), width)
                 struct.pack_into(format[width], out_buf, ptr, v.ToUInt64())
                 ptr += width
             width = width / 2
@@ -185,7 +195,7 @@ class DALHelper(Helper):
         while width >= 1 :
             while (length - ptr) >= width :
                 v = struct.unpack_from(format[width], buf, ptr)
-                self.base.threads[self.find_thread()].mem(itpii.Address((phys_address + ptr),itpii.AddressType.physical), width, v[0])
+                self.base.threads[self.find_thread()].mem(cli.Address((phys_address + ptr),cli.AddressType.physical), width, v[0])
                 ptr += width
             width = width / 2
         return
@@ -245,7 +255,7 @@ class DALHelper(Helper):
         val = ( edx << 32 ) | eax
         self.base.threads[thread].msr( msr_addr, val )
         return True
-        
+
     def read_cr(self, cpu_thread_id, cr_number):
         if not self.base.threads[cpu_thread_id].isenabled:
             en_thread = self.find_thread()

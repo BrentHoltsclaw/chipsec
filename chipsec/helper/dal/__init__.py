@@ -28,7 +28,7 @@
 import sys
 from chipsec.helper.oshelper import avail_helpers
 
-if 'itpii' in sys.modules:
+if 'itpii' in sys.modules or 'ipccli' in sys.modules:
     __all__ = [ 'dalhelper' ]
     avail_helpers.append("dalhelper")
 else:
