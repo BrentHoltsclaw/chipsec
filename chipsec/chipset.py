@@ -32,6 +32,7 @@ from chipsec.hal import cpu, io, iobar, mmio, msgbus, msr, pci, physmem, ucode, 
 from chipsec.hal.pci import PCI_HDR_RID_OFF
 from chipsec.exceptions import UnknownChipsetError, DeviceNotFoundError, CSReadError
 from chipsec.exceptions import RegisterTypeNotFoundError
+from chipsec.options import Options
 
 from chipsec.logger import logger
 from chipsec.defines import is_hex, is_all_ones
@@ -105,6 +106,9 @@ class Chipset:
             self.helper = OsHelper()
         else:
             self.helper = helper
+
+        self.options = Options()
+        logger().set_mode(self.options.get_section_data('Mode'))
 
         self.init_xml_configuration()
 

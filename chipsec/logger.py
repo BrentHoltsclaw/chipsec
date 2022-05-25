@@ -159,6 +159,14 @@ class Logger:
         self.rootLogger.addHandler(self.logstream) #adds streamhandler to root logger
         self.Results = ChipsecResults()
 
+    def set_mode(self, mode):
+        if mode == 'tester':
+            self.VERBOSE = True
+        elif mode == 'developer':
+            self.VERBOSE = True
+            self.DEBUG = True
+            self.HAL = True
+
     def set_log_file( self, name=None ):
         """Sets the log file for the output."""
         # Close current log file if it's opened

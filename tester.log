@@ -1,0 +1,795 @@
+################################################################
+##                                                            ##
+##  CHIPSEC: Platform Hardware Security Assessment Framework  ##
+##                                                            ##
+################################################################
+[CHIPSEC] Version 1.8.5
+[CHIPSEC] Arguments: -m common.ia32cfg -l tester.log
+
+[helper] Linux Helper created
+Module /dev/chipsec loaded successfully
+****** Chipsec Linux Kernel module is licensed under GPL 2.0
+[helper] Linux Helper started/loaded
+[CHIPSEC] API mode: using CHIPSEC kernel module API
+[pci] reading B/D/F: 0/0/0, offset: 0x00, value: 0x9A148086
+[pci] reading B/D/F: 0/0/0, offset: 0x08, value: 0x01
+[pci] reading B/D/F: 0/31/0, offset: 0x00, value: 0xA0828086
+[pci] reading B/D/F: 0/31/0, offset: 0x08, value: 0x20
+[cpu] CPUID in : EAX=0x00000001, ECX=0x00000000
+[cpu] CPUID out: EAX=0x000806C1, EBX=0x04100800, ECX=0x7FFAFBBF, EDX=0xBFEBFBFF
+[*] Couldn't import chipsec.cfg.TGLU
+No module named 'chipsec.cfg.TGLU'
+[*] Configuration Files:
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/adl.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/apl.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/avn.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/bdw.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/bdx.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/byt.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/cfl.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/cht.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/cml.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/common.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/dnv.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/glk.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/hsw.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/hsx.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/icl.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/icx.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/iommu.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/ivb.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/ivt.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/jkt.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/kbl.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_1xx.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_2xx.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_3xx.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_3xxlp.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_3xxop.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_495.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_4xx.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_4xxh.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_4xxlp.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_5xxh.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_5xxlp.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_c60x.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_c61x.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_c620.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/qrk.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/rkl.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/sfdp.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/skl.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/skx.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/snb.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/tglh.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/tglu.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/tpm12.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/txt.xml
+[*] - /home/bh/devel/chipsec-brent/chipsec/cfg/8086/whl.xml
+[*] Loading Configuration Files:
+[*] looking for platform config in '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/common.xml'..
+[*] loading common platform config from '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/common.xml'..
+[*] loading integrated devices/controllers..
+    + HOSTCTRL        : {'bus': '0', 'dev': '0x00', 'fun': '0', 'vid': '0x8086'}
+    + PEG10           : {'bus': '0', 'dev': '0x01', 'fun': '0', 'vid': '0x8086'}
+    + PEG11           : {'bus': '0', 'dev': '0x01', 'fun': '1', 'vid': '0x8086'}
+    + PEG12           : {'bus': '0', 'dev': '0x01', 'fun': '2', 'vid': '0x8086'}
+    + IGD             : {'bus': '0', 'dev': '0x02', 'fun': '0', 'vid': '0x8086'}
+    + HDAUDIO         : {'bus': '0', 'dev': '0x03', 'fun': '0', 'vid': '0x8086'}
+    + XHCI            : {'bus': '0', 'dev': '0x14', 'fun': '0', 'vid': '0x8086'}
+    + MEI1            : {'bus': '0', 'dev': '0x16', 'fun': '0', 'vid': '0x8086'}
+    + MEI2            : {'bus': '0', 'dev': '0x16', 'fun': '1', 'vid': '0x8086'}
+    + IDER            : {'bus': '0', 'dev': '0x16', 'fun': '2', 'vid': '0x8086'}
+    + KT              : {'bus': '0', 'dev': '0x16', 'fun': '3', 'vid': '0x8086'}
+    + GBE             : {'bus': '0', 'dev': '0x19', 'fun': '0', 'vid': '0x8086'}
+    + EHCI2           : {'bus': '0', 'dev': '0x1A', 'fun': '0', 'vid': '0x8086'}
+    + AUDIO           : {'bus': '0', 'dev': '0x1B', 'fun': '0', 'vid': '0x8086'}
+    + PCIE1           : {'bus': '0', 'dev': '0x1C', 'fun': '0', 'vid': '0x8086'}
+    + PCIE2           : {'bus': '0', 'dev': '0x1C', 'fun': '1', 'vid': '0x8086'}
+    + PCIE3           : {'bus': '0', 'dev': '0x1C', 'fun': '2', 'vid': '0x8086'}
+    + PCIE4           : {'bus': '0', 'dev': '0x1C', 'fun': '3', 'vid': '0x8086'}
+    + PCIE5           : {'bus': '0', 'dev': '0x1C', 'fun': '4', 'vid': '0x8086'}
+    + PCIE6           : {'bus': '0', 'dev': '0x1C', 'fun': '5', 'vid': '0x8086'}
+    + PCIE7           : {'bus': '0', 'dev': '0x1C', 'fun': '6', 'vid': '0x8086'}
+    + PCIE8           : {'bus': '0', 'dev': '0x1C', 'fun': '7', 'vid': '0x8086'}
+    + EHCI1           : {'bus': '0', 'dev': '0x1D', 'fun': '0', 'vid': '0x8086'}
+    + LPC             : {'bus': '0', 'dev': '0x1F', 'fun': '0', 'vid': '0x8086'}
+    + SATA1           : {'bus': '0', 'dev': '0x1F', 'fun': '2', 'vid': '0x8086'}
+    + SMBUS           : {'bus': '0', 'dev': '0x1F', 'fun': '3', 'vid': '0x8086'}
+    + SATA2           : {'bus': '0', 'dev': '0x1F', 'fun': '5', 'vid': '0x8086'}
+    + THERMAL         : {'bus': '0', 'dev': '0x1F', 'fun': '6', 'vid': '0x8086'}
+[*] loading MMIO BARs..
+    + PXPEPBAR        : {'bus': '0', 'dev': '0', 'fun': '0', 'reg': '0x40', 'width': '8', 'mask': '0x7FFFFFF000', 'size': '0x1000', 'enable_bit': '0', 'desc': 'PCI Express Egress Port Register Range'}
+    + MCHBAR          : {'bus': '0', 'dev': '0', 'fun': '0', 'reg': '0x48', 'width': '8', 'mask': '0x7FFFFF8000', 'size': '0x8000', 'enable_bit': '0', 'desc': 'Host Memory Mapped Register Range'}
+    + MMCFG           : {'bus': '0', 'dev': '0', 'fun': '0', 'reg': '0x60', 'width': '8', 'mask': '0x7FFC000000', 'size': '0x1000', 'enable_bit': '0', 'desc': 'PCI Express Register Range'}
+    + DMIBAR          : {'bus': '0', 'dev': '0', 'fun': '0', 'reg': '0x68', 'width': '8', 'mask': '0x7FFFFFF000', 'size': '0x1000', 'enable_bit': '0', 'desc': 'Root Complex Register Range'}
+    + GTTMMADR        : {'bus': '0', 'dev': '2', 'fun': '0', 'reg': '0x10', 'width': '8', 'mask': '0x7FFFC00000', 'desc': 'Graphics Translation Table Range'}
+    + GMADR           : {'bus': '0', 'dev': '2', 'fun': '0', 'reg': '0x18', 'width': '8', 'mask': '0x7FF8000000', 'desc': 'Graphics Memory Range'}
+    + HDABAR          : {'bus': '0', 'dev': '3', 'fun': '0', 'reg': '0x10', 'width': '8', 'mask': '0x7FFFFFF000', 'size': '0x1000', 'desc': 'HD Audio Controller Register Range'}
+    + HDBAR           : {'bus': '0', 'dev': '0x1B', 'fun': '0', 'reg': '0x10', 'width': '8', 'mask': '0x7FFFFFC000', 'size': '0x1000', 'desc': 'PCH HD Audio Controller Register Range'}
+    + RCBA            : {'bus': '0', 'dev': '0x1F', 'fun': '0', 'reg': '0xF0', 'width': '4', 'mask': '0xFFFFC000', 'size': '0x4000', 'enable_bit': '0', 'desc': 'PCH Root Complex Register Range'}
+    + SPIBAR          : {'bus': '0', 'dev': '0x1F', 'fun': '0', 'reg': '0xF0', 'width': '4', 'mask': '0xFFFFC000', 'size': '0x200', 'enable_bit': '0', 'desc': 'SPI Controller Register Range', 'offset': '0x3800'}
+    + RCBA_RTC        : {'bus': '0', 'dev': '0x1F', 'fun': '0', 'reg': '0xF0', 'width': '4', 'mask': '0xFFFFC000', 'size': '0x200', 'enable_bit': '0', 'desc': 'General Control Register Range', 'offset': '0x3400'}
+    + VTBAR           : {'register': 'VTBAR', 'base_field': 'Base', 'size': '0x1000', 'enable_field': 'Enable', 'desc': 'Intel VT-d Register Register Range'}
+    + GFXVTBAR        : {'register': 'GFXVTBAR', 'base_field': 'Base', 'size': '0x1000', 'enable_field': 'Enable', 'desc': 'Intel Processor Graphics VT-d Register Range'}
+[*] loading I/O BARs..
+    + ABASE           : {'register': 'ABASE', 'base_field': 'Base', 'size': '0x80', 'desc': 'ACPI Base Address'}
+    + PMBASE          : {'register': 'ABASE', 'base_field': 'Base', 'size': '0x80', 'desc': 'ACPI Base Address'}
+    + TCOBASE         : {'register': 'ABASE', 'base_field': 'Base', 'size': '0x80', 'desc': 'TCO Base Address', 'offset': '0x60'}
+    + GPIOBASE        : {'register': 'GPIOBASE', 'base_field': 'Base', 'size': '0x80', 'desc': 'GPIO Base Address'}
+    + SMBUS_BASE      : {'register': 'SMB_BASE', 'base_field': 'Base', 'size': '0x20', 'desc': 'SMBus Base Address'}
+[*] loading indirect memory accesses definitions..
+[*] loading memory ranges..
+    + Legacy DOS      : {'access': 'dram', 'address': '0x0', 'size': '0x100000'}
+    + TXT             : {'access': 'mmio', 'address': '0xFED20000', 'size': '0x20000'}
+    + TPM             : {'access': 'mmio', 'address': '0xFED40000', 'size': '0x10000'}
+[*] loading configuration registers..
+    + PCI0.0.0_VID    : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x0', 'size': '2', 'desc': 'Vendor ID'}
+    + PCI0.0.0_DID    : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x2', 'size': '2', 'desc': 'Device ID'}
+    + PCI0.0.0_PXPEPBAR: {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x40', 'size': '8', 'desc': 'PCI Express Egress Port Base Address'}
+    + PCI0.0.0_MCHBAR : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x48', 'size': '8', 'desc': 'MCH Base Address'}
+    + PCI0.0.0_GGC    : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x50', 'size': '2', 'desc': 'Graphics Control', 'FIELDS': {'GGCLOCK': {'bit': '0', 'size': '1', 'desc': 'GGC Lock'}}}
+    + PCI0.0.0_DEVEN  : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x54', 'size': '4', 'desc': 'Device Enables', 'FIELDS': {'D2EN': {'bit': '4', 'size': '1', 'desc': 'Device 2 Function 0 Enable'}}}
+    + PCI0.0.0_PAVPC  : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x58', 'size': '4', 'desc': 'PAVP Configuration', 'FIELDS': {'PAVPLCK': {'bit': '2', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_DPR    : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x5C', 'size': '4', 'desc': 'DMA Protected Range', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_PCIEXBAR: {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x60', 'size': '8', 'desc': 'PCIe MMCFG Base Address'}
+    + PCI0.0.0_DMIBAR : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x68', 'size': '8', 'desc': 'DMI Base Address'}
+    + PCI0.0.0_MESEG_BASE: {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x70', 'size': '8', 'desc': 'Manageability Engine Base Address Register'}
+    + PCI0.0.0_MESEG_MASK: {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x78', 'size': '8', 'desc': 'Manageability Engine Limit Address Register', 'FIELDS': {'MELCK': {'bit': '10', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_PAM0   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x80', 'size': '1', 'desc': 'Programmable Attribute Map 0'}
+    + PCI0.0.0_PAM1   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x81', 'size': '1', 'desc': 'Programmable Attribute Map 1'}
+    + PCI0.0.0_PAM2   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x82', 'size': '1', 'desc': 'Programmable Attribute Map 2'}
+    + PCI0.0.0_PAM3   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x83', 'size': '1', 'desc': 'Programmable Attribute Map 3'}
+    + PCI0.0.0_PAM4   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x84', 'size': '1', 'desc': 'Programmable Attribute Map 4'}
+    + PCI0.0.0_PAM5   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x85', 'size': '1', 'desc': 'Programmable Attribute Map 5'}
+    + PCI0.0.0_PAM6   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x86', 'size': '1', 'desc': 'Programmable Attribute Map 6'}
+    + PCI0.0.0_LAC    : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x87', 'size': '1', 'desc': 'Legacy Access Control'}
+    + PCI0.0.0_SMRAMC : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x88', 'size': '1', 'desc': 'System Management RAM Control', 'FIELDS': {'D_OPEN': {'bit': '6', 'size': '1', 'desc': 'SMRAM Open'}, 'D_CLS': {'bit': '5', 'size': '1', 'desc': 'SMRAM Closed'}, 'D_LCK': {'bit': '4', 'size': '1', 'desc': 'SMRAM Locked'}, 'G_SMRAME': {'bit': '3', 'size': '1', 'desc': 'SMRAM Enabled'}, 'C_BASE_SEG': {'bit': '0', 'size': '3', 'desc': 'SMRAM Base Segment = 010b'}}}
+    + PCI0.0.0_REMAPBASE: {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x90', 'size': '8', 'desc': 'Memory Remap Base Address', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_REMAPLIMIT: {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0x98', 'size': '8', 'desc': 'Memory Remap Limit Address', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_TOM    : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0xA0', 'size': '8', 'desc': 'Top of Memory', 'FIELDS': {'TOM': {'bit': '20', 'size': '19', 'desc': 'Top of Memory'}, 'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_TOUUD  : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0xA8', 'size': '8', 'desc': 'Top of Upper Usable DRAM', 'FIELDS': {'TOUUD': {'bit': '20', 'size': '19', 'desc': 'Top of Upper Usable DRAM'}, 'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_BDSM   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0xB0', 'size': '4', 'desc': 'Base of Graphics Stolen Memory', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_BGSM   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0xB4', 'size': '4', 'desc': 'Base of GTT Stolen Memory', 'FIELDS': {'BGSM': {'bit': '20', 'size': '12', 'desc': 'Base of GTT Stolen Memory'}, 'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_TSEGMB : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0xB8', 'size': '4', 'desc': 'TSEG Memory Base', 'FIELDS': {'TSEGMB': {'bit': '20', 'size': '12', 'desc': 'TSEG Memory Base'}, 'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_TOLUD  : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0xBC', 'size': '4', 'desc': 'Top of Low Usable DRAM', 'FIELDS': {'TOLUD': {'bit': '20', 'size': '12', 'desc': 'Top of Lower Usable DRAM'}, 'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + PCI0.0.0_SKPD   : {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0xDC', 'size': '4', 'desc': 'Scratchpad Data'}
+    + PCI0.0.0_CAPID0_A: {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0xE4', 'size': '4', 'desc': 'Capabilities A', 'FIELDS': {'VTDD': {'bit': '23', 'size': '1', 'desc': 'VTD Disable'}, 'IGD': {'bit': '11', 'size': '1', 'desc': 'Internal Graphics Disable'}}}
+    + PCI0.0.0_CAPID0_B: {'type': 'pcicfg', 'device': 'HOSTCTRL', 'offset': '0xE8', 'size': '4', 'desc': 'Capabilities B'}
+    + PCI0.2.0_DID    : {'type': 'pcicfg', 'device': 'IGD', 'offset': '2', 'size': '2', 'desc': 'Device Identification Number'}
+    + ABASE           : {'type': 'pcicfg', 'device': 'LPC', 'offset': '0x40', 'size': '4', 'desc': 'ACPI Base Address', 'FIELDS': {'Base': {'bit': '7', 'size': '9', 'desc': 'Base Address'}}}
+    + GPIOBASE        : {'type': 'pcicfg', 'device': 'LPC', 'offset': '0x48', 'size': '4', 'desc': 'GPIO Base Address', 'FIELDS': {'Base': {'bit': '7', 'size': '9', 'desc': 'Base Address'}}}
+    + GC              : {'type': 'pcicfg', 'device': 'LPC', 'offset': '0x4C', 'size': '1', 'desc': 'GPIO Control', 'FIELDS': {'GLE': {'bit': '0', 'size': '1', 'desc': 'GPIO Lockdown Enable'}, 'EN': {'bit': '4', 'size': '1', 'desc': 'GPIO Enable'}}}
+    + GEN_PMCON_1     : {'type': 'pcicfg', 'device': 'LPC', 'offset': '0xA0', 'size': '2', 'desc': 'General PM Configuration 1', 'FIELDS': {'SMI_LOCK': {'bit': '4', 'size': '1', 'desc': ''}}}
+    + BC              : {'type': 'pcicfg', 'device': 'LPC', 'offset': '0xDC', 'size': '1', 'desc': 'BIOS Control', 'FIELDS': {'BIOSWE': {'bit': '0', 'size': '1', 'desc': 'BIOS Write Enable'}, 'BLE': {'bit': '1', 'size': '1', 'desc': 'BIOS Lock Enable'}, 'SRC': {'bit': '2', 'size': '2', 'desc': 'SPI Read Configuration'}, 'TSS': {'bit': '4', 'size': '1', 'desc': 'Top Swap Status'}, 'SMM_BWP': {'bit': '5', 'size': '1', 'desc': 'SMM BIOS Write Protection'}}}
+    + SMBUS_VID       : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x00', 'size': '2', 'desc': 'VID'}
+    + SMBUS_DID       : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x02', 'size': '2', 'desc': 'DID'}
+    + SMBUS_CMD       : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x04', 'size': '2', 'desc': 'CMD'}
+    + SMB_BASE        : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x20', 'size': '4', 'desc': 'SMBus Base Address', 'FIELDS': {'Base': {'bit': '5', 'size': '11', 'desc': 'Base Address'}}}
+    + SMBUS_HCFG      : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x40', 'size': '1', 'desc': 'Host Configuration', 'FIELDS': {'HST_EN': {'bit': '0', 'size': '1', 'desc': ''}, 'SMB_SMI_EN': {'bit': '1', 'size': '1', 'desc': ''}, 'I2C_EN': {'bit': '2', 'size': '2', 'desc': ''}, 'SSRESET': {'bit': '3', 'size': '1', 'desc': ''}, 'SPD_WD': {'bit': '4', 'size': '1', 'desc': ''}}}
+    + HFS             : {'type': 'pcicfg', 'device': 'MEI1', 'offset': '0x40', 'size': '4', 'desc': 'ME Host Firmware Status', 'FIELDS': {'MFG_MODE': {'bit': '4', 'size': '1', 'desc': 'ME Manufacturing Mode'}, 'FW_INIT_COMPLETE': {'bit': '9', 'size': '1', 'desc': 'ME Firmware Initialization Complete'}, 'UPDATE_IN_PROGRESS': {'bit': '11', 'size': '1', 'desc': 'ME Update In Progress'}}}
+    + BFPR            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x00', 'size': '4', 'desc': 'BIOS Flash Primary Region Register (= FREG1)', 'FIELDS': {'PRB': {'bit': '0', 'size': '13', 'desc': 'BIOS Flash Primary Region Base'}, 'PRL': {'bit': '16', 'size': '13', 'desc': 'BIOS Flash Primary Region Limit'}}}
+    + HSFS            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x04', 'size': '2', 'desc': 'Hardware Sequencing Flash Status Register', 'FIELDS': {'FDONE': {'bit': '0', 'size': '1', 'desc': 'Flash Cycle Done'}, 'FCERR': {'bit': '1', 'size': '1', 'desc': 'Flash Cycle Error'}, 'AEL': {'bit': '2', 'size': '1', 'desc': 'Access Error Log'}, 'BERASE': {'bit': '3', 'size': '2', 'desc': 'Block/Sector Erase Size'}, 'SCIP': {'bit': '5', 'size': '1', 'desc': 'SPI cycle in progress'}, 'FDOPSS': {'bit': '13', 'size': '1', 'desc': 'Flash Descriptor Override Pin-Strap Status'}, 'FDV': {'bit': '14', 'size': '1', 'desc': 'Flash Descriptor Valid'}, 'FLOCKDN': {'bit': '15', 'size': '1', 'desc': 'Flash Configuration Lock-Down'}}}
+    + HSFC            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x06', 'size': '2', 'desc': 'Hardware Sequencing Flash Control Register', 'FIELDS': {'FGO': {'bit': '0', 'size': '1', 'desc': 'Flash Cycle GO'}, 'FCYCLE': {'bit': '1', 'size': '2', 'desc': 'Flash Cycle'}, 'FDBC': {'bit': '8', 'size': '6', 'desc': 'Flash Data Byte Count, Count = FDBC + 1'}, 'FSMIE': {'bit': '15', 'size': '1', 'desc': 'Flash SPI SMI Enable'}}}
+    + FADDR           : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x08', 'size': '4', 'desc': 'Flash Address Register'}
+    + FDATA0          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x10', 'size': '4', 'desc': 'Flash Data 0'}
+    + FDATA1          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x14', 'size': '4', 'desc': 'Flash Data 1'}
+    + FDATA2          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x18', 'size': '4', 'desc': 'Flash Data 2'}
+    + FDATA3          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x1C', 'size': '4', 'desc': 'Flash Data 3'}
+    + FDATA4          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x20', 'size': '4', 'desc': 'Flash Data 4'}
+    + FDATA5          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x24', 'size': '4', 'desc': 'Flash Data 5'}
+    + FDATA6          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x28', 'size': '4', 'desc': 'Flash Data 6'}
+    + FDATA7          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x2C', 'size': '4', 'desc': 'Flash Data 7'}
+    + FDATA8          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x30', 'size': '4', 'desc': 'Flash Data 8'}
+    + FDATA9          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x34', 'size': '4', 'desc': 'Flash Data 9'}
+    + FDATA10         : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x38', 'size': '4', 'desc': 'Flash Data 10'}
+    + FDATA11         : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x3C', 'size': '4', 'desc': 'Flash Data 11'}
+    + FDATA12         : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x40', 'size': '4', 'desc': 'Flash Data 12'}
+    + FDATA13         : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x44', 'size': '4', 'desc': 'Flash Data 13'}
+    + FDATA14         : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x48', 'size': '4', 'desc': 'Flash Data 14'}
+    + FDATA15         : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x4C', 'size': '4', 'desc': 'Flash Data 15'}
+    + FRAP            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x50', 'size': '4', 'desc': 'SPI Flash Regions Access Permissions Register', 'FIELDS': {'BRRA': {'bit': '0', 'size': '8', 'desc': 'BIOS Region Read Access'}, 'BRWA': {'bit': '8', 'size': '8', 'desc': 'BIOS Region Write Access'}, 'BMRAG': {'bit': '16', 'size': '8', 'desc': 'BIOS Master Read Access Grant'}, 'BMWAG': {'bit': '24', 'size': '8', 'desc': 'BIOS Master Write Access Grant'}}}
+    + FREG0_FLASHD    : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x54', 'size': '4', 'desc': 'Flash Region 0 (Flash Descriptor)', 'FIELDS': {'RB': {'bit': '0', 'size': '12', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '12', 'desc': 'Region Limit'}}}
+    + FREG1_BIOS      : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x58', 'size': '4', 'desc': 'Flash Region 1 (BIOS)', 'FIELDS': {'RB': {'bit': '0', 'size': '12', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '12', 'desc': 'Region Limit'}}}
+    + FREG2_ME        : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x5C', 'size': '4', 'desc': 'Flash Region 2 (ME)', 'FIELDS': {'RB': {'bit': '0', 'size': '12', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '12', 'desc': 'Region Limit'}}}
+    + FREG3_GBE       : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x60', 'size': '4', 'desc': 'Flash Region 3 (GBe)', 'FIELDS': {'RB': {'bit': '0', 'size': '12', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '12', 'desc': 'Region Limit'}}}
+    + FREG4_PD        : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x64', 'size': '4', 'desc': 'Flash Region 4 (Platform Data)', 'FIELDS': {'RB': {'bit': '0', 'size': '12', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '12', 'desc': 'Region Limit'}}}
+    + FREG5           : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x68', 'size': '4', 'desc': 'Flash Region 5', 'FIELDS': {'RB': {'bit': '0', 'size': '12', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '12', 'desc': 'Region Limit'}}}
+    + FREG6           : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x6C', 'size': '4', 'desc': 'Flash Region 6', 'FIELDS': {'RB': {'bit': '0', 'size': '12', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '12', 'desc': 'Region Limit'}}}
+    + PR0             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x74', 'size': '4', 'desc': 'Protected Range 0', 'FIELDS': {'PRB': {'bit': '0', 'size': '13', 'desc': 'Protected Range Base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read Protection Enabled'}, 'PRL': {'bit': '16', 'size': '13', 'desc': 'Protected Range Limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write Protection Enabled'}}}
+    + PR1             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x78', 'size': '4', 'desc': 'Protected Range 1', 'FIELDS': {'PRB': {'bit': '0', 'size': '13', 'desc': 'Protected Range Base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read Protection Enabled'}, 'PRL': {'bit': '16', 'size': '13', 'desc': 'Protected Range Limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write Protection Enabled'}}}
+    + PR2             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x7C', 'size': '4', 'desc': 'Protected Range 2', 'FIELDS': {'PRB': {'bit': '0', 'size': '13', 'desc': 'Protected Range Base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read Protection Enabled'}, 'PRL': {'bit': '16', 'size': '13', 'desc': 'Protected Range Limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write Protection Enabled'}}}
+    + PR3             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x80', 'size': '4', 'desc': 'Protected Range 3', 'FIELDS': {'PRB': {'bit': '0', 'size': '13', 'desc': 'Protected Range Base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read Protection Enabled'}, 'PRL': {'bit': '16', 'size': '13', 'desc': 'Protected Range Limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write Protection Enabled'}}}
+    + PR4             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x84', 'size': '4', 'desc': 'Protected Range 4', 'FIELDS': {'PRB': {'bit': '0', 'size': '13', 'desc': 'Protected Range Base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read Protection Enabled'}, 'PRL': {'bit': '16', 'size': '13', 'desc': 'Protected Range Limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write Protection Enabled'}}}
+    + PREOP           : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x94', 'size': '2', 'desc': 'Prefix Opcode Configuration Register', 'FIELDS': {'PREOP0': {'bit': '0', 'size': '8', 'desc': 'Prefix Opcode 0'}, 'PREOP1': {'bit': '8', 'size': '8', 'desc': 'Prefix Opcode 1'}}}
+    + OPTYPE          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x96', 'size': '2', 'desc': 'Opcode Type Configuration Register', 'FIELDS': {'OPTYPE0': {'bit': '0', 'size': '2', 'desc': 'Opcode Type 0'}, 'OPTYPE1': {'bit': '2', 'size': '2', 'desc': 'Opcode Type 1'}, 'OPTYPE2': {'bit': '4', 'size': '2', 'desc': 'Opcode Type 2'}, 'OPTYPE3': {'bit': '6', 'size': '2', 'desc': 'Opcode Type 3'}, 'OPTYPE4': {'bit': '8', 'size': '2', 'desc': 'Opcode Type 4'}, 'OPTYPE5': {'bit': '10', 'size': '2', 'desc': 'Opcode Type 5'}, 'OPTYPE6': {'bit': '12', 'size': '2', 'desc': 'Opcode Type 6'}, 'OPTYPE7': {'bit': '14', 'size': '2', 'desc': 'Opcode Type 7'}}}
+    + OPMENU          : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x98', 'size': '8', 'desc': 'Opcode Menu Configuration Register', 'FIELDS': {'OPCODE0': {'bit': '0', 'size': '8', 'desc': 'Allowable Opcode 0'}, 'OPCODE1': {'bit': '8', 'size': '8', 'desc': 'Allowable Opcode 1'}, 'OPCODE2': {'bit': '16', 'size': '8', 'desc': 'Allowable Opcode 2'}, 'OPCODE3': {'bit': '24', 'size': '8', 'desc': 'Allowable Opcode 3'}, 'OPCODE4': {'bit': '32', 'size': '8', 'desc': 'Allowable Opcode 4'}, 'OPCODE5': {'bit': '40', 'size': '8', 'desc': 'Allowable Opcode 5'}, 'OPCODE6': {'bit': '48', 'size': '8', 'desc': 'Allowable Opcode 6'}, 'OPCODE7': {'bit': '56', 'size': '8', 'desc': 'Allowable Opcode 7'}}}
+    + OPMENU_LO       : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x98', 'size': '4', 'desc': 'Opcode Menu Configuration Register Low', 'FIELDS': {'OPCODE0': {'bit': '0', 'size': '8', 'desc': 'Allowable Opcode 0'}, 'OPCODE1': {'bit': '8', 'size': '8', 'desc': 'Allowable Opcode 1'}, 'OPCODE2': {'bit': '16', 'size': '8', 'desc': 'Allowable Opcode 2'}, 'OPCODE3': {'bit': '24', 'size': '8', 'desc': 'Allowable Opcode 3'}}}
+    + OPMENU_HI       : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x9C', 'size': '4', 'desc': 'Opcode Menu Configuration Register High', 'FIELDS': {'OPCODE4': {'bit': '0', 'size': '8', 'desc': 'Allowable Opcode 4'}, 'OPCODE5': {'bit': '8', 'size': '8', 'desc': 'Allowable Opcode 5'}, 'OPCODE6': {'bit': '16', 'size': '8', 'desc': 'Allowable Opcode 6'}, 'OPCODE7': {'bit': '24', 'size': '8', 'desc': 'Allowable Opcode 7'}}}
+    + FDOC            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xB0', 'size': '4', 'desc': 'Flash Descriptor Observability Control Register', 'FIELDS': {'FDSI': {'bit': '2', 'size': '10', 'desc': 'Flash Descriptor Section Index'}, 'FDSS': {'bit': '12', 'size': '3', 'desc': 'Flash Descriptor Section Select'}}}
+    + FDOD            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xB4', 'size': '4', 'desc': 'Flash Descriptor Observability Data Register', 'FIELDS': {'FDSD': {'bit': '0', 'size': '32', 'desc': 'Flash Descriptor Section Data'}}}
+    + LVSCC           : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xC4', 'size': '4', 'desc': 'Host Lower Vendor Specific Component Capabilities', 'FIELDS': {'LBES': {'bit': '0', 'size': '2', 'desc': 'Lower Block/Sector Erase Size'}, 'LWG': {'bit': '2', 'size': '1', 'desc': 'Lower Write Granularity'}, 'LWSR': {'bit': '3', 'size': '1', 'desc': 'Lower Write Status Required'}, 'LWEWS': {'bit': '4', 'size': '1', 'desc': 'Write Enable on Write Status'}, 'LEO': {'bit': '8', 'size': '8', 'desc': 'Lower Erase Opcode'}, 'VCL': {'bit': '23', 'size': '1', 'desc': 'Vendor Component Lock'}}}
+    + UVSCC           : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xC8', 'size': '4', 'desc': 'Host Upper Vendor Specific Component Capabilities', 'FIELDS': {'UBES': {'bit': '0', 'size': '2', 'desc': 'Upper Block/Sector Erase Size'}, 'UWG': {'bit': '2', 'size': '1', 'desc': 'Upper Write Granularity'}, 'UWSR': {'bit': '3', 'size': '1', 'desc': 'Upper Write Status Required'}, 'UWEWS': {'bit': '4', 'size': '1', 'desc': 'Write Enable on Write Status'}, 'UEO': {'bit': '8', 'size': '8', 'desc': 'Upper Erase Opcode'}}}
+    + BIOS_PTINX      : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xCC', 'size': '4', 'desc': 'Parameter Table Index'}
+    + BIOS_PTDATA     : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xD0', 'size': '4', 'desc': 'Parameter Table Data'}
+    + FLMAP0          : {'type': 'mmio', 'bar': 'FDBAR', 'offset': '0x14', 'size': '4', 'desc': 'Flash Map 0 Register', 'FIELDS': {'FCBA': {'bit': '0', 'size': '8', 'desc': 'Flash Component Base Address'}, 'NC': {'bit': '8', 'size': '2', 'desc': 'Number of Components'}, 'FRBA': {'bit': '16', 'size': '8', 'desc': 'Flash Region Base Address'}, 'NR': {'bit': '24', 'size': '3', 'desc': 'Number of Regions'}}}
+    + FLMAP1          : {'type': 'mmio', 'bar': 'FDBAR', 'offset': '0x18', 'size': '4', 'desc': 'Flash Map 1 Register', 'FIELDS': {'FMBA': {'bit': '0', 'size': '8', 'desc': 'Flash Master Base Address'}, 'NM': {'bit': '8', 'size': '2', 'desc': 'Number of Masters'}, 'FPSBA': {'bit': '16', 'size': '8', 'desc': 'Flash PCH Strap Base Address'}, 'PSL': {'bit': '24', 'size': '8', 'desc': 'PCH Strap Length'}}}
+    + FLMAP2          : {'type': 'mmio', 'bar': 'FDBAR', 'offset': '0x1C', 'size': '4', 'desc': 'Flash Map 2 Register', 'FIELDS': {'FCPUSBA': {'bit': '0', 'size': '8', 'desc': 'Flash CPU Strap Base Address'}, 'CPUSL': {'bit': '8', 'size': '8', 'desc': 'Processor Strap Length'}, 'ICCRIBA': {'bit': '16', 'size': '8', 'desc': 'ICC Register Init Base Address'}}}
+    + FLREG0          : {'type': 'mmio', 'bar': 'FRBA', 'offset': '0x0', 'size': '4', 'desc': 'Flash Region 0 (Flash Descriptor) Register', 'FIELDS': {'RB': {'bit': '0', 'size': '13', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '13', 'desc': 'Region Limit'}}}
+    + FLREG1          : {'type': 'mmio', 'bar': 'FRBA', 'offset': '0x4', 'size': '4', 'desc': 'Flash Region 1 (BIOS) Register', 'FIELDS': {'RB': {'bit': '0', 'size': '13', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '13', 'desc': 'Region Limit'}}}
+    + FLREG2          : {'type': 'mmio', 'bar': 'FRBA', 'offset': '0x8', 'size': '4', 'desc': 'Flash Region 2 (Intel ME) Register', 'FIELDS': {'RB': {'bit': '0', 'size': '13', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '13', 'desc': 'Region Limit'}}}
+    + FLREG3          : {'type': 'mmio', 'bar': 'FRBA', 'offset': '0xC', 'size': '4', 'desc': 'Flash Region 3 (GBe) Register', 'FIELDS': {'RB': {'bit': '0', 'size': '13', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '13', 'desc': 'Region Limit'}}}
+    + FLREG4          : {'type': 'mmio', 'bar': 'FRBA', 'offset': '0x10', 'size': '4', 'desc': 'Flash Region 4 (Platform Data) Register', 'FIELDS': {'RB': {'bit': '0', 'size': '13', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '13', 'desc': 'Region Limit'}}}
+    + FLMSTR1         : {'type': 'mmio', 'bar': 'FMBA', 'offset': '0x0', 'size': '4', 'desc': 'Flash Master 1', 'FIELDS': {'MRRA': {'bit': '16', 'size': '8', 'desc': 'Master Region Read Access'}, 'MRWA': {'bit': '24', 'size': '8', 'desc': 'Master Region Write Access'}}}
+    + RC              : {'type': 'mmio', 'bar': 'RCBA', 'offset': '0x3400', 'size': '4', 'desc': 'RTC Configuration', 'FIELDS': {'UE': {'bit': '2', 'size': '1', 'desc': 'Upper 128 Byte Enable'}, 'LL': {'bit': '3', 'size': '1', 'desc': 'Lower 128 Byte Lock'}, 'UL': {'bit': '4', 'size': '1', 'desc': 'Upper 128 Byte Lock'}}}
+    + GCS             : {'type': 'mmio', 'bar': 'RCBA', 'offset': '0x3410', 'size': '4', 'desc': 'General Control and Status', 'FIELDS': {'BILD': {'bit': '0', 'size': '1', 'desc': 'BIOS Interface Lock Down'}, 'BBS': {'bit': '10', 'size': '2', 'desc': 'Boot BIOS Straps'}}}
+    + BUC             : {'type': 'mmio', 'bar': 'RCBA', 'offset': '0x3414', 'size': '4', 'desc': 'Backed Up Control', 'FIELDS': {'TS': {'bit': '0', 'size': '1', 'desc': 'Top Swap'}}}
+    + GFXVTBAR        : {'type': 'mmio', 'bar': 'MCHBAR', 'offset': '0x5400', 'size': '8', 'desc': 'Processor Graphics VT-d MMIO Base Address', 'FIELDS': {'Enable': {'bit': '0', 'size': '1', 'desc': 'Enable'}, 'Base': {'bit': '12', 'size': '27', 'desc': 'GFX VTD Base Address'}}}
+    + VTBAR           : {'type': 'mmio', 'bar': 'MCHBAR', 'offset': '0x5410', 'size': '8', 'desc': 'VT-d MMIO Base Address', 'FIELDS': {'Enable': {'bit': '0', 'size': '1', 'desc': 'Enable'}, 'Base': {'bit': '12', 'size': '27', 'desc': 'VTD Base Address'}}}
+    + RST_CNT         : {'type': 'io', 'port': '0xCF9', 'size': '1', 'desc': 'Reset Control', 'FIELDS': {'SYS_RST': {'bit': '1', 'size': '1', 'desc': 'System Reset'}, 'RST_CPU': {'bit': '2', 'size': '1', 'desc': 'Reset Processor'}, 'FULL_RST': {'bit': '3', 'size': '1', 'desc': 'Full Reset'}}}
+    + PM1_STS         : {'type': 'iobar', 'bar': 'ABASE', 'offset': '0x0', 'size': '2', 'desc': 'PM1 Status', 'FIELDS': {'WAK_STS': {'bit': '15', 'size': '1', 'desc': 'Wake Status'}, 'PCIEXPWAK_STS': {'bit': '14', 'size': '1', 'desc': 'PCI Express Wake Status'}, 'PWRBTNOR_STS': {'bit': '11', 'size': '1', 'desc': 'Power Button Override Status'}, 'RTC_STS': {'bit': '10', 'size': '1', 'desc': 'RTC Status'}, 'PWRBTN_STS': {'bit': '8', 'size': '1', 'desc': 'Power Button Status'}, 'GBL_STS': {'bit': '5', 'size': '1', 'desc': 'Global Status'}, 'BM_STS': {'bit': '4', 'size': '1', 'desc': 'Bus Master Status'}, 'TMROF_STS': {'bit': '0', 'size': '1', 'desc': 'Timer Overflow Status'}}}
+    + PM1_EN          : {'type': 'iobar', 'bar': 'ABASE', 'offset': '0x2', 'size': '2', 'desc': 'PM1 Enable', 'FIELDS': {'PCIEXPWAK_DIS': {'bit': '14', 'size': '1', 'desc': 'PCI Express Wake Disable'}, 'RTC_EN': {'bit': '10', 'size': '1', 'desc': 'RTC Event Enable'}, 'PWRBTN_EN': {'bit': '8', 'size': '1', 'desc': 'Power Button Enable'}, 'GBL_EN': {'bit': '5', 'size': '1', 'desc': 'Global Enable'}, 'TMROF_EN': {'bit': '0', 'size': '1', 'desc': 'Timer Overflow Interrupt Enable'}}}
+    + PM1_CNT         : {'type': 'iobar', 'bar': 'ABASE', 'offset': '0x4', 'size': '4', 'desc': 'PM1 Control', 'FIELDS': {'SLP_EN': {'bit': '13', 'size': '1', 'desc': 'Sleep Enable'}, 'SLP_TYP': {'bit': '10', 'size': '3', 'desc': 'Sleep Type'}, 'GBL_RLS': {'bit': '2', 'size': '1', 'desc': 'Global Release'}, 'BM_RLD': {'bit': '1', 'size': '1', 'desc': 'Bus Master Reload'}, 'SCI_EN': {'bit': '0', 'size': '1', 'desc': 'SCI Enable'}}}
+    + PM1_TMR         : {'type': 'iobar', 'bar': 'ABASE', 'offset': '0x8', 'size': '4', 'desc': 'PM1 Timer', 'FIELDS': {'TMR_VAL': {'bit': '0', 'size': '24', 'desc': 'Timer Value'}}}
+    + SMI_EN          : {'type': 'iobar', 'bar': 'ABASE', 'offset': '0x30', 'size': '4', 'desc': 'SMI Control and Enable', 'FIELDS': {'GBL_SMI_EN': {'bit': '0', 'size': '1', 'desc': ''}, 'EOS': {'bit': '1', 'size': '1', 'desc': ''}, 'BIOS_EN': {'bit': '2', 'size': '1', 'desc': ''}, 'LEGACY_USB_EN': {'bit': '3', 'size': '1', 'desc': ''}, 'SLP_SMI_EN': {'bit': '4', 'size': '1', 'desc': ''}, 'APMC_EN': {'bit': '5', 'size': '1', 'desc': ''}, 'SWSMI_TMR_EN': {'bit': '6', 'size': '1', 'desc': ''}, 'BIOS_RLS': {'bit': '7', 'size': '1', 'desc': ''}, 'MCSMI_EN': {'bit': '11', 'size': '1', 'desc': ''}, 'TCO_EN': {'bit': '13', 'size': '1', 'desc': ''}, 'PERIODIC_EN': {'bit': '14', 'size': '1', 'desc': ''}, 'LEGACY_USB2_EN': {'bit': '17', 'size': '1', 'desc': ''}, 'INTEL_USB2_EN': {'bit': '18', 'size': '1', 'desc': ''}, 'GPIO_UNLOCK_SMI_EN': {'bit': '27', 'size': '1', 'desc': ''}, 'ME_SMI_EN': {'bit': '30', 'size': '1', 'desc': ''}, 'xHCI_SMI_EN': {'bit': '31', 'size': '1', 'desc': ''}}}
+    + TCO1_CNT        : {'type': 'iobar', 'bar': 'ABASE', 'offset': '0x68', 'size': '2', 'desc': 'TCO1 Control', 'FIELDS': {'TCO_LOCK': {'bit': '12', 'size': '1', 'desc': ''}}}
+    + SMBUS_HST_STS   : {'type': 'iobar', 'bar': 'SMBUS_BASE', 'offset': '0x00', 'size': '1', 'desc': 'SMBus Host Status', 'FIELDS': {'BUSY': {'bit': '0', 'size': '1', 'desc': 'SMBus Busy'}, 'INTR': {'bit': '1', 'size': '1', 'desc': 'Interrupt'}, 'DEV_ERR': {'bit': '2', 'size': '1', 'desc': 'Device Error'}, 'BUS_ERR': {'bit': '3', 'size': '1', 'desc': 'Bus Error'}, 'FAILED': {'bit': '4', 'size': '1', 'desc': 'SMBus Error/Failed'}, 'SMBALERT_STS': {'bit': '5', 'size': '1', 'desc': 'SMBALERT# Signal Status'}, 'INUSE_STS': {'bit': '6', 'size': '1', 'desc': 'InUse Semaphore Status'}, 'DS': {'bit': '7', 'size': '1', 'desc': 'Done Status'}}}
+    + SMBUS_HST_CNT   : {'type': 'iobar', 'bar': 'SMBUS_BASE', 'offset': '0x02', 'size': '1', 'desc': 'SMBus Host Control', 'FIELDS': {'INTREN': {'bit': '0', 'size': '1', 'desc': 'Interrupt Enable'}, 'KILL': {'bit': '1', 'size': '1', 'desc': 'Kill'}, 'SMB_CMD': {'bit': '2', 'size': '3', 'desc': 'Command'}, 'LAST_BYTE': {'bit': '5', 'size': '1', 'desc': 'Last Byte (for Block Read commands)'}, 'START': {'bit': '6', 'size': '1', 'desc': 'Start/Trigger'}, 'PEC_EN': {'bit': '7', 'size': '1', 'desc': 'Packet Error Checking Enable'}}}
+    + SMBUS_HST_CMD   : {'type': 'iobar', 'bar': 'SMBUS_BASE', 'offset': '0x03', 'size': '1', 'desc': 'SMBus Host Command', 'FIELDS': {'DataOffset': {'bit': '0', 'size': '8', 'desc': 'Command Data'}}}
+    + SMBUS_HST_SLVA  : {'type': 'iobar', 'bar': 'SMBUS_BASE', 'offset': '0x04', 'size': '1', 'desc': 'SMBus Host Slave Address', 'FIELDS': {'RW': {'bit': '0', 'size': '1', 'desc': 'Read/Write Command'}, 'Address': {'bit': '1', 'size': '7', 'desc': 'Slave Address'}}}
+    + SMBUS_HST_D0    : {'type': 'iobar', 'bar': 'SMBUS_BASE', 'offset': '0x05', 'size': '1', 'desc': 'SMBus Host Data 0', 'FIELDS': {'Data': {'bit': '0', 'size': '8', 'desc': 'Data0/Count'}}}
+    + SMBUS_HST_D1    : {'type': 'iobar', 'bar': 'SMBUS_BASE', 'offset': '0x06', 'size': '1', 'desc': 'SMBus Host Data 1', 'FIELDS': {'Data': {'bit': '0', 'size': '8', 'desc': 'Data1'}}}
+    + IA32_MSR_CORE_THREAD_COUNT: {'type': 'msr', 'msr': '0x35', 'desc': 'Core Thread Count', 'size': '0x4', 'FIELDS': {'Thread_Count': {'bit': '0', 'size': '16', 'desc': 'Number of Logical Processors currently enabled'}, 'Core_Count': {'bit': '16', 'size': '16', 'desc': 'Number of Processor Cores currently enabled'}}}
+    + IA32_BIOS_SIGN_ID: {'type': 'msr', 'msr': '0x8B', 'desc': 'Microcode Update Signature Register', 'size': '0x4', 'FIELDS': {'Microcode': {'bit': '32', 'size': '32', 'desc': 'Microcode update signature'}}}
+    + IA32_SMRR_PHYSBASE: {'type': 'msr', 'msr': '0x1F2', 'desc': 'SMRR Base Address MSR', 'size': '0x4', 'FIELDS': {'Type': {'bit': '0', 'size': '8', 'desc': 'SMRR memory type'}, 'PhysBase': {'bit': '12', 'size': '20', 'desc': 'SMRR physical base address'}}}
+    + IA32_SMRR_PHYSMASK: {'type': 'msr', 'msr': '0x1F3', 'desc': 'SMRR Range Mask MSR', 'size': '0x4', 'FIELDS': {'Valid': {'bit': '11', 'size': '1', 'desc': 'SMRR valid'}, 'PhysMask': {'bit': '12', 'size': '20', 'desc': 'SMRR address range mask'}}}
+    + MTRRCAP         : {'type': 'msr', 'msr': '0xFE', 'desc': 'MTRR Capabilities MSR', 'size': '0x4', 'FIELDS': {'Fixed_Range_MTRR': {'bit': '8', 'size': '1', 'desc': 'Fixed range MTRRs Supported'}, 'WC': {'bit': '10', 'size': '1', 'desc': 'WC Supported'}, 'SMRR': {'bit': '11', 'size': '1', 'desc': 'SMRR Supported'}, 'PRMRR': {'bit': '12', 'size': '1', 'desc': 'PRMRR Supported'}}}
+    + IA32_FEATURE_CONTROL: {'type': 'msr', 'msr': '0x3A', 'desc': 'Processor Feature Control', 'size': '0x4', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}, 'EN_VMX_INSIDE_SMX': {'bit': '1', 'size': '1', 'desc': 'Enable VMX inside SMX operation'}, 'EN_VMX_OUTSIDE_SMX': {'bit': '2', 'size': '1', 'desc': 'Enable VMX outside SMX operation'}, 'Reserved0': {'bit': '3', 'size': '5', 'desc': 'Reserved'}, 'SENTER_LOCAL_EN': {'bit': '8', 'size': '7', 'desc': 'SENTER Local Functions Enable'}, 'SENTER_GLOBAL_EN': {'bit': '15', 'size': '1', 'desc': 'SENTER Global Enable'}, 'Reserved1': {'bit': '16', 'size': '1', 'desc': 'Reserved'}, 'SGX_LAUNCH_CTRL_EN': {'bit': '17', 'size': '1', 'desc': 'SGX Launch Control Enable'}, 'SGX_GLOBAL_EN': {'bit': '18', 'size': '1', 'desc': 'SGX Global Enable'}, 'Reserved2': {'bit': '19', 'size': '1', 'desc': 'Reserved'}, 'LMCE_ON': {'bit': '20', 'size': '1', 'desc': 'Turn Local Machine Check On'}}}
+    + IA32_APIC_BASE  : {'type': 'msr', 'msr': '0x1B', 'desc': 'Local APIC Base', 'size': '0x4', 'FIELDS': {'BSP': {'bit': '8', 'size': '1', 'desc': 'Bootstrap Processor'}, 'x2APICEn': {'bit': '10', 'size': '1', 'desc': 'Enable x2APIC mode'}, 'En': {'bit': '11', 'size': '1', 'desc': 'APIC Global Enable'}, 'APICBase': {'bit': '12', 'size': '20', 'desc': 'APIC Base'}}}
+    + MSR_SMI_COUNT   : {'type': 'msr', 'msr': '0x34', 'desc': 'SMI Count', 'size': '0x4', 'FIELDS': {'Count': {'bit': '0', 'size': '64', 'desc': ''}}}
+    + IA32_ARCH_CAPABILITIES: {'type': 'msr', 'msr': '0x10A', 'desc': 'Architectural Capabilities MSR', 'size': '0x4', 'FIELDS': {'RDCL_NO': {'bit': '0', 'size': '1', 'desc': 'Processor is not susceptible to RDCL (Rogue Data Cache Load)'}, 'IBRS_ALL': {'bit': '1', 'size': '1', 'desc': 'Processor supports enhanced Indirect Branch Restricted Speculation (IBRS)'}}}
+    + IA32_SPEC_CTRL  : {'type': 'msr', 'msr': '0x48', 'desc': 'Speculation Control MSR', 'size': '0x4', 'FIELDS': {'IBRS': {'bit': '0', 'size': '1', 'desc': 'Enable Indirect Branch Restricted Speculation (IBRS)'}, 'STIBP': {'bit': '1', 'size': '1', 'desc': 'Enable Single Thread Indirect Branch Predictors (STIBP)'}, 'SSBD': {'bit': '2', 'size': '1', 'desc': 'Delays speculative execution of load until the addr for all older stores are known'}}}
+    + IA32_PRED_CMD   : {'type': 'msr', 'msr': '0x49', 'desc': 'Prediction Command MSR', 'size': '0x4', 'FIELDS': {'IBPB': {'bit': '0', 'size': '1', 'desc': 'IBPB Command'}}}
+    + MSR_LT_LOCK_MEMORY: {'type': 'msr', 'msr': '0x2E7', 'desc': 'LT lock memory configuration MSR', 'size': '0x4', 'FIELDS': {'LT_LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock bit'}}}
+    + IA32_DEBUG_INTERFACE: {'type': 'msr', 'msr': '0xC80', 'desc': 'Silicon Debug Feature Control', 'size': '0x4', 'FIELDS': {'ENABLE': {'bit': '0', 'size': '1', 'desc': 'Enable'}, 'LOCK': {'bit': '30', 'size': '1', 'desc': 'Lock (set automatically on the first SMI)'}, 'DEBUG_OCCURRED': {'bit': '31', 'size': '1', 'desc': 'Debug Occurred (set by hardware)'}}}
+    + BIOS_SE_SVN     : {'type': 'msr', 'msr': '0x302', 'desc': 'BIOS SGX SVN values', 'size': '0x4', 'FIELDS': {'PFAT_SE_SVN': {'bit': '40', 'size': '8', 'desc': 'PFAT_SE_SVN'}, 'ANC_SE_SVN': {'bit': '32', 'size': '8', 'desc': 'ANC_SE_SVN'}, 'SCLEAN_SE_SVN': {'bit': '24', 'size': '8', 'desc': 'SCLEAN_SE_SVN'}, 'SINIT_SE_SVN': {'bit': '16', 'size': '8', 'desc': 'SINIT_SE_SVN'}}}
+    + BIOS_SE_SVN_STATUS: {'type': 'msr', 'msr': '0x500', 'desc': 'BIOS SGX SVN status register', 'size': '0x4', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'ACM threshold locked'}, 'SINIT_SE_SVN': {'bit': '16', 'size': '8', 'desc': 'SINIT_SE_SVN'}}}
+    + PRMRR_VALID_CONFIG: {'type': 'msr', 'msr': '0x1FB', 'desc': 'PRMRR VALID register', 'size': '0x4', 'FIELDS': {'PRMRR_SIZE_SUPPORT': {'bit': '5', 'size': '4', 'desc': 'PRMRR size support'}}}
+    + PRMRR_PHYBASE   : {'type': 'msr', 'msr': '0x1F4', 'desc': 'PRMRR BASE Address', 'size': '0x4', 'FIELDS': {'PRMRR_MEMTYPE': {'bit': '0', 'size': '3', 'desc': 'PRMRR Memory Type'}, 'PRMRR_base_address_fields': {'bit': '12', 'size': '34', 'desc': 'PRMRR base address bits'}}}
+    + PRMRR_MASK      : {'type': 'msr', 'msr': '0x1F5', 'desc': 'PRMRR MASK register', 'size': '0x4', 'FIELDS': {'PRMRR_LOCK': {'bit': '10', 'size': '1', 'desc': 'PRMRR Lock Bit'}, 'PRMRR_VLD': {'bit': '11', 'size': '1', 'desc': 'PRMRR Valid Bit set by mcheck'}, 'PRMRR_mask_bits': {'bit': '12', 'size': '34', 'desc': 'PRMRR mask bits'}}}
+    + PRMRR_UNCORE_PHYBASE: {'type': 'msr', 'msr': '0x2F4', 'desc': 'PRMRR uncore BASE Address', 'size': '0x4', 'FIELDS': {'PRMRR_base_address_fields': {'bit': '12', 'size': '27', 'desc': 'PRMRR uncore base address bits'}}}
+    + PRMRR_UNCORE_MASK: {'type': 'msr', 'msr': '0x2F5', 'desc': 'PRMRR uncore MASK register', 'size': '0x4', 'FIELDS': {'PRMRR_LOCK': {'bit': '10', 'size': '1', 'desc': 'PRMRR uncore Lock Bit'}, 'PRMRR_VLD': {'bit': '11', 'size': '1', 'desc': 'PRMRR uncore Valid Bit set by mcheck'}, 'PRMRR_mask_bits': {'bit': '12', 'size': '27', 'desc': 'PRMRR uncore mask bits'}}}
+    + SGX_DEBUG_MODE  : {'type': 'msr', 'msr': '0x503', 'desc': 'SGX debug mode resiter', 'size': '0x4', 'FIELDS': {'SGX_DEBUG_MODE_STATUS_BIT': {'bit': '1', 'size': '1', 'desc': 'Debug mode status but'}}}
+[*] loading controls..
+    + SmmBiosWriteProtection: {'register': 'BC', 'field': 'SMM_BWP', 'desc': 'SMM BIOS Write Protection'}
+    + BiosLockEnable  : {'register': 'BC', 'field': 'BLE', 'desc': 'BIOS Lock Enable'}
+    + BiosWriteEnable : {'register': 'BC', 'field': 'BIOSWE', 'desc': 'BIOS Write Enable'}
+    + TopSwapStatus   : {'register': 'BC', 'field': 'TSS', 'desc': 'Top Swap Status'}
+    + TopSwap         : {'register': 'BUC', 'field': 'TS', 'desc': 'Top Swap'}
+    + FlashLockDown   : {'register': 'HSFS', 'field': 'FLOCKDN', 'desc': 'Flash Configuration Lock-Down'}
+    + BiosInterfaceLockDown: {'register': 'GCS', 'field': 'BILD', 'desc': 'BIOS Interface Lock-Down'}
+    + GlobalSMIEnable : {'register': 'SMI_EN', 'field': 'GBL_SMI_EN', 'desc': 'Global SMI Enable'}
+    + GPIOSMIEnable   : {'register': 'SMI_EN', 'field': 'GPIO_UNLOCK_SMI_EN', 'desc': 'GPIO Config SMI Enable'}
+    + SMILock         : {'register': 'GEN_PMCON_1', 'field': 'SMI_LOCK', 'desc': 'SMI Global Configuration Lock'}
+    + TCOSMIEnable    : {'register': 'SMI_EN', 'field': 'TCO_EN', 'desc': 'TCO SMI Enable'}
+    + TCOSMILock      : {'register': 'TCO1_CNT', 'field': 'TCO_LOCK', 'desc': 'TCO SMI Lock'}
+    + SMRAMDLock      : {'register': 'PCI0.0.0_SMRAMC', 'field': 'D_LCK', 'desc': 'SMRAM D_LCK'}
+    + TSEGBaseLock    : {'register': 'PCI0.0.0_TSEGMB', 'field': 'LOCK', 'desc': 'TSEG Base Lock'}
+    + TSEGLimitLock   : {'register': 'PCI0.0.0_BGSM', 'field': 'LOCK', 'desc': 'TSEG Limit Lock'}
+    + Ia32FeatureControlLock: {'register': 'IA32_FEATURE_CONTROL', 'field': 'LOCK', 'desc': 'Lock IA32 Feature Control'}
+[*] loading locks..
+[*] looking for platform config in '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/iommu.xml'..
+[*] loading common platform config from '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/iommu.xml'..
+[*] loading integrated devices/controllers..
+[*] loading MMIO BARs..
+[*] loading I/O BARs..
+[*] loading indirect memory accesses definitions..
+[*] loading memory ranges..
+[*] loading configuration registers..
+    + VTBAR_VER       : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x00', 'size': '4', 'desc': 'Version', 'FIELDS': {'MIN': {'bit': '0', 'size': '4', 'desc': 'Minor Version Number'}, 'MAX': {'bit': '4', 'size': '4', 'desc': 'Major Version Number'}}}
+    + VTBAR_CAP       : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x08', 'size': '8', 'desc': 'Capability', 'FIELDS': {'ND': {'bit': '0', 'size': '2', 'desc': 'Number of Domains Supported'}, 'AFL': {'bit': '3', 'size': '1', 'desc': 'Advanced Fault Logging'}, 'RWBF': {'bit': '4', 'size': '1', 'desc': 'Required Write-Buffer Flushing'}, 'PLMR': {'bit': '5', 'size': '1', 'desc': 'Protected Low-Memory Region'}, 'PHMR': {'bit': '6', 'size': '1', 'desc': 'Protected High-Memory Region'}, 'CM': {'bit': '7', 'size': '1', 'desc': 'Caching Mode'}, 'SAGAW': {'bit': '8', 'size': '5', 'desc': 'Supported Adjusted Guest Address Width'}, 'R0': {'bit': '13', 'size': '3', 'desc': 'Reserved'}, 'MGAW': {'bit': '16', 'size': '6', 'desc': 'Maximum Guest Address Width'}, 'ZLR': {'bit': '22', 'size': '1', 'desc': 'Zero Length Read'}, 'R1': {'bit': '23', 'size': '1', 'desc': 'Reserved'}, 'FRO': {'bit': '24', 'size': '10', 'desc': 'Fault-Recording Registrer Offset'}, 'SLLPS': {'bit': '34', 'size': '4', 'desc': 'Second Level Large Page Support'}, 'R2': {'bit': '38', 'size': '1', 'desc': 'Reserved'}, 'PSI': {'bit': '39', 'size': '1', 'desc': 'Page Selective Invalidation'}, 'NFR': {'bit': '40', 'size': '8', 'desc': 'Number of Fault-Recording Registers'}, 'MAMV': {'bit': '48', 'size': '6', 'desc': 'Maximum Address Mask Value'}, 'DWD': {'bit': '54', 'size': '1', 'desc': 'Write Draining'}, 'DRD': {'bit': '55', 'size': '1', 'desc': 'Read Draining'}, 'FL1GP': {'bit': '56', 'size': '1', 'desc': 'First Level 1-GB Page Support'}, 'R3': {'bit': '57', 'size': '2', 'desc': 'Reserved'}, 'PI': {'bit': '59', 'size': '1', 'desc': 'Posted Interrupts Support'}, 'R4': {'bit': '60', 'size': '4', 'desc': 'Reserved'}}}
+    + VTBAR_ECAP      : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x10', 'size': '8', 'desc': 'Global Command', 'FIELDS': {'C': {'bit': '0', 'size': '1', 'desc': 'Page-walk Coherency'}, 'QI': {'bit': '1', 'size': '1', 'desc': 'Queued Invalidation Support'}, 'DT': {'bit': '2', 'size': '1', 'desc': 'Device-TLB Support'}, 'IR': {'bit': '3', 'size': '1', 'desc': 'Interrupt Remapping Support'}, 'EIM': {'bit': '4', 'size': '1', 'desc': 'Extended Interrupt Mode'}, 'R0': {'bit': '5', 'size': '1', 'desc': 'Reserved'}, 'PT': {'bit': '6', 'size': '1', 'desc': 'Pass Through'}, 'SC': {'bit': '7', 'size': '1', 'desc': 'Snoop Control'}, 'IRO': {'bit': '8', 'size': '10', 'desc': 'IOTLB Register Offset'}, 'R1': {'bit': '18', 'size': '2', 'desc': 'Reserved'}, 'MHMV': {'bit': '20', 'size': '4', 'desc': 'Maximum Handle Mask Value'}, 'ECS': {'bit': '24', 'size': '1', 'desc': 'Extended Context Support'}, 'MTS': {'bit': '25', 'size': '1', 'desc': 'Memory Type Support'}, 'NEST': {'bit': '26', 'size': '1', 'desc': 'Nested Translation Support'}, 'DIS': {'bit': '27', 'size': '1', 'desc': 'Deferred Invalidate Support'}, 'PASID': {'bit': '28', 'size': '1', 'desc': 'Process Address Space ID Support'}, 'PRS': {'bit': '29', 'size': '1', 'desc': 'Page Request Support'}, 'ERS': {'bit': '30', 'size': '1', 'desc': 'Execute Request Support'}, 'SRS': {'bit': '31', 'size': '1', 'desc': 'Supervisor Request Support'}, 'R2': {'bit': '32', 'size': '1', 'desc': 'Reserved'}, 'NWFS': {'bit': '33', 'size': '1', 'desc': 'No Write Flag Support'}, 'EAFS': {'bit': '34', 'size': '1', 'desc': 'Extended Accessed Flag Support'}, 'PSS': {'bit': '35', 'size': '5', 'desc': 'PASID Size Supported'}, 'R3': {'bit': '40', 'size': '24', 'desc': 'Reserved'}}}
+    + VTBAR_GCMD      : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x18', 'size': '4', 'desc': 'Global Command', 'FIELDS': {'Rsvd': {'bit': '0', 'size': '23', 'desc': 'Reserved'}, 'CFI': {'bit': '23', 'size': '1', 'desc': 'Compatibility Format Interrupt'}, 'SIRTP': {'bit': '24', 'size': '1', 'desc': 'Set Interrupt Remap Table Pointer'}, 'IRE': {'bit': '25', 'size': '1', 'desc': 'Interrupt Remapping Enable'}, 'QIE': {'bit': '26', 'size': '1', 'desc': 'Queued Invalidation Enable'}, 'WBF': {'bit': '27', 'size': '1', 'desc': 'Write Buffer Flush'}, 'EAFL': {'bit': '28', 'size': '1', 'desc': 'Enable Advanced Fault Logging'}, 'SFL': {'bit': '29', 'size': '1', 'desc': 'Set Fault Log'}, 'SRTP': {'bit': '30', 'size': '1', 'desc': 'Set Root Table Pointer'}, 'TE': {'bit': '31', 'size': '1', 'desc': 'Translation Enable'}}}
+    + VTBAR_GSTS      : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x1C', 'size': '4', 'desc': 'Global Status', 'FIELDS': {'Rsvd': {'bit': '0', 'size': '23', 'desc': 'Reserved'}, 'CFIS': {'bit': '23', 'size': '1', 'desc': 'Compatibility Format Interrupt Status'}, 'IRTPS': {'bit': '24', 'size': '1', 'desc': 'Interrupt Remap Table Pointer Status'}, 'IRES': {'bit': '25', 'size': '1', 'desc': 'Interrupt Remapping Enable Status'}, 'QIES': {'bit': '26', 'size': '1', 'desc': 'Queued Invalidation Enable Status'}, 'WBFS': {'bit': '27', 'size': '1', 'desc': 'Write Buffer Flush Status'}, 'AFLS': {'bit': '28', 'size': '1', 'desc': 'Advanced Fault Logging Status'}, 'FLS': {'bit': '29', 'size': '1', 'desc': 'Fault Log Status'}, 'RTPS': {'bit': '30', 'size': '1', 'desc': 'Root Table Pointer Status'}, 'TES': {'bit': '31', 'size': '1', 'desc': 'Translation Enable Status'}}}
+    + VTBAR_RTADDR    : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x20', 'size': '8', 'desc': 'Root-Entry Table Address', 'FIELDS': {'R': {'bit': '0', 'size': '11', 'desc': 'Reserved'}, 'RTT': {'bit': '11', 'size': '1', 'desc': 'Root Table Type'}, 'RTA': {'bit': '12', 'size': '52', 'desc': 'Root Table Address'}}}
+    + VTBAR_CCMD      : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x28', 'size': '8', 'desc': 'Context Command', 'FIELDS': {'DID': {'bit': '0', 'size': '16', 'desc': 'Device ID'}, 'SID': {'bit': '16', 'size': '16', 'desc': 'Source ID'}, 'FM': {'bit': '32', 'size': '2', 'desc': 'Function Mask'}, 'R': {'bit': '34', 'size': '25', 'desc': 'Reserved'}, 'CAIG': {'bit': '59', 'size': '2', 'desc': 'Context Actual Invalidation Granularity'}, 'CIRG': {'bit': '61', 'size': '2', 'desc': 'Context Invalidation Request Granularity'}, 'ICC': {'bit': '63', 'size': '1', 'desc': 'Invalidate Context-Cache'}}}
+    + VTBAR_IVA       : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x0', 'size': '8', 'desc': 'Invalidate Address'}
+    + VTBAR_IOTLB     : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x8', 'size': '8', 'desc': 'IOTLB Invalidate'}
+    + VTBAR_FSTS      : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x34', 'size': '4', 'desc': 'Fault Status', 'FIELDS': {'PFO': {'bit': '0', 'size': '1', 'desc': 'Primary Fault Overflow'}, 'PPF': {'bit': '1', 'size': '1', 'desc': 'Primary Pending Fault'}, 'AFO': {'bit': '2', 'size': '1', 'desc': 'Advanced Fault Overflow'}, 'APF': {'bit': '3', 'size': '1', 'desc': 'Advanced Pending Fault'}, 'IQE': {'bit': '4', 'size': '1', 'desc': 'Invalidation Queue Error'}, 'ICE': {'bit': '5', 'size': '1', 'desc': 'Invalidation Completion Error'}, 'ITE': {'bit': '6', 'size': '1', 'desc': 'Invalidation Time-out Error'}, 'PRO': {'bit': '7', 'size': '1', 'desc': 'Page Request Overflow'}, 'FRI': {'bit': '8', 'size': '7', 'desc': 'Fault Record Index'}}}
+    + VTBAR_FECTL     : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x38', 'size': '4', 'desc': 'Fault Event Control', 'FIELDS': {'R': {'bit': '0', 'size': '30', 'desc': 'Reserved'}, 'IP': {'bit': '30', 'size': '1', 'desc': 'Interrupt Pending'}, 'IM': {'bit': '31', 'size': '1', 'desc': 'Interrupt Mask'}}}
+    + VTBAR_FEDATA    : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x3C', 'size': '4', 'desc': 'Fault Event Data', 'FIELDS': {'IMD': {'bit': '0', 'size': '16', 'desc': 'Interrupt Message Data'}, 'EIMD': {'bit': '16', 'size': '16', 'desc': 'Extended Interrupt Message Data'}}}
+    + VTBAR_FEADDR    : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x40', 'size': '4', 'desc': 'Fault Event Address', 'FIELDS': {'R': {'bit': '0', 'size': '2', 'desc': 'Reserved'}, 'MA': {'bit': '2', 'size': '30', 'desc': 'Message Address'}}}
+    + VTBAR_FEUADDR   : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x44', 'size': '4', 'desc': 'Fault Event Upper Address', 'FIELDS': {'MUA': {'bit': '0', 'size': '32', 'desc': 'Message Upper Address'}}}
+    + VTBAR_FRCDL     : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x0', 'size': '8', 'desc': 'Fault Recording (Low)'}
+    + VTBAR_FRCDH     : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x8', 'size': '8', 'desc': 'Fault Recording (High)'}
+    + VTBAR_AFL       : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x58', 'size': '8', 'desc': 'Advanced Fault Log', 'FIELDS': {'R': {'bit': '0', 'size': '9', 'desc': 'Reserved'}, 'FLS': {'bit': '9', 'size': '3', 'desc': 'Fault Log Size'}, 'FLA': {'bit': '0', 'size': '52', 'desc': 'Fault Log Address'}}}
+    + VTBAR_PMEN      : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x64', 'size': '4', 'desc': 'Protected Memory Enable', 'FIELDS': {'PRS': {'bit': '0', 'size': '1', 'desc': 'Protected Region Status'}, 'EPM': {'bit': '31', 'size': '1', 'desc': 'Enable Protected Memory'}}}
+    + VTBAR_PLMBASE   : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x68', 'size': '4', 'desc': 'Protected Memory Low Base', 'FIELDS': {'PLMB': {'bit': '12', 'size': '20', 'desc': 'Protected Low-Memory Base'}}}
+    + VTBAR_PLMLIMIT  : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x6C', 'size': '4', 'desc': 'Protected Memory Low Limit', 'FIELDS': {'PLML': {'bit': '12', 'size': '20', 'desc': 'Protected Low-Memory Limit'}}}
+    + VTBAR_PHMBASE   : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x70', 'size': '8', 'desc': 'Protected Memory High Base', 'FIELDS': {'PHMB': {'bit': '12', 'size': '52', 'desc': 'Protected High-Memory Base'}}}
+    + VTBAR_PHMLIMIT  : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x78', 'size': '8', 'desc': 'Protected Memory High Limit', 'FIELDS': {'PHML': {'bit': '12', 'size': '52', 'desc': 'Protected High-Memory Limit'}}}
+    + VTBAR_IQH       : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x80', 'size': '8', 'desc': 'Invalidation Queue Head', 'FIELDS': {'QH': {'bit': '4', 'size': '15', 'desc': 'Queue Head'}}}
+    + VTBAR_IQT       : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x88', 'size': '8', 'desc': 'Invalidation Queue Tail', 'FIELDS': {'QT': {'bit': '4', 'size': '15', 'desc': 'Queue Tail'}}}
+    + VTBAR_IQA       : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x90', 'size': '8', 'desc': 'Invalidation Queue Address', 'FIELDS': {'QS': {'bit': '0', 'size': '3', 'desc': 'Queue Size'}, 'IQA': {'bit': '12', 'size': '52', 'desc': 'Invalidation Queue Base Address'}}}
+    + VTBAR_ICS       : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0x9C', 'size': '4', 'desc': 'Invalidation Completion Status', 'FIELDS': {'IWC': {'bit': '0', 'size': '1', 'desc': 'Invalidation Wait Descriptor Complete'}}}
+    + VTBAR_IECTL     : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0xA0', 'size': '4', 'desc': 'Invalidation Event Control'}
+    + VTBAR_IEDATA    : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0xA4', 'size': '4', 'desc': 'Invalidation Event Data'}
+    + VTBAR_IEADDR    : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0xA8', 'size': '4', 'desc': 'Invalidation Event Address'}
+    + VTBAR_IEUADDR   : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0xAC', 'size': '4', 'desc': 'Invalidation Event Address'}
+    + VTBAR_IRTA      : {'type': 'mmio', 'bar': 'VTBAR', 'offset': '0xB8', 'size': '4', 'desc': 'Invalidation Event Upper Address', 'FIELDS': {'S': {'bit': '0', 'size': '4', 'desc': 'Size'}, 'EIME': {'bit': '11', 'size': '1', 'desc': 'Extended Interrupt Mode Enable'}, 'IRTA': {'bit': '12', 'size': '52', 'desc': 'Interrupt Remapping Table Address'}}}
+    + GFXVTBAR_VER    : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x00', 'size': '4', 'desc': 'Version', 'FIELDS': {'MIN': {'bit': '0', 'size': '4', 'desc': 'Minor Version Number'}, 'MAX': {'bit': '4', 'size': '4', 'desc': 'Major Version Number'}}}
+    + GFXVTBAR_CAP    : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x08', 'size': '8', 'desc': 'Capability', 'FIELDS': {'ND': {'bit': '0', 'size': '2', 'desc': 'Number of Domains Supported'}, 'AFL': {'bit': '3', 'size': '1', 'desc': 'Advanced Fault Logging'}, 'RWBF': {'bit': '4', 'size': '1', 'desc': 'Required Write-Buffer Flushing'}, 'PLMR': {'bit': '5', 'size': '1', 'desc': 'Protected Low-Memory Region'}, 'PHMR': {'bit': '6', 'size': '1', 'desc': 'Protected High-Memory Region'}, 'CM': {'bit': '7', 'size': '1', 'desc': 'Caching Mode'}, 'SAGAW': {'bit': '8', 'size': '5', 'desc': 'Supported Adjusted Guest Address Width'}, 'R0': {'bit': '13', 'size': '3', 'desc': 'Reserved'}, 'MGAW': {'bit': '16', 'size': '6', 'desc': 'Maximum Guest Address Width'}, 'ZLR': {'bit': '22', 'size': '1', 'desc': 'Zero Length Read'}, 'R1': {'bit': '23', 'size': '1', 'desc': 'Reserved'}, 'FRO': {'bit': '24', 'size': '10', 'desc': 'Fault-Recording Registrer Offset'}, 'SLLPS': {'bit': '34', 'size': '4', 'desc': 'Second Level Large Page Support'}, 'R2': {'bit': '38', 'size': '1', 'desc': 'Reserved'}, 'PSI': {'bit': '39', 'size': '1', 'desc': 'Page Selective Invalidation'}, 'NFR': {'bit': '40', 'size': '8', 'desc': 'Number of Fault-Recording Registers'}, 'MAMV': {'bit': '48', 'size': '6', 'desc': 'Maximum Address Mask Value'}, 'DWD': {'bit': '54', 'size': '1', 'desc': 'Write Draining'}, 'DRD': {'bit': '55', 'size': '1', 'desc': 'Read Draining'}, 'FL1GP': {'bit': '56', 'size': '1', 'desc': 'First Level 1-GB Page Support'}, 'R3': {'bit': '57', 'size': '2', 'desc': 'Reserved'}, 'PI': {'bit': '59', 'size': '1', 'desc': 'Posted Interrupts Support'}, 'R4': {'bit': '60', 'size': '4', 'desc': 'Reserved'}}}
+    + GFXVTBAR_ECAP   : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x10', 'size': '8', 'desc': 'Global Command', 'FIELDS': {'C': {'bit': '0', 'size': '1', 'desc': 'Page-walk Coherency'}, 'QI': {'bit': '1', 'size': '1', 'desc': 'Queued Invalidation Support'}, 'DT': {'bit': '2', 'size': '1', 'desc': 'Device-TLB Support'}, 'IR': {'bit': '3', 'size': '1', 'desc': 'Interrupt Remapping Support'}, 'EIM': {'bit': '4', 'size': '1', 'desc': 'Extended Interrupt Mode'}, 'R0': {'bit': '5', 'size': '1', 'desc': 'Reserved'}, 'PT': {'bit': '6', 'size': '1', 'desc': 'Pass Through'}, 'SC': {'bit': '7', 'size': '1', 'desc': 'Snoop Control'}, 'IRO': {'bit': '8', 'size': '10', 'desc': 'IOTLB Register Offset'}, 'R1': {'bit': '18', 'size': '2', 'desc': 'Reserved'}, 'MHMV': {'bit': '20', 'size': '4', 'desc': 'Maximum Handle Mask Value'}, 'ECS': {'bit': '24', 'size': '1', 'desc': 'Extended Context Support'}, 'MTS': {'bit': '25', 'size': '1', 'desc': 'Memory Type Support'}, 'NEST': {'bit': '26', 'size': '1', 'desc': 'Nested Translation Support'}, 'DIS': {'bit': '27', 'size': '1', 'desc': 'Deferred Invalidate Support'}, 'PASID': {'bit': '28', 'size': '1', 'desc': 'Process Address Space ID Support'}, 'PRS': {'bit': '29', 'size': '1', 'desc': 'Page Request Support'}, 'ERS': {'bit': '30', 'size': '1', 'desc': 'Execute Request Support'}, 'SRS': {'bit': '31', 'size': '1', 'desc': 'Supervisor Request Support'}, 'R2': {'bit': '32', 'size': '1', 'desc': 'Reserved'}, 'NWFS': {'bit': '33', 'size': '1', 'desc': 'No Write Flag Support'}, 'EAFS': {'bit': '34', 'size': '1', 'desc': 'Extended Accessed Flag Support'}, 'PSS': {'bit': '35', 'size': '5', 'desc': 'PASID Size Supported'}, 'R3': {'bit': '40', 'size': '24', 'desc': 'Reserved'}}}
+    + GFXVTBAR_GCMD   : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x18', 'size': '4', 'desc': 'Global Command', 'FIELDS': {'Rsvd': {'bit': '0', 'size': '23', 'desc': 'Reserved'}, 'CFI': {'bit': '23', 'size': '1', 'desc': 'Compatibility Format Interrupt'}, 'SIRTP': {'bit': '24', 'size': '1', 'desc': 'Set Interrupt Remap Table Pointer'}, 'IRE': {'bit': '25', 'size': '1', 'desc': 'Interrupt Remapping Enable'}, 'QIE': {'bit': '26', 'size': '1', 'desc': 'Queued Invalidation Enable'}, 'WBF': {'bit': '27', 'size': '1', 'desc': 'Write Buffer Flush'}, 'EAFL': {'bit': '28', 'size': '1', 'desc': 'Enable Advanced Fault Logging'}, 'SFL': {'bit': '29', 'size': '1', 'desc': 'Set Fault Log'}, 'SRTP': {'bit': '30', 'size': '1', 'desc': 'Set Root Table Pointer'}, 'TE': {'bit': '31', 'size': '1', 'desc': 'Translation Enable'}}}
+    + GFXVTBAR_GSTS   : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x1C', 'size': '4', 'desc': 'Global Status', 'FIELDS': {'Rsvd': {'bit': '0', 'size': '23', 'desc': 'Reserved'}, 'CFIS': {'bit': '23', 'size': '1', 'desc': 'Compatibility Format Interrupt Status'}, 'IRTPS': {'bit': '24', 'size': '1', 'desc': 'Interrupt Remap Table Pointer Status'}, 'IRES': {'bit': '25', 'size': '1', 'desc': 'Interrupt Remapping Enable Status'}, 'QIES': {'bit': '26', 'size': '1', 'desc': 'Queued Invalidation Enable Status'}, 'WBFS': {'bit': '27', 'size': '1', 'desc': 'Write Buffer Flush Status'}, 'AFLS': {'bit': '28', 'size': '1', 'desc': 'Advanced Fault Logging Status'}, 'FLS': {'bit': '29', 'size': '1', 'desc': 'Fault Log Status'}, 'RTPS': {'bit': '30', 'size': '1', 'desc': 'Root Table Pointer Status'}, 'TES': {'bit': '31', 'size': '1', 'desc': 'Translation Enable Status'}}}
+    + GFXVTBAR_RTADDR : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x20', 'size': '8', 'desc': 'Root-Entry Table Address', 'FIELDS': {'R': {'bit': '0', 'size': '11', 'desc': 'Reserved'}, 'RTT': {'bit': '11', 'size': '1', 'desc': 'Root Table Type'}, 'RTA': {'bit': '12', 'size': '52', 'desc': 'Root Table Address'}}}
+    + GFXVTBAR_CCMD   : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x28', 'size': '8', 'desc': 'Context Command', 'FIELDS': {'DID': {'bit': '0', 'size': '16', 'desc': 'Device ID'}, 'SID': {'bit': '16', 'size': '16', 'desc': 'Source ID'}, 'FM': {'bit': '32', 'size': '2', 'desc': 'Function Mask'}, 'R': {'bit': '34', 'size': '25', 'desc': 'Reserved'}, 'CAIG': {'bit': '59', 'size': '2', 'desc': 'Context Actual Invalidation Granularity'}, 'CIRG': {'bit': '61', 'size': '2', 'desc': 'Context Invalidation Request Granularity'}, 'ICC': {'bit': '63', 'size': '1', 'desc': 'Invalidate Context-Cache'}}}
+    + GFXVTBAR_IVA    : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x0', 'size': '8', 'desc': 'Invalidate Address'}
+    + GFXVTBAR_IOTLB  : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x8', 'size': '8', 'desc': 'IOTLB Invalidate'}
+    + GFXVTBAR_FSTS   : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x34', 'size': '4', 'desc': 'Fault Status', 'FIELDS': {'PFO': {'bit': '0', 'size': '1', 'desc': 'Primary Fault Overflow'}, 'PPF': {'bit': '1', 'size': '1', 'desc': 'Primary Pending Fault'}, 'AFO': {'bit': '2', 'size': '1', 'desc': 'Advanced Fault Overflow'}, 'APF': {'bit': '3', 'size': '1', 'desc': 'Advanced Pending Fault'}, 'IQE': {'bit': '4', 'size': '1', 'desc': 'Invalidation Queue Error'}, 'ICE': {'bit': '5', 'size': '1', 'desc': 'Invalidation Completion Error'}, 'ITE': {'bit': '6', 'size': '1', 'desc': 'Invalidation Time-out Error'}, 'PRO': {'bit': '7', 'size': '1', 'desc': 'Page Request Overflow'}, 'FRI': {'bit': '8', 'size': '7', 'desc': 'Fault Record Index'}}}
+    + GFXVTBAR_FECTL  : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x38', 'size': '4', 'desc': 'Fault Event Control', 'FIELDS': {'R': {'bit': '0', 'size': '30', 'desc': 'Reserved'}, 'IP': {'bit': '30', 'size': '1', 'desc': 'Interrupt Pending'}, 'IM': {'bit': '31', 'size': '1', 'desc': 'Interrupt Mask'}}}
+    + GFXVTBAR_FEDATA : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x3C', 'size': '4', 'desc': 'Fault Event Data', 'FIELDS': {'IMD': {'bit': '0', 'size': '16', 'desc': 'Interrupt Message Data'}, 'EIMD': {'bit': '16', 'size': '16', 'desc': 'Extended Interrupt Message Data'}}}
+    + GFXVTBAR_FEADDR : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x40', 'size': '4', 'desc': 'Fault Event Address', 'FIELDS': {'R': {'bit': '0', 'size': '2', 'desc': 'Reserved'}, 'MA': {'bit': '2', 'size': '30', 'desc': 'Message Address'}}}
+    + GFXVTBAR_FEUADDR: {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x44', 'size': '4', 'desc': 'Fault Event Upper Address', 'FIELDS': {'MUA': {'bit': '0', 'size': '32', 'desc': 'Message Upper Address'}}}
+    + GFXVTBAR_FRCDL  : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x0', 'size': '8', 'desc': 'Fault Recording (Low)'}
+    + GFXVTBAR_FRCDH  : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x8', 'size': '8', 'desc': 'Fault Recording (High)'}
+    + GFXVTBAR_AFL    : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x58', 'size': '8', 'desc': 'Advanced Fault Log', 'FIELDS': {'R': {'bit': '0', 'size': '9', 'desc': 'Reserved'}, 'FLS': {'bit': '9', 'size': '3', 'desc': 'Fault Log Size'}, 'FLA': {'bit': '0', 'size': '52', 'desc': 'Fault Log Address'}}}
+    + GFXVTBAR_PMEN   : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x64', 'size': '4', 'desc': 'Protected Memory Enable', 'FIELDS': {'PRS': {'bit': '0', 'size': '1', 'desc': 'Protected Region Status'}, 'EPM': {'bit': '31', 'size': '1', 'desc': 'Enable Protected Memory'}}}
+    + GFXVTBAR_PLMBASE: {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x68', 'size': '4', 'desc': 'Protected Memory Low Base', 'FIELDS': {'PLMB': {'bit': '12', 'size': '20', 'desc': 'Protected Low-Memory Base'}}}
+    + GFXVTBAR_PLMLIMIT: {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x6C', 'size': '4', 'desc': 'Protected Memory Low Limit', 'FIELDS': {'PLML': {'bit': '12', 'size': '20', 'desc': 'Protected Low-Memory Limit'}}}
+    + GFXVTBAR_PHMBASE: {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x70', 'size': '8', 'desc': 'Protected Memory High Base', 'FIELDS': {'PHMB': {'bit': '12', 'size': '52', 'desc': 'Protected High-Memory Base'}}}
+    + GFXVTBAR_PHMLIMIT: {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x78', 'size': '8', 'desc': 'Protected Memory High Limit', 'FIELDS': {'PHML': {'bit': '12', 'size': '52', 'desc': 'Protected High-Memory Limit'}}}
+    + GFXVTBAR_IQH    : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x80', 'size': '8', 'desc': 'Invalidation Queue Head', 'FIELDS': {'QH': {'bit': '4', 'size': '15', 'desc': 'Queue Head'}}}
+    + GFXVTBAR_IQT    : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x88', 'size': '8', 'desc': 'Invalidation Queue Tail', 'FIELDS': {'QT': {'bit': '4', 'size': '15', 'desc': 'Queue Tail'}}}
+    + GFXVTBAR_IQA    : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x90', 'size': '8', 'desc': 'Invalidation Queue Address', 'FIELDS': {'QS': {'bit': '0', 'size': '3', 'desc': 'Queue Size'}, 'IQA': {'bit': '12', 'size': '52', 'desc': 'Invalidation Queue Base Address'}}}
+    + GFXVTBAR_ICS    : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0x9C', 'size': '4', 'desc': 'Invalidation Completion Status', 'FIELDS': {'IWC': {'bit': '0', 'size': '1', 'desc': 'Invalidation Wait Descriptor Complete'}}}
+    + GFXVTBAR_IECTL  : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0xA0', 'size': '4', 'desc': 'Invalidation Event Control'}
+    + GFXVTBAR_IEDATA : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0xA4', 'size': '4', 'desc': 'Invalidation Event Data'}
+    + GFXVTBAR_IEADDR : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0xA8', 'size': '4', 'desc': 'Invalidation Event Address'}
+    + GFXVTBAR_IEUADDR: {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0xAC', 'size': '4', 'desc': 'Invalidation Event Address'}
+    + GFXVTBAR_IRTA   : {'type': 'mmio', 'bar': 'GFXVTBAR', 'offset': '0xB8', 'size': '4', 'desc': 'Invalidation Event Upper Address', 'FIELDS': {'S': {'bit': '0', 'size': '4', 'desc': 'Size'}, 'EIME': {'bit': '11', 'size': '1', 'desc': 'Extended Interrupt Mode Enable'}, 'IRTA': {'bit': '12', 'size': '52', 'desc': 'Interrupt Remapping Table Address'}}}
+[*] loading controls..
+[*] loading locks..
+[*] looking for platform config in '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/sfdp.xml'..
+[*] loading common platform config from '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/sfdp.xml'..
+[*] loading integrated devices/controllers..
+[*] loading MMIO BARs..
+[*] loading I/O BARs..
+[*] loading indirect memory accesses definitions..
+[*] loading memory ranges..
+[*] loading configuration registers..
+    + DWORD1          : {'offset': '0x00', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 1st DWORD ', 'size': '0x4', 'FIELDS': {'BLK_ERASE_SUPPORT': {'bit': '0', 'size': '2', 'desc': 'Block Sector Erase Sizes'}, 'WR_GRANULTY': {'bit': '2', 'size': '1', 'desc': 'Write Granularity'}, 'BLK_PRT_VOL_STATUS': {'bit': '3', 'size': '1', 'desc': 'Write Enable Instruction Required for Writing to Volatile Status Register'}, 'WREnable_INST_Select': {'bit': '4', 'size': '1', 'desc': 'Write Enable Opcode Select for Writing to Volatile Status Register'}, 'Unused': {'bit': '5', 'size': '3', 'desc': 'Unused register'}, '4K_Erase_INST': {'bit': '8', 'size': '8', 'desc': '4K Erase Opcode'}, 'FASTREAD_112_SUPPORT': {'bit': '16', 'size': '1', 'desc': 'Supports (1-1-2) fast read'}, 'ADDR_BYTES': {'bit': '17', 'size': '2', 'desc': 'Number of bytes used in addressing flash array read, write and erase'}, 'DTR_CLK_SUPPORT': {'bit': '19', 'size': '1', 'desc': 'DTR Clocking Support'}, 'FASTREAD_122_SUPPORT': {'bit': '20', 'size': '1', 'desc': 'Supports ( 1-2-2) fast read'}, 'FASTREAD_144_SUPPORT': {'bit': '21', 'size': '1', 'desc': 'Supports ( 1-4-4) fast read'}, 'FASTREAD_114_SUPPORT': {'bit': '22', 'size': '1', 'desc': 'Supports ( 1-4-4) fast read'}, 'UNUSED': {'bit': '23', 'size': '9', 'desc': 'Unused'}}}
+    + DWORD2          : {'offset': '0x04', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 2nd DWORD ', 'size': '0x4', 'FIELDS': {'FLASH_MEM_DENSITY': {'bit': '0', 'size': '32', 'desc': 'Flash Memory Density'}}}
+    + DWORD3          : {'offset': '0x08', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 3rd DWORD ', 'size': '0x4', 'FIELDS': {'144_FR_NUM_WAIT_STATES': {'bit': '0', 'size': '5', 'desc': '(1-4-4) fast read number of wait states (dummy clocks) needed before valid output'}, '144_FR_QUAD_NUM_MODE_CLKS': {'bit': '5', 'size': '3', 'desc': 'Quad Input Address Quad Output (1-4-4) Fast Read Number of Mode Bits'}, '144_FR_INST': {'bit': '8', 'size': '8', 'desc': '(1-4-4) fast read Opcode'}, '114_FR_NUM_WAIT_STATES': {'bit': '16', 'size': '5', 'desc': '(1-1-4) fast read number of wait states (dummy clocks)'}, '114_FR_NUM_MODE_CLKS': {'bit': '21', 'size': '3', 'desc': '(1-1-4) fast read number of Mode Bits'}, '114_FR_INST': {'bit': '24', 'size': '8', 'desc': '(1-1-4) fast read Opcode'}}}
+    + DWORD4          : {'offset': '0xC', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 4th DWORD ', 'size': '0x4', 'FIELDS': {'112_FR_NUM_WAIT_STATES': {'bit': '16', 'size': '5', 'desc': '(1-2-2) fast read Number of Wait states (dummy clocks)'}, '112_FR_NUM_MODE_CLKS': {'bit': '5', 'size': '3', 'desc': '(1-1-2) fast read Number of Mode Bits'}, '112_FR_INST': {'bit': '8', 'size': '8', 'desc': '(1-1-2) fast read Opcode'}, '122_FR_NUM_MODE_CLKS': {'bit': '21', 'size': '3', 'desc': '(1-2-2) fast read Number of Mode Bits'}, '122_FR_INST': {'bit': '24', 'size': '8', 'desc': '(1-2-2) fast read Opcode'}}}
+    + DWORD5          : {'offset': '0x10', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 5th DWORD  ', 'size': '0x4', 'FIELDS': {'222_FR_SUPPORT': {'bit': '0', 'size': '1', 'desc': 'Supports (2-2-2) fast read'}, 'Reserved': {'bit': '1', 'size': '3', 'desc': 'Reserved'}, '444_FR_SUPPORT': {'bit': '4', 'size': '1', 'desc': 'Supports ( 4-4-4) fast read'}, 'RESERVED': {'bit': '5', 'size': '27', 'desc': 'Reserved'}}}
+    + DWORD6          : {'offset': '0x14', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 6th DWORD ', 'size': '0x4', 'FIELDS': {'RESERVED': {'bit': '0', 'size': '16', 'desc': 'Reserved'}, '222_FR_NUM_WAIT_STATES': {'bit': '16', 'size': '5', 'desc': '(2-2-2) fast read Number of Wait states (dummy clocks) needed before valid output'}, '222_FR_NUM_MOD_CLKS': {'bit': '21', 'size': '3', 'desc': '(2-2-2) fast read Number of Mode Bits'}, '222_FR_INST': {'bit': '24', 'size': '8', 'desc': '(2-2-2) fast read Opcode'}}}
+    + DWORD7          : {'offset': '0x18', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 7th DWORD ', 'size': '0x4', 'FIELDS': {'RESERVED': {'bit': '0', 'size': '16', 'desc': 'Reserved'}, '444_FR_NUM_WAIT_STATES': {'bit': '16', 'size': '5', 'desc': '(4-4-4) fast read number of wait states (dummy clocks) needed before valid output'}, '444_FR_NUM_MOD_CLKS': {'bit': '21', 'size': '3', 'desc': '(4-4-4) fast read number of mode bits'}, '444_FR_INST': {'bit': '24', 'size': '8', 'desc': '(4-4-4) fast read Opcode'}}}
+    + DWORD8          : {'offset': '0x1C', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 8th DWORD  ', 'size': '0x4', 'FIELDS': {'ERASE_TYPE1_SIZE': {'bit': '0', 'size': '8', 'desc': 'Sector Type 1 size'}, 'ERASE_TYPE1_INST': {'bit': '24', 'size': '8', 'desc': 'Sector Type 2 Opcode'}, 'ERASE_TYPE2_SIZE': {'bit': '16', 'size': '8', 'desc': 'Sector Type 2 size'}}}
+    + DWORD9          : {'offset': '0x20', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 9th DWORD ', 'size': '0x4', 'FIELDS': {'ERASE_TYPE3_SIZE': {'bit': '0', 'size': '8', 'desc': 'Sector Type 3 size'}, 'ERASE_TYPE3_OPCODE': {'bit': '8', 'size': '8', 'desc': 'Sector Type 3 Opcode'}, 'ERASE_TYPE4_SIZE': {'bit': '16', 'size': '8', 'desc': 'Sector Type 4 size'}, 'ERASE_TYPE4_OPCODE': {'bit': '24', 'size': '8', 'desc': 'Sector Type 4 Opcode'}}}
+    + DWORD10         : {'offset': '0x24', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 10th DWORD ', 'size': '0x4', 'FIELDS': {'MULTIPLIER': {'bit': '0', 'size': '4', 'desc': 'Multiplier from typical erase time to maximum erase time'}, 'ERASE_TYPE1_TIME': {'bit': '4', 'size': '7', 'desc': 'Erase Type 1 Erase, Typical time'}, 'ERASE_TYPE2_TIME': {'bit': '11', 'size': '7', 'desc': 'Erase Type 2 Erase, Typical time'}, 'ERASE_TYPE3_TIME': {'bit': '18', 'size': '7', 'desc': 'Erase Type 3 Erase, Typical time'}, 'ERASE_TYPE4_TIME': {'bit': '25', 'size': '7', 'desc': 'Erase Type 4 Erase, Typical time'}}}
+    + DWORD11         : {'offset': '0x28', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 11th DWORD ', 'size': '0x4', 'FIELDS': {'MULTIPLIER': {'bit': '0', 'size': '4', 'desc': 'Multiplier from typical to maximum erase time for page or Byte program'}, 'PAGE_SIZE': {'bit': '4', 'size': '4', 'desc': 'Page Size'}, 'PAGE_PRG_TYPICAL_TIME': {'bit': '8', 'size': '6', 'desc': 'Page Program Typical time'}, 'BYTE_PRG_TYPICAL_TIME_FIRST': {'bit': '14', 'size': '5', 'desc': 'Byte Program Typical time'}, 'BYTE_PRG_TYPICAL_TIME_ADTNL': {'bit': '19', 'size': '5', 'desc': 'Byte Program Typical time, additional byte'}, 'CHIP_ERASE': {'bit': '24', 'size': '7', 'desc': 'Chip Erase, Typical time'}, 'Reserved': {'bit': '31', 'size': '1', 'desc': 'Reserved'}}}
+    + DWORD12         : {'offset': '0x2C', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 12th DWORD ', 'size': '0x4', 'FIELDS': {'PO_PRG_SUSPEND': {'bit': '0', 'size': '4', 'desc': 'Prohibited Operations During Program Suspend'}, 'PO_ERASE_SUSPEND': {'bit': '4', 'size': '4', 'desc': 'Prohibited Operations During Erase Suspend'}, 'Reserved': {'bit': '8', 'size': '1', 'desc': 'Reserved'}, 'PRG_RESUME2SUSPD_INTERVAL': {'bit': '9', 'size': '4', 'desc': 'Program Resume to Suspend Interval'}, 'SUSPD_INPRG_MAXLATENCY': {'bit': '13', 'size': '7', 'desc': 'Suspend in-progress program max latency'}, 'ERASE_RESUME2SUSPD_INTERVAL': {'bit': '20', 'size': '4', 'desc': 'Erase Resume to suspend latency'}, 'SUSPD_INPRG_ERASE_MAXLATENCY': {'bit': '24', 'size': '7', 'desc': 'Suspend in-progress erase max latency'}, 'SUSPEND_RESUME_SUPPORT': {'bit': '31', 'size': '1', 'desc': 'Suspend/Resume Supported'}}}
+    + DWORD13         : {'offset': '0x30', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 13th DWORD ', 'size': '0x4', 'FIELDS': {'PRG_RESUME_INST': {'bit': '0', 'size': '8', 'desc': 'Program Resume Instruction'}, 'PRG_SUSP_INST': {'bit': '8', 'size': '8', 'desc': 'Program Suspend Instruction'}, 'RESUME_INST': {'bit': '16', 'size': '8', 'desc': 'Resume Instruction'}, 'SUSP_INST': {'bit': '24', 'size': '8', 'desc': 'Suspend Instruction'}}}
+    + DWORD14         : {'offset': '0x34', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 14th DWORD ', 'size': '0x4', 'FIELDS': {'RESERVED': {'bit': '0', 'size': '2', 'desc': 'Reserved'}, 'STS_POLLING_BUSY': {'bit': '2', 'size': '6', 'desc': 'Status Register Polling Device Busy'}, 'EXIT_DPWDOWN_DELAY': {'bit': '8', 'size': '7', 'desc': 'Exit Deep Powerdown to next operation delay'}, 'EXIT_DPWDOWN_INST': {'bit': '15', 'size': '8', 'desc': 'Exit Deep Powerdown Instruction'}, 'ENTER_DPWDOWN_INST': {'bit': '23', 'size': '8', 'desc': 'Enter Deep Powerdown Instruction'}, 'DPWDOWN_SUPPORT': {'bit': '31', 'size': '1', 'desc': 'Deep Powerdown Supported'}}}
+    + DWORD15         : {'offset': '0x38', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 15th DWORD ', 'size': '0x4', 'FIELDS': {'444_DISABLE_SEQ': {'bit': '0', 'size': '4', 'desc': '4-4-4 mode disable sequences'}, '444_ENABLE_SEQ': {'bit': '4', 'size': '5', 'desc': '4-4-4 mode enable sequences'}, '044_MODE_SUPPORTED': {'bit': '9', 'size': '1', 'desc': '0-4-4 mode supported'}, '044_EXIT_METHOD': {'bit': '10', 'size': '6', 'desc': '0-4-4 Mode Exit Method'}, '044_ENTRY_METHOD': {'bit': '16', 'size': '4', 'desc': '0-4-4 Mode Entry Method'}, 'QUAD_ENABLE_REQ': {'bit': '20', 'size': '3', 'desc': 'Quad Enable Requirements'}, 'HOLD_RESET_DISABLE': {'bit': '23', 'size': '1', 'desc': 'Hold or Reset disable'}, 'RESERVED': {'bit': '24', 'size': '8', 'desc': 'Reserved'}}}
+    + DWORD16         : {'offset': '0x3C', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 16th DWORD ', 'size': '0x4', 'FIELDS': {'VLT_WRENABLE_INST': {'bit': '0', 'size': '7', 'desc': 'Volatile or Non-Volatile Register and Write Enable Instruction for Status Register 1'}, 'RESERVED': {'bit': '7', 'size': '1', 'desc': 'Reserved'}, 'SRESET_RESC_SUPPORT': {'bit': '8', 'size': '6', 'desc': 'Soft Reset and Rescue Sequence Support'}, 'EXIT_4BYTE_ADDR': {'bit': '14', 'size': '10', 'desc': 'Exit 4 Byte Addressing'}, 'ENTER_4BYTE_ADDR': {'bit': '24', 'size': '8', 'desc': 'Enter 4 Byte Addressing'}}}
+    + DWORD17         : {'offset': '0x40', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 17th DWORD ', 'size': '0x4', 'FIELDS': {'188_FR_NUM_WAIT_STATES': {'bit': '0', 'size': '5', 'desc': '(1-8-8) Fast Read Number of Wait states (dummy clocks) needed before valid output'}, '188_FR_NUM_MOD_CLKS': {'bit': '5', 'size': '3', 'desc': '(1-8-8) Fast Read Number of Mode Clocks'}, '188_FR_INST': {'bit': '8', 'size': '8', 'desc': '(1-8-8) Fast Read Instruction'}, '118_FR_NUM_WAIT_STATES': {'bit': '16', 'size': '5', 'desc': '(1-1-8) Fast Read Number of Wait states (dummy clocks) needed before valid output'}, '118_FR_NUM_MOD_CLKS': {'bit': '21', 'size': '3', 'desc': '(1-1-8) Fast Read Number of Mode Clocks'}, '118_FR_INST': {'bit': '24', 'size': '8', 'desc': '(1-8-8) Fast Read Instruction'}}}
+    + DWORD18         : {'offset': '0x44', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 18th DWORD ', 'size': '0x4', 'FIELDS': {'Reserved': {'bit': '28', 'size': '1', 'desc': 'Reserved'}, 'VAR_OUT_DRV_STRENGTH': {'bit': '18', 'size': '5', 'desc': 'Variable Output Driver Strength'}, 'JEDEC_SPI_RESET': {'bit': '23', 'size': '1', 'desc': 'JEDEC SPI Protocol Reset (In-Band Reset)'}, 'DATA_STRB_WAVEFORMS_STR_MODE': {'bit': '24', 'size': '2', 'desc': 'Data Strobe Waveforms in STR Mode'}, '4S4S4S_DATA_STRB_QPI_STR_MODE': {'bit': '26', 'size': '1', 'desc': 'Data Strobe support for QPI STR mode (4S-4S-4S)'}, '4S4D4D_DATA_STRB_QPI_DTR_MODE': {'bit': '27', 'size': '1', 'desc': 'Data Strobe support for QPI DTR mode (4S-4D-4D)'}, '8D8D8D_OCTAL_DTR_CMD_EXT': {'bit': '29', 'size': '2', 'desc': 'Octal DTR (8D-8D-8D) Command and Command Extension'}, '8D8D8D_BYTE_ORDER_MODE': {'bit': '31', 'size': '1', 'desc': 'Octal DTR (8D-8D-8D) Command and Command Extension'}}}
+    + DWORD19         : {'offset': '0x48', 'type': 'R Byte', 'desc': 'JEDEC Basic Flash Parameter Table: 19th DWORD ', 'size': '0x4', 'FIELDS': {'8S8S8S_DISABLE_SEQ': {'bit': '0', 'size': '4', 'desc': '8S-8S-8S mode disable sequences'}, '8S8S8S_ENABLE_SEQ': {'bit': '4', 'size': '5', 'desc': '8S-8S-8S mode enable sequences'}, '088_MODE_SUPPORTED': {'bit': '9', 'size': '1', 'desc': '0-8-8 mode supported'}, '088_EXIT_METHOD': {'bit': '10', 'size': '6', 'desc': '0-8-8 Mode Exit Method'}, '088_ENTRY_METHOD': {'bit': '16', 'size': '4', 'desc': '0-8-8 Mode Entry Method'}, 'OCTAL_ENABLE_REQ': {'bit': '20', 'size': '3', 'desc': 'Octal Enable Requirements'}, 'RESERVED': {'bit': '23', 'size': '9', 'desc': 'Reserved'}}}
+    + DWORD20         : {'offset': '0x4C', 'type': 'R Byte', 'desc': ' ', 'size': '0x4', 'FIELDS': {'MAX4SMODE_SPEED_WITHOUT_STRB': {'bit': '0', 'size': '4', 'desc': 'Maximum operation speed of device in 4S-4S-4S mode when not utilizing Data Strobe'}, 'MAX4SMODE_SPEED_WITH_STRB': {'bit': '4', 'size': '4', 'desc': 'Maximum operation speed of device in 4S-4S-4S mode when utilizing Data Strobe'}, 'MAX4S4D4DMODE_SPEED_WITHOUT_STRB': {'bit': '8', 'size': '4', 'desc': 'Maximum operation speed of device in 4S-4D-4D mode when not utilizing Data Strobe'}, 'MAX4S4D4DMODE_SPEED_WITH_STRB': {'bit': '12', 'size': '4', 'desc': 'Maximum operation speed of device in 4S-4D-4D mode when utilizing Data Strobe'}, 'MAX8SMODE_SPEED_WITHOUT_STRB': {'bit': '16', 'size': '4', 'desc': 'Maximum operation speed of device in 8S-8S-8S mode when not utilizing Data Strobe'}, 'MAX8SMODE_SPEED_WITH_STRB': {'bit': '20', 'size': '4', 'desc': 'Maximum operation speed of device in 8S-8S-8S mode when utilizing Data Strobe'}, 'MAX8DMODE_SPEED_WITHOUT_STRB': {'bit': '24', 'size': '4', 'desc': 'Maximum operation speed of device in 8D-8D-8D mode when not utilizing Data Strobe'}, 'MAX8DMODE_SPEED_WITH_STRB': {'bit': '28', 'size': '4', 'desc': 'Maximum operation speed of device in 8D-8D-8D mode when utilizing Data Strobe'}}}
+[*] loading controls..
+[*] loading locks..
+[*] looking for platform config in '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/tpm12.xml'..
+[*] loading common platform config from '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/tpm12.xml'..
+[*] loading integrated devices/controllers..
+[*] loading MMIO BARs..
+[*] loading I/O BARs..
+[*] loading indirect memory accesses definitions..
+[*] loading memory ranges..
+[*] loading configuration registers..
+    + TPM_ACCESS      : {'type': 'memory', 'access': 'mmio', 'address': '0xFED40000', 'offset': '0x000', 'size': '1', 'desc': 'TPM ACCESS', 'FIELDS': {'tpmRegValidSts': {'bit': '7', 'size': '1', 'desc': 'tpmRegValidSts'}, 'reserved': {'bit': '6', 'size': '1', 'desc': 'reserved'}, 'activeLocality': {'bit': '5', 'size': '1', 'desc': 'activeLocality'}, 'beenSeized': {'bit': '4', 'size': '1', 'desc': 'beenSeized'}, 'Seize': {'bit': '3', 'size': '1', 'desc': 'Seize'}, 'pendingRequest': {'bit': '2', 'size': '1', 'desc': 'pendingRequest'}, 'requestUse': {'bit': '1', 'size': '1', 'desc': 'requestUse'}, 'tpmEstablishment': {'bit': '0', 'size': '1', 'desc': 'tpmEstablishment'}}}
+    + TPM_STS         : {'type': 'memory', 'access': 'mmio', 'address': '0xFED40018', 'offset': '0x000', 'size': '4', 'desc': 'TPM STATUS', 'FIELDS': {'burstCount': {'bit': '8', 'size': '24', 'desc': 'burstCount'}, 'stsValid': {'bit': '7', 'size': '1', 'desc': 'stsValid'}, 'commandReady': {'bit': '6', 'size': '1', 'desc': 'commandReady'}, 'tpmGo': {'bit': '5', 'size': '1', 'desc': 'tpmGo'}, 'dataAvail': {'bit': '4', 'size': '1', 'desc': 'dataAvail'}, 'Expect': {'bit': '3', 'size': '1', 'desc': 'Expect'}, 'Reserved': {'bit': '0', 'size': '1', 'desc': 'Reserved'}, 'responseRetry': {'bit': '1', 'size': '1', 'desc': 'responseRetry'}}}
+    + TPM_DID_VID     : {'type': 'memory', 'access': 'mmio', 'address': '0xFED40F00', 'offset': '0x000', 'size': '4', 'desc': 'TPM DID/VID', 'FIELDS': {'did': {'bit': '16', 'size': '16', 'desc': 'did'}, 'vid': {'bit': '0', 'size': '16', 'desc': 'vid'}}}
+    + TPM_RID         : {'type': 'memory', 'access': 'mmio', 'address': '0xFED40F04', 'offset': '0x000', 'size': '1', 'desc': 'TPM RID', 'FIELDS': {'rid': {'bit': '0', 'size': '8', 'desc': 'rid'}}}
+    + TPM_INTF_CAPABILITY: {'type': 'memory', 'access': 'mmio', 'address': '0xFED40014', 'offset': '0x000', 'size': '4', 'desc': 'TPM INTF CAPABILITY', 'FIELDS': {'Reserved': {'bit': '9', 'size': '23', 'desc': 'Reserved'}, 'BurstCountStatic': {'bit': '8', 'size': '1', 'desc': 'BurstCountStatic'}, 'CommandReadyIntSupport': {'bit': '7', 'size': '1', 'desc': 'CommandReadyIntSupport'}, 'InterruptEdgeFalling': {'bit': '6', 'size': '1', 'desc': 'InterruptEdgeFalling'}, 'InterruptEdgeRising': {'bit': '5', 'size': '1', 'desc': 'InterruptEdgeRising'}, 'InterruptLevelLow': {'bit': '4', 'size': '1', 'desc': 'InterruptLevelLow'}, 'InterruptLevelHigh': {'bit': '3', 'size': '1', 'desc': 'InterruptLevelHigh'}, 'LocalityChangeIntSupport': {'bit': '2', 'size': '1', 'desc': 'LocalityChangeIntSupport'}, 'stsValidIntSupport': {'bit': '1', 'size': '1', 'desc': 'stsValidIntSupport'}, 'dataAvailIntSupport': {'bit': '0', 'size': '1', 'desc': 'dataAvailIntSupport'}}}
+    + TPM_INT_ENABLE  : {'type': 'memory', 'access': 'mmio', 'address': '0xFED40008', 'offset': '0x000', 'size': '4', 'desc': 'TPM INT ENABLE', 'FIELDS': {'globalIntEnable': {'bit': '31', 'size': '1', 'desc': 'CommandReadyIntSupport'}, 'Reserved': {'bit': '8', 'size': '23', 'desc': 'InterruptEdgeFalling'}, 'commandReadyEnable': {'bit': '7', 'size': '1', 'desc': 'InterruptEdgeRising'}, 'reserved': {'bit': '5', 'size': '2', 'desc': 'InterruptLevelLow'}, 'typePolarity': {'bit': '3', 'size': '2', 'desc': 'InterruptLevelHigh'}, 'localityChangeIntEnable': {'bit': '2', 'size': '1', 'desc': 'LocalityChangeIntSupport'}, 'stsValidIntEnable': {'bit': '1', 'size': '1', 'desc': 'stsValidIntSupport'}, 'dataAvailIntEnable': {'bit': '0', 'size': '1', 'desc': 'dataAvailIntSupport'}}}
+[*] loading controls..
+[*] loading locks..
+[*] looking for platform config in '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/txt.xml'..
+[*] loading common platform config from '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/txt.xml'..
+[*] loading integrated devices/controllers..
+[*] loading MMIO BARs..
+[*] loading I/O BARs..
+[*] loading indirect memory accesses definitions..
+[*] loading memory ranges..
+[*] loading configuration registers..
+    + TXT_STS         : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x000', 'size': '8', 'desc': 'TXT Status', 'FIELDS': {'SENTER_DONE_STS': {'bit': '0', 'size': '1', 'desc': 'SENTER Done'}, 'SEXIT_DONE_STS': {'bit': '1', 'size': '1', 'desc': 'SEXIT Done'}, 'MEM_UNLOCK_STS': {'bit': '4', 'size': '1', 'desc': 'Memory Unlocked'}, 'MEM_CONFIG_LOCK_STS': {'bit': '6', 'size': '1', 'desc': 'Memory Configuration Locked'}, 'PRIVATE_OPEN_STS': {'bit': '7', 'size': '1', 'desc': 'Open-Private Command Performed'}, 'NTP_ENABLE_STS': {'bit': '10', 'size': '1', 'desc': 'NTP Enabled'}, 'MEM_CONFIG_OK_STS': {'bit': '11', 'size': '1', 'desc': 'Mem CFG OK'}, 'PMRC_LOCK_STS': {'bit': '12', 'size': '1', 'desc': 'PMRC Locked'}, 'SMM_OPEN_STS': {'bit': '13', 'size': '1', 'desc': 'SMM Opened'}, 'TXT_LOCALITY3_OPEN_STS': {'bit': '14', 'size': '1', 'desc': 'Locality 3 Opened'}, 'TXT_LOCALITY1_OPEN_STS': {'bit': '15', 'size': '1', 'desc': 'Locality 1 Opened'}, 'TXT_LOCALITY2_OPEN_STS': {'bit': '16', 'size': '1', 'desc': 'Locality 2 Opened'}}}
+    + TXT_ESTS        : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x008', 'size': '8', 'desc': 'TXT Error Status', 'FIELDS': {'TXT_RESET_STS': {'bit': '0', 'size': '1', 'desc': 'TXT Reset'}, 'ROGUE_STS': {'bit': '1', 'size': '1', 'desc': 'Rogue Status'}, 'WAKE_ERROR_STS': {'bit': '6', 'size': '1', 'desc': 'Wake Error'}}}
+    + TXT_ERRORCODE   : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x030', 'size': '8', 'desc': 'TXT Error Code (0xC0000001 when successful SINIT)', 'FIELDS': {'TYPE2_MODULE_TYPE': {'bit': '0', 'size': '4', 'desc': 'Module Type (0 for BIOS ACM, 1 for SINIT)'}, 'TYPE2_CLASS_CODE': {'bit': '4', 'size': '6', 'desc': 'Class Code'}, 'TYPE2_MAJOR_ERROR_CODE': {'bit': '10', 'size': '5', 'desc': 'Major Error Code'}, 'SOFTWARE_SOURCE': {'bit': '15', 'size': '1', 'desc': 'Software Source (0 for ACM, 1 of MLE)'}, 'TYPE1_MINOR_ERROR_CODE': {'bit': '16', 'size': '12', 'desc': 'Minor Error Code'}, 'TYPE1_RESERVED': {'bit': '28', 'size': '2', 'desc': 'Failure Condition Details'}, 'SOFTWARE': {'bit': '30', 'size': '1', 'desc': 'Error reported by Software (0 for Processor)'}, 'VALID': {'bit': '31', 'size': '1', 'desc': 'Valid Register Content'}}}
+    + TXT_SPAD        : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x0A0', 'size': '8', 'desc': 'Boot Status', 'FIELDS': {'ACM_INTERNAL': {'bit': '0', 'size': '30', 'desc': 'ACM Internal Use'}, 'TXT_STARTUP_SUCCESS': {'bit': '30', 'size': '1', 'desc': 'TXT Startup Success'}, 'BOOT_STATUS': {'bit': '31', 'size': '16', 'desc': 'General Startup ACM to BIOS status communication'}, 'MEM_POWER_DOWN_EXECUTED': {'bit': '47', 'size': '1', 'desc': 'Memory content was cleared via power down'}, 'BOOT_STATUS_DETAILS_48': {'bit': '48', 'size': '5', 'desc': 'Startup ACM to BIOS communication in MP platforms'}, 'TXT_POLICY_ENABLE': {'bit': '53', 'size': '1', 'desc': 'Startup ACM indication of run-time enabled status of TXT'}, 'BOOT_STATUS_DETAILS_54': {'bit': '54', 'size': '5', 'desc': 'Startup ACM to BIOS communication in MP platforms'}, 'BIOS_TRUSTED': {'bit': '59', 'size': '1', 'desc': 'BIOS is trusted'}, 'TXT_POLICY_DISABLE': {'bit': '60', 'size': '1', 'desc': 'TXT has been disabled by runtime FIT type 0xA record policy setting'}, 'BOOT_STATUS_DETAILS_61': {'bit': '61', 'size': '1', 'desc': 'Startup ACM to BIOS communication in MP platforms'}, 'CPU_ERROR': {'bit': '62', 'size': '1', 'desc': 'ACM authentication error'}, 'S_ACM_SUCCESS': {'bit': '63', 'size': '1', 'desc': 'S-ACM successfully enforced its logic for all provisioned technologies'}}}
+    + TXT_VER_FSBIF   : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x100', 'size': '4', 'desc': 'TXT Front Side Bus Interface', 'FIELDS': {'DEBUG_FUSE': {'bit': '31', 'size': '1', 'desc': 'Chipset is Production Fused (0 for Debug)'}}}
+    + TXT_DIDVID      : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x110', 'size': '8', 'desc': 'TXT Device ID', 'FIELDS': {'VID': {'bit': '0', 'size': '16', 'desc': 'Vendor ID'}, 'DID': {'bit': '16', 'size': '16', 'desc': 'Device ID'}, 'RID': {'bit': '32', 'size': '16', 'desc': 'Revision ID'}, 'EXTID': {'bit': '48', 'size': '16', 'desc': 'Extended ID'}}}
+    + TXT_VER_QPIIF   : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x200', 'size': '4', 'desc': 'TXT Intel QuickPath Interconnect Interface', 'FIELDS': {'PMRC_CAPABLE': {'bit': '19', 'size': '1', 'desc': 'PMRC Capable'}, 'DPR_CAPABLE': {'bit': '26', 'size': '1', 'desc': 'DPR Capable'}, 'DEBUG_FUSE': {'bit': '31', 'size': '1', 'desc': 'Chipset is Production Fused (0 for Debug)'}}}
+    + TXT_SINIT_BASE  : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x270', 'size': '4', 'desc': 'SINIT Base Address'}
+    + TXT_SINIT_SIZE  : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x278', 'size': '4', 'desc': 'SINIT Size'}
+    + TXT_MLE_JOIN    : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x290', 'size': '4', 'desc': 'MLE Join Base Address'}
+    + TXT_HEAP_BASE   : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x300', 'size': '4', 'desc': 'TXT Heap Base Address'}
+    + TXT_HEAP_SIZE   : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x308', 'size': '4', 'desc': 'TXT Heap Size'}
+    + TXT_MSEG_BASE   : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x310', 'size': '4', 'desc': 'TXT MSEG Base Address'}
+    + TXT_MSEG_SIZE   : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x318', 'size': '4', 'desc': 'TXT MSEG Size'}
+    + TXT_ACM_STATUS  : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x328', 'size': '4', 'desc': 'TXT ACM Status', 'FIELDS': {'MODULE_TYPE': {'bit': '0', 'size': '4', 'desc': 'Module Type'}, 'CLASS_CODE': {'bit': '4', 'size': '6', 'desc': 'Class Code'}, 'MAJOR_ERROR_CODE': {'bit': '10', 'size': '5', 'desc': 'Major Error Code'}, 'ACM_STARTED': {'bit': '15', 'size': '1', 'desc': 'ACM Started'}, 'MINOR_ERROR_CODE': {'bit': '16', 'size': '12', 'desc': 'Minor Error Code'}, 'VALID': {'bit': '31', 'size': '1', 'desc': 'Valid'}}}
+    + TXT_DPR         : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x330', 'size': '4', 'desc': 'TXT DMA Protected Range (deprecated, replaced by PCI0.0.0_DPR)', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock Bits 19:0'}, 'SIZE': {'bit': '4', 'size': '8', 'desc': 'Protected Memory Size (in MB)'}, 'TOP': {'bit': '20', 'size': '12', 'desc': 'Top Address+1 of DPR (base of TSEG)'}}}
+    + TXT_FIT         : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x340', 'size': '4', 'desc': 'FIT (Firmware Interface Table)', 'FIELDS': {'FIT_FAILED': {'bit': '0', 'size': '1', 'desc': 'FIT Failed'}, 'S_ACM_FAILED': {'bit': '1', 'size': '1', 'desc': 'S-ACM Failed'}, 'FIT_MEASURED': {'bit': '2', 'size': '1', 'desc': 'FIT Measured'}, 'FIT_FALLBACK': {'bit': '3', 'size': '1', 'desc': 'FIT Fallback'}}}
+    + TXT_SCRATCHPAD  : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x378', 'size': '8', 'desc': 'ACM Policy Status', 'FIELDS': {'TPM_TYPE': {'bit': '13', 'size': '2', 'desc': 'TPM type detected by Startup ACM (0 for no TPM, 1 for dTPM1.2, 2 for dTPM2.0, 3 for PTT)'}, 'TPM_SUCCESS': {'bit': '15', 'size': '1', 'desc': 'TPM Success'}, 'BOOT_POLICIES_2': {'bit': '17', 'size': '1', 'desc': 'Boot Policies'}, 'BACKUP_ACTION': {'bit': '18', 'size': '2', 'desc': 'Backup Action'}, 'TXT_PROFILE': {'bit': '20', 'size': '5', 'desc': 'TXT Profile'}, 'MEMORY_SCRUB_POLICY': {'bit': '25', 'size': '2', 'desc': 'Memory Scrub Policy'}, 'IBB_DMA_PROTECTION': {'bit': '29', 'size': '1', 'desc': 'IBB (Initial Boot Block) DMA Protection'}, 'S_CRTM_STATUS': {'bit': '32', 'size': '3', 'desc': 'Startup ACM S-CRTM establishment'}, 'CPU_COSIGNING_ENABLE': {'bit': '35', 'size': '1', 'desc': 'CPU co-signing enabled'}, 'TPM_STARTUP_LOCALITY': {'bit': '36', 'size': '1', 'desc': 'Locality at which TPM2_Startup command was executed (0 for locality 3, 1 for locality 0)'}}}
+    + TXT_PUBLIC_KEY_0: {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x400', 'size': '8', 'desc': 'ACM Public Key Hash (bits 0:63)'}
+    + TXT_PUBLIC_KEY_1: {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x408', 'size': '8', 'desc': 'ACM Public Key Hash (bits 64:127)'}
+    + TXT_PUBLIC_KEY_2: {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x410', 'size': '8', 'desc': 'ACM Public Key Hash (bits 128:191)'}
+    + TXT_PUBLIC_KEY_3: {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x418', 'size': '8', 'desc': 'ACM Public Key Hash (bits 192:255)'}
+    + TXT_PCH_DIDVID  : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x810', 'size': '8', 'desc': 'TXT Platform Controller Hub Device ID', 'FIELDS': {'VID': {'bit': '0', 'size': '16', 'desc': 'Vendor ID'}, 'DID': {'bit': '16', 'size': '16', 'desc': 'Device ID'}, 'RID': {'bit': '32', 'size': '16', 'desc': 'Revision ID'}}}
+    + INSMM           : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x880', 'size': '4', 'desc': 'InSMM.STS', 'FIELDS': {'STS': {'bit': '0', 'size': '1', 'desc': 'BIOS Write Enable when enabled by SPI.BC.EISS=1'}}}
+    + TXT_E2STS       : {'type': 'memory', 'access': 'mmio', 'address': '0xFED30000', 'offset': '0x8F0', 'size': '8', 'desc': 'TXT Extended Error Status', 'FIELDS': {'SECRETS_STS': {'bit': '1', 'size': '1', 'desc': 'Secrets in Memory'}}}
+[*] loading controls..
+[*] loading locks..
+[*] looking for platform config in '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/tglu.xml'..
+[*] loading 'tglu' platform config from '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/tglu.xml'..
+[*] loading integrated devices/controllers..
+[*] loading MMIO BARs..
+    + MCHBAR          : {'bus': '0', 'dev': '0', 'fun': '0', 'reg': '0x48', 'width': '8', 'mask': '0x7FFFFE0000', 'size': '0x8000', 'enable_bit': '0', 'desc': 'Host Memory Mapped Register Range'}
+[*] loading I/O BARs..
+[*] loading indirect memory accesses definitions..
+[*] loading memory ranges..
+[*] loading configuration registers..
+    + PRMRR_MASK      : {'type': 'msr', 'msr': '0x1F5', 'desc': 'PRMRR MASK register', 'size': '0x4', 'FIELDS': {'PRMRR_LOCK': {'bit': '10', 'size': '1', 'desc': 'PRMRR Lock Bit'}, 'PRMRR_VLD': {'bit': '11', 'size': '1', 'desc': 'PRMRR Valid Bit set by mcheck'}, 'PRMRR_mask_bits': {'bit': '12', 'size': '40', 'desc': 'PRMRR mask bits'}}}
+    + PRMRR_PHYBASE   : {'type': 'msr', 'msr': '0x2A0', 'desc': 'PRMRR BASE Address 0', 'size': '0x4', 'FIELDS': {'PRMRR_MEMTYPE': {'bit': '0', 'size': '3', 'desc': 'PRMRR Memory Type'}, 'PRMRR_CONFIGURED': {'bit': '3', 'size': '1', 'desc': 'PRMRR Base Configured'}, 'PRMRR_base_address_fields': {'bit': '12', 'size': '40', 'desc': 'PRMRR base address bits'}}}
+    + MSR_BIOS_DONE   : {'type': 'msr', 'msr': '0x151', 'desc': 'BIOS Done Status', 'size': '0x4', 'FIELDS': {'SoC_BIOS_DONE': {'bit': '1', 'size': '1', 'desc': 'SoC init done'}, 'IA_UNTRUSTED': {'bit': '0', 'size': '1', 'desc': 'Untrusted mode enable bit'}}}
+    + MSR_SMM_FEATURE_CONTROL: {'type': 'msr', 'msr': '0x4E0', 'desc': 'Enhanced SMM Feature Control', 'size': '0x4', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock bit'}, 'SMM_Code_Chk_En': {'bit': '2', 'size': '1', 'desc': 'Prevents SMM from executing code outside the ranges defined by the SMRR'}}}
+    + PCI0.0.0_REMAPBASE: {'type': 'mmio', 'bar': 'MCHBAR', 'offset': '0x5090', 'size': '8', 'desc': 'Memory Remap Base Address'}
+    + PCI0.0.0_REMAPLIMIT: {'type': 'mmio', 'bar': 'MCHBAR', 'offset': '0x5098', 'size': '8', 'desc': 'Memory Remap Limit Address'}
+    + PCI0.0.0_GGC    : {'type': 'pcicfg', 'bus': '0', 'dev': '0', 'fun': '0', 'offset': '0x50', 'size': '2', 'desc': 'Graphics Control', 'FIELDS': {'GMS': {'bit': '8', 'size': '8', 'desc': 'GMS'}, 'GGMS': {'bit': '6', 'size': '2', 'desc': 'GGMS'}, 'VAMEN': {'bit': '2', 'size': '1', 'desc': 'VAMEN'}, 'IVD': {'bit': '1', 'size': '1', 'desc': 'IVD'}, 'GGCLOCK': {'bit': '0', 'size': '1', 'desc': 'GGC Lock'}}}
+    + PCI0.0.0_PAVPC  : {'type': 'pcicfg', 'bus': '0', 'dev': '0', 'fun': '0', 'offset': '0x58', 'size': '4', 'desc': 'PAVP Control', 'FIELDS': {'PCMBASE': {'bit': '20', 'size': '12', 'desc': 'PCMBASE'}, 'WOPCM': {'bit': '7', 'size': '2', 'desc': 'WOPCM Size'}, 'ASMFEN': {'bit': '6', 'size': '1', 'desc': 'ASMF Method Enable'}, 'OVTATTACK': {'bit': '4', 'size': '1', 'desc': 'Override Unsolicited Connection State Attack and Terminate'}, 'HVYMODSEL': {'bit': '3', 'size': '1', 'desc': 'HVY mode selection'}, 'PAVPLCK': {'bit': '2', 'size': '1', 'desc': 'PAVP Lock'}, 'PAVPE': {'bit': '1', 'size': '1', 'desc': 'PAVP Enable'}, 'PCME': {'bit': '0', 'size': '1', 'desc': 'PCM Enable'}}}
+    + PCI0.0.0_DPR    : {'type': 'pcicfg', 'bus': '0', 'dev': '0', 'fun': '0', 'offset': '0x5C', 'size': '4', 'desc': 'DMA Protected Region', 'FIELDS': {'TOPOFDPR': {'bit': '20', 'size': '12', 'desc': 'Top of DPR'}, 'DPRSIZE': {'bit': '4', 'size': '8', 'desc': 'DPR Size'}, 'EPM': {'bit': '2', 'size': '1', 'desc': 'DPR Enable'}, 'PRS': {'bit': '1', 'size': '1', 'desc': 'DPR Status'}, 'LOCK': {'bit': '0', 'size': '1', 'desc': 'DPR Lock'}}}
+    + PCI0.0.0_BDSM   : {'type': 'pcicfg', 'bus': '0', 'dev': '0', 'fun': '0', 'offset': '0xB0', 'size': '4', 'desc': 'Base of Graphics Stolen Memory', 'FIELDS': {'BDSM': {'bit': '20', 'size': '12', 'desc': 'DSM Base'}, 'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}}}
+    + IMR_IA_EX_BASE  : {'type': 'mmio', 'bar': 'MCHBAR', 'offset': '0x6A40', 'size': '8', 'desc': 'IMR IA Exclude Range base', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}, 'BASE': {'bit': '10', 'size': '29', 'desc': 'Base'}}}
+    + IMR_IA_EX_LIMIT : {'type': 'mmio', 'bar': 'MCHBAR', 'offset': '0x6A48', 'size': '8', 'desc': 'IMR IA Exclude Range mask', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}, 'LIMIT': {'bit': '10', 'size': '29', 'desc': 'Mask'}}}
+    + IMR_GT_EX_BASE  : {'type': 'mmio', 'bar': 'MCHBAR', 'offset': '0x6A50', 'size': '8', 'desc': 'IMR GT Exclude Range base', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}, 'BASE': {'bit': '10', 'size': '29', 'desc': 'Base'}}}
+    + IMR_GT_EX_LIMIT : {'type': 'mmio', 'bar': 'MCHBAR', 'offset': '0x6A58', 'size': '8', 'desc': 'IMR GT Exclude Range mask', 'FIELDS': {'LOCK': {'bit': '0', 'size': '1', 'desc': 'Lock'}, 'LIMIT': {'bit': '10', 'size': '29', 'desc': 'Mask'}}}
+    - PCI0.0.0_MESEG_BASE: MESEG mapping method has changed.
+    - PCI0.0.0_MESEG_MASK: MESEG mapping method has changed.
+    - PCI0.0.0_SMRAMC : Compatible SMRAM is not supported.
+    - MSR_LT_LOCK_MEMORY: Not defined for platform
+    - PRMRR_UNCORE_PHYBASE: Not defined for the platform
+    - PRMRR_UNCORE_MASK: Not defined for the platform
+[*] loading controls..
+[*] loading locks..
+[*] looking for platform config in '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_5xxlp.xml'..
+[*] loading 'pch_5xxlp' PCH config from '/home/bh/devel/chipsec-brent/chipsec/cfg/8086/pch_5xxlp.xml'..
+[*] loading integrated devices/controllers..
+    + eSPI            : {'bus': '0', 'dev': '0x1F', 'fun': '0', 'vid': '0x8086', 'did': '0xA082,0xA087'}
+    + P2SBC           : {'bus': '0', 'dev': '0x1F', 'fun': '1', 'vid': '0x8086', 'did': '0xA0A0'}
+    + PMC             : {'bus': '0', 'dev': '0x1F', 'fun': '2', 'vid': '0x8086', 'did': '0xA0A1'}
+    + HDA             : {'bus': '0', 'dev': '0x1F', 'fun': '3', 'vid': '0x8086', 'did': '0xA0C8'}
+    + SMBUS           : {'bus': '0', 'dev': '0x1F', 'fun': '4', 'vid': '0x8086', 'did': '0xA0A3'}
+    + SPI             : {'bus': '0', 'dev': '0x1F', 'fun': '5', 'vid': '0x8086', 'did': '0xA0A4'}
+[*] loading MMIO BARs..
+    + HDABAR          : {'register': 'HDABA', 'base_field': 'BA', 'size': '0x1000', 'desc': 'HD Audio Base'}
+    + SPIBAR          : {'register': 'BIOS_SPI_BAR0', 'base_field': 'MEMBAR', 'size': '0x1000', 'desc': 'SPI Controller Register Range'}
+    + PWRMBASE        : {'register': 'PWRMBASE', 'base_field': 'BA', 'size': '0x1000', 'fixed_address': '0xFE000000', 'desc': 'Power Management Register Range'}
+    + SBREGBAR        : {'register': 'SBREG_BAR', 'base_field': 'RBA', 'size': '0x1000000', 'fixed_address': '0xFD000000', 'desc': 'Sideband Register Access BAR'}
+[*] loading I/O BARs..
+    + ABASE           : {'register': 'ABASE', 'base_field': 'BA', 'size': '0x80', 'fixed_address': '0x1800', 'desc': 'ACPI Base Address'}
+    + PMBASE          : {'register': 'ABASE', 'base_field': 'BA', 'size': '0x80', 'fixed_address': '0x1800', 'desc': 'ACPI Base Address'}
+    + TCOBASE         : {'register': 'TCOBASE', 'base_field': 'TCOBA', 'size': '0x20', 'desc': 'TCO Base Address'}
+    + SMBUS_BASE      : {'register': 'SBA', 'base_field': 'BA', 'size': '0x20', 'desc': 'SMBus Base Address'}
+[*] loading indirect memory accesses definitions..
+[*] loading memory ranges..
+[*] loading configuration registers..
+    + SBREG_BAR       : {'type': 'pcicfg', 'device': 'P2SBC', 'offset': '0x10', 'size': '4', 'desc': 'Sideband Register Access BAR', 'FIELDS': {'RBA': {'bit': '24', 'size': '8', 'desc': 'Register Base Address'}}}
+    + P2SBC           : {'type': 'pcicfg', 'device': 'P2SBC', 'offset': '0xE0', 'size': '4', 'desc': 'P2SB Configuration Register', 'FIELDS': {'HIDE': {'bit': '8', 'size': '1', 'desc': 'Hide SBREG_BAR'}, 'MASKLOCK': {'bit': '17', 'size': '1', 'desc': 'P2SB Mask Lock'}, 'SBILOCK': {'bit': '31', 'size': '1', 'desc': 'SBI register Lock'}}}
+    + P2SB_HIDE       : {'type': 'pcicfg', 'device': 'P2SBC', 'offset': '0xE1', 'size': '1', 'desc': 'P2SB Configuration Register hide-unhide', 'FIELDS': {'HIDE': {'bit': '0', 'size': '1', 'desc': 'Hide SBREG_BAR'}}}
+    + PWRMBASE        : {'type': 'pcicfg', 'device': 'PMC', 'offset': '0x10', 'size': '8', 'desc': 'PM Base Address', 'FIELDS': {'STYPE': {'bit': '0', 'size': '1', 'desc': 'Space Type (always 0 - memory space)'}, 'BA': {'bit': '13', 'size': '51', 'desc': 'Base Address'}}}
+    + ABASE           : {'type': 'pcicfg', 'device': 'PMC', 'offset': '0x20', 'size': '4', 'desc': 'ACPI Base Address', 'FIELDS': {'STYPE': {'bit': '0', 'size': '1', 'desc': 'Space Type (default 0)'}, 'BA': {'bit': '7', 'size': '25', 'desc': 'Base Address'}}}
+    + GEN_PMCON_1     : {'type': 'mmio', 'bar': 'PWRMBASE', 'offset': '0x1020', 'size': '4', 'desc': 'General PM Configuration A'}
+    + GEN_PMCON_2     : {'type': 'mmio', 'bar': 'PWRMBASE', 'offset': '0x1024', 'size': '4', 'desc': 'General PM Configuration B', 'FIELDS': {'SMI_LOCK': {'bit': '4', 'size': '1', 'desc': ''}}}
+    + ACTL            : {'type': 'mmio', 'bar': 'PWRMBASE', 'offset': '0x1BD8', 'size': '4', 'desc': 'ACPI Control', 'FIELDS': {'SCIS': {'bit': '0', 'size': '3', 'desc': 'SCI IRQ Select'}, 'EN': {'bit': '7', 'size': '1', 'desc': 'ACPI Enable'}}}
+    + HDABA           : {'type': 'pcicfg', 'device': 'HDA', 'offset': '0x10', 'size': '8', 'desc': 'Intel HD Audio Base Address', 'FIELDS': {'BA': {'bit': '14', 'size': '50', 'desc': 'Base Address'}, 'PREF': {'bit': '3', 'size': '1', 'desc': 'Prefetchable'}, 'ADDRNG': {'bit': '1', 'size': '2', 'desc': 'Address Range'}, 'SPTYP': {'bit': '0', 'size': '1', 'desc': 'Space Type'}}}
+    + SMBUS_VID       : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x00', 'size': '2', 'desc': 'VID'}
+    + SMBUS_DID       : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x02', 'size': '2', 'desc': 'DID'}
+    + SMBUS_CMD       : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x04', 'size': '2', 'desc': 'CMD'}
+    + SBA             : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x20', 'size': '4', 'desc': 'SMB Base Address', 'FIELDS': {'BA': {'bit': '5', 'size': '11', 'desc': 'Base Address'}, 'IOSI': {'bit': '0', 'size': '1', 'desc': 'IO Space Indicator'}}}
+    + SMBUS_HCFG      : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x40', 'size': '1', 'desc': 'Host Configuration', 'FIELDS': {'HST_EN': {'bit': '0', 'size': '1', 'desc': ''}, 'SMB_SMI_EN': {'bit': '1', 'size': '1', 'desc': ''}, 'I2C_EN': {'bit': '2', 'size': '1', 'desc': ''}, 'SSRESET': {'bit': '3', 'size': '1', 'desc': ''}, 'SPD_WD': {'bit': '4', 'size': '1', 'desc': ''}}}
+    + TCOBASE         : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x50', 'size': '4', 'desc': 'TCO Base Address', 'FIELDS': {'IOS': {'bit': '0', 'size': '1', 'desc': 'I/O space'}, 'TCOBA': {'bit': '5', 'size': '11', 'desc': 'TCO Base Address'}}}
+    + TCOCTL          : {'type': 'pcicfg', 'device': 'SMBUS', 'offset': '0x54', 'size': '4', 'desc': 'TCO Control', 'FIELDS': {'TCO_BASE_LOCK': {'bit': '0', 'size': '1', 'desc': 'TCO Base Lock'}, 'TCO_BASE_EN': {'bit': '8', 'size': '1', 'desc': 'TCO Base Enable'}}}
+    + BIOS_SPI_BAR0   : {'type': 'pcicfg', 'device': 'SPI', 'offset': '0x10', 'size': '4', 'desc': 'SPI BAR0 MMIO', 'FIELDS': {'MEMBAR': {'bit': '12', 'size': '20', 'desc': 'Memory Bar'}, 'MEMSIZE': {'bit': '4', 'size': '8', 'desc': 'Memory Size'}, 'PREFETCH': {'bit': '3', 'size': '1', 'desc': 'Prefetchable'}, 'TYP': {'bit': '1', 'size': '2', 'desc': 'Type'}, 'MEMSPACE': {'bit': '0', 'size': '1', 'desc': 'Memory Space Indicator'}}}
+    + BC              : {'type': 'pcicfg', 'device': 'SPI', 'offset': '0xDC', 'size': '4', 'desc': 'BIOS Control', 'FIELDS': {'BIOSWE': {'bit': '0', 'size': '1', 'desc': 'BIOS Write Enable'}, 'BLE': {'bit': '1', 'size': '1', 'desc': 'BIOS Lock Enable'}, 'SRC': {'bit': '2', 'size': '2', 'desc': 'SPI Read Configuration'}, 'TSS': {'bit': '4', 'size': '1', 'desc': 'Top Swap Status'}, 'SMM_BWP': {'bit': '5', 'size': '1', 'desc': 'SMM BIOS Write Protection'}, 'BBS': {'bit': '6', 'size': '1', 'desc': 'Boot BIOS Strap'}, 'BILD': {'bit': '7', 'size': '1', 'desc': 'BIOS Interface Lock Down'}, 'ASE_BWP': {'bit': '11', 'size': '1', 'desc': 'Async SMI Enable for BIOS Write Protection'}}}
+    + BFPR            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x00', 'size': '4', 'desc': 'BIOS Flash Primary Region Register (= FREG1)', 'FIELDS': {'PRB': {'bit': '0', 'size': '15', 'desc': 'BIOS Flash Primary Region Base'}, 'PRL': {'bit': '16', 'size': '15', 'desc': 'BIOS Flash Primary Region Limit'}}}
+    + HSFS            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x4', 'size': '4', 'desc': 'Hardware Sequencing Flash Status Register', 'FIELDS': {'FDONE': {'bit': '0', 'size': '1', 'desc': 'Flash Cycle Done'}, 'FCERR': {'bit': '1', 'size': '1', 'desc': 'Flash Cycle Error'}, 'AEL': {'bit': '2', 'size': '1', 'desc': 'Access Error Log'}, 'SCIP': {'bit': '5', 'size': '1', 'desc': 'SPI cycle in progress'}, 'WRSDIS': {'bit': '11', 'size': '1', 'desc': 'Write status disable'}, 'PR34LKD': {'bit': '12', 'size': '1', 'desc': 'PRR3 PRR4 Lock-Down'}, 'FDOPSS': {'bit': '13', 'size': '1', 'desc': 'Flash Descriptor Override Pin-Strap Status'}, 'FDV': {'bit': '14', 'size': '1', 'desc': 'Flash Descriptor Valid'}, 'FLOCKDN': {'bit': '15', 'size': '1', 'desc': 'Flash Configuration Lock-Down'}, 'FGO': {'bit': '16', 'size': '1', 'desc': 'Flash cycle go'}, 'FCYCLE': {'bit': '17', 'size': '4', 'desc': 'Flash Cycle Type'}, 'WET': {'bit': '21', 'size': '1', 'desc': 'Write Enable Type'}, 'FDBC': {'bit': '24', 'size': '6', 'desc': 'Flash Data Byte Count'}, 'FSMIE': {'bit': '31', 'size': '1', 'desc': 'Flash SPI SMI# Enable'}}}
+    + FREG0_FLASHD    : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x54', 'size': '4', 'desc': 'Flash Region 0 (Flash Descriptor)', 'FIELDS': {'RB': {'bit': '0', 'size': '15', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '15', 'desc': 'Region Limit'}}}
+    + FREG1_BIOS      : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x58', 'size': '4', 'desc': 'Flash Region 1 (BIOS)', 'FIELDS': {'RB': {'bit': '0', 'size': '15', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '15', 'desc': 'Region Limit'}}}
+    + FREG2_ME        : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x5C', 'size': '4', 'desc': 'Flash Region 2 (ME)', 'FIELDS': {'RB': {'bit': '0', 'size': '15', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '15', 'desc': 'Region Limit'}}}
+    + FREG3_GBE       : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x60', 'size': '4', 'desc': 'Flash Region 3 (GBe)', 'FIELDS': {'RB': {'bit': '0', 'size': '15', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '15', 'desc': 'Region Limit'}}}
+    + FREG4_PD        : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x64', 'size': '4', 'desc': 'Flash Region 4 (Platform Data)', 'FIELDS': {'RB': {'bit': '0', 'size': '15', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '15', 'desc': 'Region Limit'}}}
+    + FREG5           : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x68', 'size': '4', 'desc': 'Flash Region 5', 'FIELDS': {'RB': {'bit': '0', 'size': '15', 'desc': 'Region Base'}, 'RL': {'bit': '16', 'size': '15', 'desc': 'Region Limit'}}}
+    + PR0             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x84', 'size': '4', 'desc': 'Protected Range 0', 'FIELDS': {'PRB': {'bit': '0', 'size': '15', 'desc': 'Protected range base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read protection enabled'}, 'PRL': {'bit': '16', 'size': '15', 'desc': 'Protected range limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write protection enabled'}}}
+    + PR1             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x88', 'size': '4', 'desc': 'Protected Range 1', 'FIELDS': {'PRB': {'bit': '0', 'size': '15', 'desc': 'Protected range base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read protection enabled'}, 'PRL': {'bit': '16', 'size': '15', 'desc': 'Protected range limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write protection enabled'}}}
+    + PR2             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x8C', 'size': '4', 'desc': 'Protected Range 2', 'FIELDS': {'PRB': {'bit': '0', 'size': '15', 'desc': 'Protected range base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read protection enabled'}, 'PRL': {'bit': '16', 'size': '15', 'desc': 'Protected range limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write protection enabled'}}}
+    + PR3             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x90', 'size': '4', 'desc': 'Protected Range 3', 'FIELDS': {'PRB': {'bit': '0', 'size': '15', 'desc': 'Protected range base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read protection enabled'}, 'PRL': {'bit': '16', 'size': '15', 'desc': 'Protected range limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write protection enabled'}}}
+    + PR4             : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0x94', 'size': '4', 'desc': 'Protected Range 4', 'FIELDS': {'PRB': {'bit': '0', 'size': '15', 'desc': 'Protected range base'}, 'RPE': {'bit': '15', 'size': '1', 'desc': 'Read protection enabled'}, 'PRL': {'bit': '16', 'size': '15', 'desc': 'Protected range limit'}, 'WPE': {'bit': '31', 'size': '1', 'desc': 'Write protection enabled'}}}
+    + FDOC            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xB4', 'size': '4', 'desc': 'Flash Descriptor Observability Control Register', 'FIELDS': {'FDSI': {'bit': '2', 'size': '10', 'desc': 'Flash Descriptor Section Index'}, 'FDSS': {'bit': '12', 'size': '3', 'desc': 'Flash Descriptor Section Select'}}}
+    + FDOD            : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xB8', 'size': '4', 'desc': 'Flash Descriptor Observability Data Register', 'FIELDS': {'FDSD': {'bit': '0', 'size': '32', 'desc': 'Flash Descriptor Section Data'}}}
+    + LVSCC           : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xC4', 'size': '4', 'desc': 'Vendor Specific Component Capabilities', 'FIELDS': {'WG': {'bit': '2', 'size': '1', 'desc': 'Write Granularity'}, 'WSR': {'bit': '3', 'size': '1', 'desc': 'Write Status Required'}, 'WEWS': {'bit': '4', 'size': '1', 'desc': 'Write Enable on Write Status'}, 'QER': {'bit': '5', 'size': '3', 'desc': 'Quad Enable Requirements'}, 'EO_4k': {'bit': '8', 'size': '8', 'desc': '4k Erase Opcode'}, 'EO_64k': {'bit': '16', 'size': '8', 'desc': '64k Erase Opcode'}, 'SOFT_RST_SUP': {'bit': '24', 'size': '1', 'desc': 'Soft Reset Supported'}, 'SUSPEND_RESUME_SUP': {'bit': '25', 'size': '1', 'desc': 'Suspend/Resume Supported'}, 'DEEP_PWRDN_SUP': {'bit': '26', 'size': '1', 'desc': 'Deep Powerdown Supported'}, 'RPMC_SUP': {'bit': '27', 'size': '1', 'desc': 'RPMC Supported'}, 'EO_4k_VALID': {'bit': '28', 'size': '1', 'desc': '4k Erase Valid'}, 'EO_64k_VALID': {'bit': '29', 'size': '1', 'desc': '64k Erase Valid'}, 'VCL': {'bit': '30', 'size': '1', 'desc': 'Vendor Component Lock'}, 'CPPTV': {'bit': '31', 'size': '1', 'desc': 'Component Property Parameter Table Valid'}}}
+    + UVSCC           : {'type': 'mmio', 'bar': 'SPIBAR', 'offset': '0xC8', 'size': '4', 'desc': 'Vendor Specific Component Capabilities', 'FIELDS': {'WG': {'bit': '2', 'size': '1', 'desc': 'Write Granularity'}, 'WSR': {'bit': '3', 'size': '1', 'desc': 'Write Status Required'}, 'WEWS': {'bit': '4', 'size': '1', 'desc': 'Write Enable on Write Status'}, 'QER': {'bit': '5', 'size': '3', 'desc': 'Quad Enable Requirements'}, 'EO_4k': {'bit': '8', 'size': '8', 'desc': '4k Erase Opcode'}, 'EO_64k': {'bit': '16', 'size': '8', 'desc': '64k Erase Opcode'}, 'SOFT_RST_SUP': {'bit': '24', 'size': '1', 'desc': 'Soft Reset Supported'}, 'SUSPEND_RESUME_SUP': {'bit': '25', 'size': '1', 'desc': 'Suspend/Resume Supported'}, 'DEEP_PWRDN_SUP': {'bit': '26', 'size': '1', 'desc': 'Deep Powerdown Supported'}, 'RPMC_SUP': {'bit': '27', 'size': '1', 'desc': 'RPMC Supported'}, 'EO_4k_VALID': {'bit': '28', 'size': '1', 'desc': '4k Erase Valid'}, 'EO_64k_VALID': {'bit': '29', 'size': '1', 'desc': '64k Erase Valid'}, 'CPPTV': {'bit': '31', 'size': '1', 'desc': 'Component Property Parameter Table Valid'}}}
+    + RC              : {'type': 'mm_msgbus', 'port': '0xC3', 'offset': '0x3400', 'size': '4', 'desc': 'RTC Configuration', 'FIELDS': {'UE': {'bit': '2', 'size': '1', 'desc': 'Upper 128 Byte Enable'}, 'LL': {'bit': '3', 'size': '1', 'desc': 'Lower 128 Byte Lock'}, 'UL': {'bit': '4', 'size': '1', 'desc': 'Upper 128 Byte Lock'}, 'BILD': {'bit': '31', 'size': '1', 'desc': 'BIOS Interface Lock-Down'}}}
+    + BUC             : {'type': 'mm_msgbus', 'port': '0xC3', 'offset': '0x3414', 'size': '4', 'desc': 'Backed Up Control', 'FIELDS': {'TS': {'bit': '0', 'size': '1', 'desc': 'Top Swap'}}}
+    + TCO1_CNT        : {'type': 'iobar', 'bar': 'TCOBASE', 'offset': '0x8', 'size': '2', 'desc': 'TCO1 Control', 'FIELDS': {'TCO_LOCK': {'bit': '12', 'size': '1', 'desc': 'TCO Lock'}}}
+    - GC              : Not defined for platform
+[*] loading controls..
+    + BiosInterfaceLockDown: {'register': 'BC', 'field': 'BILD', 'desc': 'BIOS Interface Lock-Down'}
+    + TopSwap         : {'register': 'BC', 'field': 'TSS', 'desc': 'Top Swap Status'}
+    + SpiWriteStatusDis: {'register': 'HSFS', 'field': 'WRSDIS', 'desc': 'Write Status Disable'}
+    + SMILock         : {'register': 'GEN_PMCON_2', 'field': 'SMI_LOCK', 'desc': 'SMI Global Configuration Lock'}
+    + TcoCtlLock      : {'register': 'TCOCTL', 'field': 'TCO_BASE_LOCK', 'desc': 'TCO Base Lock'}
+[*] loading locks..
+[*] Discovering Bus Configuration:
+[*] Loading device buses..
+ + SMBUS           : VID 0x8086 - DID 0xA0A3 -> Bus 0x00
+ + eSPI            : VID 0x8086 - DID 0xA082 -> Bus 0x00
+ + HDA             : VID 0x8086 - DID 0xA0C8 -> Bus 0x00
+ + SPI             : VID 0x8086 - DID 0xA0A4 -> Bus 0x00
+[CHIPSEC] OS      : Linux 5.13.0-28-generic #31~20.04.1-Ubuntu SMP Wed Jan 19 14:08:10 UTC 2022 x86_64
+[CHIPSEC] Python  : 3.8.10 (64-bit)
+[CHIPSEC] Helper  : LinuxHelper (/home/bh/devel/chipsec-brent/chipsec/helper/linux/chipsec.ko)
+[CHIPSEC] Platform: TGL UP3 4 Cores
+[CHIPSEC]      VID: 8086
+[CHIPSEC]      DID: 9A14
+[CHIPSEC]      RID: 01
+[CHIPSEC] PCH     : 5xx PCH Premium UP3
+[CHIPSEC]      VID: 8086
+[CHIPSEC]      DID: A082
+[CHIPSEC]      RID: 20
+ 
+[*] Running from /home/bh/devel/chipsec-brent
+[+] loaded chipsec.modules.common.ia32cfg
+[*] running loaded modules ..
+
+[*] running module: chipsec.modules.common.ia32cfg
+[+] imported: chipsec.modules.common.ia32cfg
+[*] Module path: /home/bh/devel/chipsec-brent/chipsec/modules/common/ia32cfg.py
+[x][ =======================================================================
+[x][ Module: IA32 Feature Control Lock
+[x][ =======================================================================
+[*] Verifying IA32_Feature_Control MSR is locked on all logical CPUs..
+[cpu] # of logical CPUs: 8
+[cpu0] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[cpu0] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[*] cpu0: IA32_FEATURE_CONTROL Lock = 1
+[cpu1] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[cpu1] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[*] cpu1: IA32_FEATURE_CONTROL Lock = 1
+[cpu2] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[cpu2] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[*] cpu2: IA32_FEATURE_CONTROL Lock = 1
+[cpu3] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[cpu3] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[*] cpu3: IA32_FEATURE_CONTROL Lock = 1
+[cpu4] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[cpu4] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[*] cpu4: IA32_FEATURE_CONTROL Lock = 1
+[cpu5] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[cpu5] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[*] cpu5: IA32_FEATURE_CONTROL Lock = 1
+[cpu6] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[cpu6] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[*] cpu6: IA32_FEATURE_CONTROL Lock = 1
+[cpu7] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[cpu7] RDMSR( 0x3a ): EAX = 0x00000005, EDX = 0x00000000
+[*] IA32_FEATURE_CONTROL = 0x00000005 << Processor Feature Control (MSR 0x3A Thread 0x0)
+    [00] LOCK             = 1 << Lock 
+    [01] EN_VMX_INSIDE_SMX = 0 << Enable VMX inside SMX operation 
+    [02] EN_VMX_OUTSIDE_SMX = 1 << Enable VMX outside SMX operation 
+    [03] Reserved0        = 0 << Reserved 
+    [08] SENTER_LOCAL_EN  = 0 << SENTER Local Functions Enable 
+    [15] SENTER_GLOBAL_EN = 0 << SENTER Global Enable 
+    [16] Reserved1        = 0 << Reserved 
+    [17] SGX_LAUNCH_CTRL_EN = 0 << SGX Launch Control Enable 
+    [18] SGX_GLOBAL_EN    = 0 << SGX Global Enable 
+    [19] Reserved2        = 0 << Reserved 
+    [20] LMCE_ON          = 0 << Turn Local Machine Check On 
+[*] cpu7: IA32_FEATURE_CONTROL Lock = 1
+[+] PASSED: IA32_FEATURE_CONTROL MSR is locked on all logical CPUs
+
+[CHIPSEC] ***************************  SUMMARY  ***************************
+[CHIPSEC] Time elapsed            0.008
+[CHIPSEC] Modules total           1
+[CHIPSEC] Modules failed to run   0:
+[CHIPSEC] Modules passed          1:
+[+] PASSED: chipsec.modules.common.ia32cfg
+[CHIPSEC] Modules information     0:
+[CHIPSEC] Modules failed          0:
+[CHIPSEC] Modules with warnings   0:
+[CHIPSEC] Modules not implemented 0:
+[CHIPSEC] Modules not applicable  0:
+[CHIPSEC] *****************************************************************
+Module for /dev/chipsec unloaded successfully
+[helper] Linux Helper stopped/unloaded
+[helper] Linux Helper deleted

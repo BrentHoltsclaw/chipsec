@@ -1,0 +1,26 @@
+
+################################################################
+##                                                            ##
+##  CHIPSEC: Platform Hardware Security Assessment Framework  ##
+##                                                            ##
+################################################################
+[CHIPSEC] Version : 1.8.5
+[CHIPSEC] OS      : Linux 5.13.0-28-generic #31~20.04.1-Ubuntu SMP Wed Jan 19 14:08:10 UTC 2022 x86_64
+[CHIPSEC] Python  : 3.8.10 (64-bit)
+
+[CHIPSEC] API mode: using OS native API (not using CHIPSEC kernel module)
+[CHIPSEC] Helper  : LinuxHelper (None)
+[CHIPSEC] Platform: TGL UP3 4 Cores
+[CHIPSEC]      VID: 8086
+[CHIPSEC]      DID: 9A14
+[CHIPSEC]      RID: 01
+[CHIPSEC] PCH     : 5xx PCH Premium UP3
+[CHIPSEC]      VID: 8086
+[CHIPSEC]      DID: A082
+[CHIPSEC]      RID: 20
+[CHIPSEC] Executing command 'options' with args ['--help']
+
+Command found the following options
+dict_keys(['Mode', 'Login'])
+Command can now use Login data
+{'user': 'Admin', 'ip': '127.0.0.1'}

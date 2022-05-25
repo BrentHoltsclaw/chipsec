@@ -1,0 +1,52 @@
+################################################################
+##                                                            ##
+##  CHIPSEC: Platform Hardware Security Assessment Framework  ##
+##                                                            ##
+################################################################
+[CHIPSEC] Version 1.8.5
+[CHIPSEC] Arguments: -m common.ia32cfg -l validator.log
+
+****** Chipsec Linux Kernel module is licensed under GPL 2.0
+[CHIPSEC] API mode: using CHIPSEC kernel module API
+[CHIPSEC] OS      : Linux 5.13.0-28-generic #31~20.04.1-Ubuntu SMP Wed Jan 19 14:08:10 UTC 2022 x86_64
+[CHIPSEC] Python  : 3.8.10 (64-bit)
+[CHIPSEC] Helper  : LinuxHelper (/home/bh/devel/chipsec-brent/chipsec/helper/linux/chipsec.ko)
+[CHIPSEC] Platform: TGL UP3 4 Cores
+[CHIPSEC]      VID: 8086
+[CHIPSEC]      DID: 9A14
+[CHIPSEC]      RID: 01
+[CHIPSEC] PCH     : 5xx PCH Premium UP3
+[CHIPSEC]      VID: 8086
+[CHIPSEC]      DID: A082
+[CHIPSEC]      RID: 20
+ 
+[+] loaded chipsec.modules.common.ia32cfg
+[*] running loaded modules ..
+
+[*] running module: chipsec.modules.common.ia32cfg
+[x][ =======================================================================
+[x][ Module: IA32 Feature Control Lock
+[x][ =======================================================================
+[*] Verifying IA32_Feature_Control MSR is locked on all logical CPUs..
+[*] cpu0: IA32_FEATURE_CONTROL Lock = 1
+[*] cpu1: IA32_FEATURE_CONTROL Lock = 1
+[*] cpu2: IA32_FEATURE_CONTROL Lock = 1
+[*] cpu3: IA32_FEATURE_CONTROL Lock = 1
+[*] cpu4: IA32_FEATURE_CONTROL Lock = 1
+[*] cpu5: IA32_FEATURE_CONTROL Lock = 1
+[*] cpu6: IA32_FEATURE_CONTROL Lock = 1
+[*] cpu7: IA32_FEATURE_CONTROL Lock = 1
+[+] PASSED: IA32_FEATURE_CONTROL MSR is locked on all logical CPUs
+
+[CHIPSEC] ***************************  SUMMARY  ***************************
+[CHIPSEC] Time elapsed            0.005
+[CHIPSEC] Modules total           1
+[CHIPSEC] Modules failed to run   0:
+[CHIPSEC] Modules passed          1:
+[+] PASSED: chipsec.modules.common.ia32cfg
+[CHIPSEC] Modules information     0:
+[CHIPSEC] Modules failed          0:
+[CHIPSEC] Modules with warnings   0:
+[CHIPSEC] Modules not implemented 0:
+[CHIPSEC] Modules not applicable  0:
+[CHIPSEC] *****************************************************************

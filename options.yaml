@@ -1,0 +1,5 @@
+Mode: validator
+
+Login:
+  user: 'Admin'
+  ip: '127.0.0.1'
