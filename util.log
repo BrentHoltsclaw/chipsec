@@ -1,0 +1,40 @@
+usage: chipsec_util.py [options] <command>
+
+Options:
+  -h, --help            show this message and exit
+  -v, --verbose         verbose mode
+  --hal                 HAL mode
+  -d, --debug           debug mode
+  -vv, --vverbose       very verbose HAL debug mode
+  -l LOG, --log LOG     output to log file
+  -p {RENOIR,DNV,JKT,SKL,CFL,RKL,BDX,QRK,KBL,ADL,CML,HSW,GLK,BDW,IVB,HSX,TGLU,ICX,APL,SNB,AVN,IVT,BYT,WHL,ICL,CHT,SKX,TGLH}, --platform {RENOIR,DNV,JKT,SKL,CFL,RKL,BDX,QRK,KBL,ADL,CML,HSW,GLK,BDW,IVB,HSX,TGLU,ICX,APL,SNB,AVN,IVT,BYT,WHL,ICL,CHT,SKX,TGLH}
+                        explicitly specify platform code
+  --pch {PCH_5XXH,PCH_3XX,PCH_2XX,PCH_3XXLP,PCH_1XX,PCH_C620,PCH_495,PCH_3XXOP,PCH_C60X,PCH_4XXLP,PCH_4XXH,PCH_5XXLP,PCH_4XX,PCH_C61X}
+                        explicitly specify PCH code
+  -n, --no_driver       chipsec won't need kernel mode functions so don't load
+                        chipsec driver
+  -i, --ignore_platform
+                        run chipsec even if the platform is not recognized
+  --helper {linuxhelper,filehelper}
+                        specify OS Helper
+  Command               Util command to run: {acpi,check,cmos,config,cpu,decod
+                        e,deltas,ec,gdt,help,idt,igd,io,iommu,mem,mmcfg,mmcfg_
+                        base,mmio,msgbus,msr,nmi,options,pci,platform,reg,smbi
+                        os,smbus,smi,spd,spi,spidesc,tpm,txt,ucode,uefi,vmem,v
+                        mm}
+  Command Args          All numeric values are in hex <width> is in {1, byte,
+                        2, word, 4, dword}
+  -nb, --no_banner      chipsec won't display banner information
+  --skip_config         skip configuration and driver loading
+  --mode {validator,tester,developer}
+                        operating mode
+
+################################################################
+##                                                            ##
+##  CHIPSEC: Platform Hardware Security Assessment Framework  ##
+##                                                            ##
+################################################################
+[CHIPSEC] Version : 1.8.5
+[CHIPSEC] OS      : Linux 5.13.0-28-generic #31~20.04.1-Ubuntu SMP Wed Jan 19 14:08:10 UTC 2022 x86_64
+[CHIPSEC] Python  : 3.8.10 (64-bit)
+

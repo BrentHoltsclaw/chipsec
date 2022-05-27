@@ -1,5 +1,19 @@
-Mode: validator
+Logging: 
+  default: validator
+  Modes:
+    validator: 
+      VERBOSE: False
+      DEBUG: False
+      HAL: False
+    tester:
+      VERBOSE: True
+      DEBUG: False
+      HAL: False
+    developer:
+      VERBOSE: True
+      DEBUG: True
+      HAL: True
 
-Login:
+Network:
   user: 'Admin'
   ip: '127.0.0.1'

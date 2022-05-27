@@ -19,8 +19,8 @@ class OptionCommand(BaseCommand):
         self.logger.log("Command found the following options")
         self.logger.log(sects)
         self.logger.log('Command can now use Login data')
-        if "Login" in sects:
-            self.logger.log(self.cs.options.get_section_data('Login'))
+        if "Network" in sects:
+            self.logger.log(self.cs.options.get_section_data('Network'))
 
 
 commands = {'options': OptionCommand}

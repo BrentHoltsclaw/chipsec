@@ -37,6 +37,7 @@ from chipsec.exceptions import UnknownChipsetError
 from chipsec.testcase import ExitCode
 from chipsec.chipset import cs
 from chipsec.file import get_main_dir
+from chipsec.options import Options
 
 logger().UTIL_TRACE = True
 
@@ -80,6 +81,18 @@ class ChipsecUtil:
         self._cs = cs()
 
     def parse_args(self):
+        moptions = cs().options
+        print(moptions.get_sections())
+        if 'Logging' in moptions.get_sections():
+            logopt = moptions.get_section_data('Logging')
+            print(logopt)
+            if 'Modes' in logopt:
+                logger().get_modes(logopt['Modes'])
+                modes = logopt['Modes'].keys()
+                modedef = logopt['default']
+            else:
+                modes = []
+                modedef = None
         parser = argparse.ArgumentParser(usage='%(prog)s [options] <command>', add_help=False)
         options = parser.add_argument_group('Options')
         options.add_argument('-h', '--help', dest='show_help', help="show this message and exit", action='store_true')
@@ -106,6 +119,7 @@ class ChipsecUtil:
                              help="chipsec won't display banner information")
         options.add_argument('--skip_config', dest='_load_config', action='store_false',
                              help='skip configuration and driver loading')
+        options.add_argument('--mode', dest='runmode', choices=modes, help='operating mode', default=modedef)
 
         parser.parse_args(self.argv, namespace=ChipsecUtil)
         if self.show_help or self._cmd == "help":
@@ -124,6 +138,8 @@ class ChipsecUtil:
             logger().set_log_file(self.log)
         if not self._cmd_args:
             self._cmd_args = ["--help"]
+        if self.runmode is not None:
+            logger().set_mode = self.runmode
 
     def import_cmds(self):
         if self.CHIPSEC_LOADED_AS_EXE:
