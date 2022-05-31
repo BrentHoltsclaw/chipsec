@@ -440,6 +440,8 @@ class ChipsecMain:
             logger().log("[*] Ignoring unsupported platform warning and continue execution")
         if self._from_file:
             self._driver_exists = "FileHelper"
+        if self.runmode is not None:
+            logger().set_mode = self.runmode
 
     def properties(self):
         ret = OrderedDict()

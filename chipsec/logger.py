@@ -139,7 +139,7 @@ class Logger:
     def __init__( self ):
         """The Constructor."""
         self.modes = None
-        self.default = 'validator'
+        self.default = None
         self.mytime = localtime()
         self.logfile = None
         self.debug = pyLogging.DEBUG
@@ -174,6 +174,7 @@ class Logger:
                 self.modes = logopt['Modes']
             if 'default' in logopt:
                 self.default = logopt['default']
+                self.set_mode(self.default)
 
     def get_options(self, options):
         if self.modes is not None:
