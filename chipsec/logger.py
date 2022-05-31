@@ -138,7 +138,7 @@ class Logger:
 
     def __init__( self ):
         """The Constructor."""
-        self.modes = []
+        self.modes = None
         self.default = 'validator'
         self.mytime = localtime()
         self.logfile = None
@@ -167,14 +167,17 @@ class Logger:
             self.DEBUG = self.modes[mode]['DEBUG']
             self.HAL = self.modes[mode]['HAL']
 
-    def set_options(self, logopt):
-        if 'Modes' in logopt.keys():
-            self.modes = logopt['Modes']
-        if 'default' in logopt:
-            self.default = logopt['default']
+    def set_options(self, opts):
+        if 'Logging' in opts.get_sections():
+            logopt = opts.get_section_data('Logging')
+            if 'Modes' in logopt.keys():
+                self.modes = logopt['Modes']
+            if 'default' in logopt:
+                self.default = logopt['default']
 
     def get_options(self, options):
-        options.add_argument('--mode', dest='runmode', choices=self.modes, help='operating mode', default=self.default)
+        if self.modes is not None:
+            options.add_argument('--mode', dest='runmode', choices=self.modes, help='operating mode', default=self.default)
 
     def set_log_file( self, name=None ):
         """Sets the log file for the output."""

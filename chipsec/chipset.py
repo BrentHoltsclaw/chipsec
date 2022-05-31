@@ -109,8 +109,7 @@ class Chipset:
 
         self.options = Options()
 
-        logopt = self.options.get_section_data('Logging')
-        logger().set_options(logopt)
+        logger().set_options(self.options)
 
         self.init_xml_configuration()
 
