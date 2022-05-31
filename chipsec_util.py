@@ -81,18 +81,6 @@ class ChipsecUtil:
         self._cs = cs()
 
     def parse_args(self):
-        moptions = cs().options
-        print(moptions.get_sections())
-        if 'Logging' in moptions.get_sections():
-            logopt = moptions.get_section_data('Logging')
-            print(logopt)
-            if 'Modes' in logopt:
-                logger().get_modes(logopt['Modes'])
-                modes = logopt['Modes'].keys()
-                modedef = logopt['default']
-            else:
-                modes = []
-                modedef = None
         parser = argparse.ArgumentParser(usage='%(prog)s [options] <command>', add_help=False)
         options = parser.add_argument_group('Options')
         options.add_argument('-h', '--help', dest='show_help', help="show this message and exit", action='store_true')
@@ -119,7 +107,7 @@ class ChipsecUtil:
                              help="chipsec won't display banner information")
         options.add_argument('--skip_config', dest='_load_config', action='store_false',
                              help='skip configuration and driver loading')
-        options.add_argument('--mode', dest='runmode', choices=modes, help='operating mode', default=modedef)
+        logger().get_options(options)
 
         parser.parse_args(self.argv, namespace=ChipsecUtil)
         if self.show_help or self._cmd == "help":

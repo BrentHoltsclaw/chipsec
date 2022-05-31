@@ -44,7 +44,7 @@ import chipsec.module
 import chipsec.result_deltas
 from chipsec import defines
 from chipsec import module_common
-from chipsec import chipset
+from chipsec.chipset import cs
 from chipsec.helper import oshelper
 from chipsec.logger import logger
 from chipsec.testcase import ExitCode, TestCase
@@ -75,7 +75,7 @@ class ChipsecMain:
         self.parse_args()
 
     def init_cs(self):
-        self._cs = chipset.cs()
+        self._cs = cs()
 
     def print_banner(self):
         """
@@ -383,11 +383,12 @@ class ChipsecMain:
         options.add_argument('-d', '--debug', help='debug mode', action='store_true')
         options.add_argument('-l', '--log', help='output to log file')
         options.add_argument('-vv', '--vverbose', help='very verbose HAL debug mode', action='store_true')
+        logger().get_options(options)
         adv_options = parser.add_argument_group('Advanced Options')
         adv_options.add_argument('-p', '--platform', dest='_platform', help='explicitly specify platform code',
-                                 choices=chipset.cs().chipset_codes, type=str.upper)
+                                 choices=cs().chipset_codes, type=str.upper)
         adv_options.add_argument('--pch', dest='_pch', help='explicitly specify PCH code',
-                                 choices=chipset.cs().pch_codes, type=str.upper)
+                                 choices=cs().pch_codes, type=str.upper)
         adv_options.add_argument('-n', '--no_driver', dest='_no_driver', action='store_true',
                                  help="chipsec won't need kernel mode functions so don't load chipsec driver")
         adv_options.add_argument('-i', '--ignore_platform', dest='_unknownPlatform', action='store_false',

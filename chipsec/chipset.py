@@ -108,12 +108,9 @@ class Chipset:
             self.helper = helper
 
         self.options = Options()
-        if 'Logging' in self.options.get_sections():
-            logopt = self.options.get_section_data('Logging')
-            if 'Modes' in logopt.keys():
-                logger().get_modes(logopt['Modes'])
-                if 'default' in logopt:
-                    logger().set_mode(logopt['default'])
+
+        logopt = self.options.get_section_data('Logging')
+        logger().set_options(logopt)
 
         self.init_xml_configuration()
 

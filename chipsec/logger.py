@@ -138,7 +138,8 @@ class Logger:
 
     def __init__( self ):
         """The Constructor."""
-        self.modes = None
+        self.modes = []
+        self.default = 'validator'
         self.mytime = localtime()
         self.logfile = None
         self.debug = pyLogging.DEBUG
@@ -160,14 +161,20 @@ class Logger:
         self.rootLogger.addHandler(self.logstream) #adds streamhandler to root logger
         self.Results = ChipsecResults()
 
-    def get_modes(self, modes):
-        self.modes = modes
-
     def set_mode(self, mode):
         if self.modes is not None and mode is not None:
             self.VERBOSE = self.modes[mode]['VERBOSE']
             self.DEBUG = self.modes[mode]['DEBUG']
             self.HAL = self.modes[mode]['HAL']
+
+    def set_options(self, logopt):
+        if 'Modes' in logopt.keys():
+            self.modes = logopt['Modes']
+        if 'default' in logopt:
+            self.default = logopt['default']
+
+    def get_options(self, options):
+        options.add_argument('--mode', dest='runmode', choices=self.modes, help='operating mode', default=self.default)
 
     def set_log_file( self, name=None ):
         """Sets the log file for the output."""
