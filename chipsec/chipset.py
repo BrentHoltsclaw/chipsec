@@ -238,12 +238,6 @@ class Chipset:
     def get_pch_name(self, id):
         return self.Cfg.pch_longname
 
-    def print_chipset(self):
-        logger().log("[*] Platform: {}\n          CPUID: {}\n           VID: {:04X}\n          DID: {:04X}\n          RID: {:02X}".format(self.Cfg.longname, self.get_cpuid(), self.Cfg.vid, self.Cfg.did, self.Cfg.rid))
-
-    def print_pch(self):
-        logger().log("[*] PCH     : {}\n          VID: {:04X}\n          DID: {:04X}\n          RID: {:02X}".format(self.Cfg.pch_longname, self.Cfg.pch_vid, self.Cfg.pch_did, self.Cfg.pch_rid))
-
     def is_core(self):
         return self.get_chipset_code() in CHIPSET_FAMILY["core"]
 
@@ -339,29 +333,6 @@ class Chipset:
                             logger().log(' + {:16s}: VID 0x{:04X} - DID 0x{:04X} -> Bus {:s}'.format(config_device, vid, tdid, buses))
                         break
 
-    #
-    # Load chipsec/cfg/<code>.py configuration file for platform <code>
-    #
-    # def init_cfg(self):
-    #     if self.code and '' != self.code:
-    #         try:
-    #             module_path = 'chipsec.cfg.' + self.code
-    #             module = importlib.import_module(module_path)
-    #             logger().log_good("imported platform specific configuration: chipsec.cfg.{}".format(self.code))
-    #             self.Cfg = getattr(module, self.code)()
-    #         except ImportError as msg:
-    #             if logger().DEBUG:
-    #                 logger().log("[*] Couldn't import chipsec.cfg.{}\n{}".format(self.code, str(msg)))
-
-    #     #
-    #     # Initialize platform configuration from XML files
-    #     #
-    #     try:
-    #         self.load_xml_configuration()
-    #     except:
-    #         if logger().DEBUG:
-    #             logger().log_bad(traceback.format_exc())
-    #         pass
 
     ##################################################################################
     #
