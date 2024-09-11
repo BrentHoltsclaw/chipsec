@@ -103,11 +103,12 @@ class Chipset:
         return _cpuid.get_proc_info()
 
     @classmethod
-    def basic_init_with_helper(cls, helper = None):
+    def basic_init_with_helper(cls, helper=None):
         _cs = cls()
         _cs.load_helper(helper)
         _cs.start_helper()
         return _cs
+
     def init(self, platform_code, req_pch_code, helper_name=None, start_helper=True, load_config=True, ignore_platform=False):
         self.using_return_codes = False
         self.consistency_checking = False
@@ -116,7 +117,8 @@ class Chipset:
         self.register = Register(self)
         self.control = Control(self)
         self.device = Device(self)
-        
+        raise_unknown_platform = False
+        msg = []
         self.load_config = load_config
         _unknown_proc = True
         _unknown_pch = True
@@ -132,10 +134,10 @@ class Chipset:
             self.cpuid = self.get_cpuid()
         else:
             self.load_helper(NoneHelper())
-        
+
         self.Cfg.load_parsers()
         self.Cfg.load_platform_info()
-        
+
         if load_config:
             self.init_cfg_bus()
             self.init_topology()
@@ -145,10 +147,10 @@ class Chipset:
                 if self.Cfg.is_pch_req() == False or self.Cfg.get_pch_code() != CHIPSET_CODE_UNKNOWN:
                     _unknown_pch = False
                 if _unknown_proc:
-                    msg = f'Unknown Platform: VID = 0x{self.Cfg.vid:04X}, DID = 0x{self.Cfg.did:04X}, RID = 0x{self.Cfg.rid:02X}, CPUID = 0x{self.cpuid:X}'
+                    msg.append(f'Unknown Platform: VID = 0x{self.Cfg.vid:04X}, DID = 0x{self.Cfg.did:04X}, RID = 0x{self.Cfg.rid:02X}, CPUID = 0x{self.cpuid:X}')
                     if start_helper:
-                        self.logger.log_error(msg)
-                        raise UnknownChipsetError(msg)
+                        self.logger.log_error(msg[-1])
+                        raise_unknown_platform = True
                     else:
                         self.logger.log(f'[!]       {msg}; Using Default.')
             if not _unknown_proc:  # Don't initialize config if platform is unknown
@@ -157,17 +159,19 @@ class Chipset:
                 if self.logger.DEBUG:
                     self.logger.log("[*] Discovering Bus Configuration:")
             if _unknown_pch:
-                msg = f'Unknown PCH: VID = 0x{self.Cfg.pch_vid:04X}, DID = 0x{self.Cfg.pch_did:04X}, RID = 0x{self.Cfg.pch_rid:02X}'
+                msg.append(f'Unknown PCH: VID = 0x{self.Cfg.pch_vid:04X}, DID = 0x{self.Cfg.pch_did:04X}, RID = 0x{self.Cfg.pch_rid:02X}')
                 if self.Cfg.is_pch_req() and start_helper:
-                    self.logger.log_error(f'Chipset requires a supported PCH to be loaded. {msg}')
-                    raise UnknownChipsetError(msg)
+                    self.logger.log_error(f'Chipset requires a supported PCH to be loaded. {msg[-1]}')
+                    raise_unknown_platform = True
                 else:
-                    self.logger.log(f'[!]       {msg}; Using Default.')
+                    self.logger.log(f'[!]       {msg[-1]}; Using Default.')
         if start_helper and ((self.logger.VERBOSE) or (load_config and (_unknown_pch or _unknown_proc))):
             pci.print_pci_devices(self.pci.enumerate_devices())
         if _unknown_pch or _unknown_proc:
-            msg = 'Results from this system may be incorrect.'
-            self.logger.log(f'[!]            {msg}')
+            msg.append('Results from this system may be incorrect.')
+            self.logger.log(f'[!]            {msg[-1]}')
+        if raise_unknown_platform:
+            raise UnknownChipsetError('\n'.join(msg))
 
     def load_helper(self, helper_name):
         if helper_name:
@@ -193,7 +197,6 @@ class Chipset:
             if hasattr(msg, 'errorcode'):
                 error_no = msg.errorcode
             raise OsHelperError(f'Message: "{msg}"', error_no)
-
 
     def switch_helper(self, helper_name):
         oldName = self.helper.name
@@ -265,7 +268,7 @@ class Chipset:
     def save_log_state(self) -> Tuple[bool, bool, bool]:
         old_log_state = (self.logger.HAL, self.logger.DEBUG, self.logger.VERBOSE)
         return old_log_state
-    
+
     def init_topology(self):
         _cpu = cpu.CPU(self)
         self.logger.log_debug('[*] Gathering CPU Topology..')
@@ -297,7 +300,8 @@ class Chipset:
 
 _chipset = None
 
-def cs():
+
+def cs() -> Chipset:
     global _chipset
 
     if _chipset is None:

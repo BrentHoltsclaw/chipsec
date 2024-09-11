@@ -25,16 +25,16 @@ import re
 import os
 import xml.etree.ElementTree as ET
 from chipsec.library.defines import is_hex
-from chipsec.library.exceptions import CSConfigError
+from chipsec.library.exceptions import CSConfigError, DeviceNotFoundError
 from chipsec.library.file import get_main_dir
 from chipsec.library.logger import logger
-from chipsec.library.register import RegList
+from chipsec.library.register import ObjList
 from chipsec.parsers import Stage
 from chipsec.parsers import stage_info, config_data
 from chipsec.cfg.parsers.ip.pci_device import PCIConfig
 
 
-scope_name = namedtuple("scope_name", ["vid", "parent", "name", "fields"])
+scope_name = namedtuple('scope_name', ['vid', 'parent', 'name', 'fields'])
 # Python 3.6 namedtuple does not accept defaults
 scope_name.__new__.__defaults__ = (None,) * 4
 
@@ -50,8 +50,8 @@ PCH_CODE_PREFIX = 'PCH_'
 class Cfg:
     def __init__(self):
         self.logger = logger()
-        self.parent_keys = ["CONFIG_PCI_RAW", "CONFIG_PCI", "MEMORY_RANGES", "MM_MSGBUS", "MSGBUS", "IO", "MSR", "MMIO_BARS", "IO_BARS"]
-        self.child_keys = ["IMA_REGISTERS", "REGISTERS", "CONTROLS", "LOCKS", "LOCKEDBY"]
+        self.parent_keys = ['CONFIG_PCI_RAW', 'CONFIG_PCI', 'MEMORY_RANGES', 'MM_MSGBUS', 'MSGBUS', 'IO', 'MSR', 'MMIO_BARS', 'IO_BARS']
+        self.child_keys = ['IMA_REGISTERS', 'REGISTERS', 'CONTROLS', 'LOCKS', 'LOCKEDBY']
         for key in self.parent_keys + self.child_keys:
             setattr(self, key, {})
         self.XML_CONFIG_LOADED = False
@@ -99,7 +99,7 @@ class Cfg:
     
     def _create_vid(self, vid_str):
         key_list = self.parent_keys + self.child_keys
-        skip_keys = ["LOCKS"]
+        skip_keys = ['LOCKS']
         if vid_str not in self.CONFIG_PCI:
             for key in key_list:
                 if key in skip_keys:
@@ -184,7 +184,7 @@ class Cfg:
             if parser.get_stage() != stage:
                 continue
             if parser.parser_name() in handlers:
-                raise CSConfigError(f"Tag handlers already contain handlers for parser {parser.parser_name()}")
+                raise CSConfigError(f'Tag handlers already contain handlers for parser {parser.parser_name()}')
             handlers.update({parser.parser_name(): parser.get_metadata()})
         return handlers
 
@@ -369,10 +369,10 @@ class Cfg:
     def add_extra_configs(self, path, filename=None, loadnow=False):
         config_path = os.path.join(get_main_dir(), 'chipsec', 'cfg', path)
         if os.path.isdir(config_path) and filename is None:
-            self.load_extra = [config_data(None, None, os.path.join(config_path, f)) for f in sorted(os.listdir(config_path))
+            self.load_extra = [config_data(None, None, os.path.join(config_path, f), None, None) for f in sorted(os.listdir(config_path))
                                if fnmatch(f, '*.xml')]
         elif os.path.isdir(config_path) and filename:
-            self.load_extra = [config_data(None, None, os.path.join(config_path, f)) for f in sorted(os.listdir(config_path))
+            self.load_extra = [config_data(None, None, os.path.join(config_path, f), None, None) for f in sorted(os.listdir(config_path))
                                if fnmatch(f, '*.xml') and fnmatch(f, filename)]
         else:
             raise CSConfigError(f'Unable to locate configuration file(s): {config_path}')
@@ -433,7 +433,7 @@ class Cfg:
                 did_str = self._make_hex_key_str(self.did)
                 self.rid = self.CONFIG_PCI_RAW[vid_str][did_str].get_rid(0, 0, 0)
             else:
-                raise CSConfigError("There is already a CPU detected, are you adding a new config?")
+                raise CSConfigError('There is already a CPU detected, are you adding a new config?')
             self.longname = sku['longname']
             self.req_pch = sku['req_pch']
         else:
@@ -455,7 +455,7 @@ class Cfg:
                     if 0x31 == cfg_data['dev'] and 0x0 == cfg_data['fun']:
                         self.rid = cfg_data['rid']
             else:
-                raise CSConfigError("There is already a PCH detected, are you adding a new config?")
+                raise CSConfigError('There is already a PCH detected, are you adding a new config?')
             self.pch_longname = sku['longname']
 
         # Create XML file load list
@@ -482,7 +482,6 @@ class Cfg:
         if self.load_extra:
             self._load_sec_configs(self.load_extra, Stage.EXTRA)
 
-
     ###
     # Scoping Functions
     ###
@@ -507,218 +506,23 @@ class Cfg:
             sname = name
         return scope_name(*(sname.split('.', 3)))
 
-
-    ###
-    # Control Functions
-    ###
-
-    def get_control_def(self, control_name):
-        return self.CONTROLS[control_name]
-
-    def is_control_defined(self, control_name):
-        return True if control_name in self.CONTROLS else False
-
-    def get_control_obj(self, control_name, instance=None):
-        controls = RegList()
-        if control_name in self.CONTROLS.keys():
-            if instance is not None and 'obj' in self.CONTROLS[control_name].keys():
-                return self.CONTROLS[control_name]['obj'][instance]
-            controls.extend(self.CONTROLS[control_name]['obj'])
-        return controls
+    # TODO: Review for correctness compared to chipsec/library/control.py:get_list_by_name()
+    # def get_control_obj(self, control_name, instance=None):
+    #     controls = ObjList()
+    #     if control_name in self.CONTROLS.keys():
+    #         if instance is not None and 'obj' in self.CONTROLS[control_name].keys():
+    #             return self.CONTROLS[control_name]['obj'][instance]
+    #         controls.extend(self.CONTROLS[control_name]['obj'])
+    #     return controls
     
-
-    ###
-    # Register Functions
-    ###
-    def get_register_def(self, reg_name):
-        scope = self.get_scope(reg_name)
-        vid, dev_name, register, _ = self.convert_internal_scope(scope, reg_name)
-        reg_def = self.REGISTERS[vid][dev_name][register]
-        if reg_def["type"] in ["pcicfg", "mmcfg"]:
-            dev = self.CONFIG_PCI[vid][dev_name]
-            reg_def['bus'] = dev['bus']
-            reg_def['dev'] = dev['dev']
-            reg_def['fun'] = dev['fun']
-        elif reg_def["type"] == "memory":
-            dev = self.MEMORY_RANGES[vid][dev_name]
-            reg_def['address'] = dev['address']
-            reg_def['access'] = dev['access']
-        elif reg_def["type"] == "mm_msgbus":
-            dev = self.MM_MSGBUS[vid][dev_name]
-            reg_def['port'] = dev['port']
-        elif reg_def["type"] == "indirect":
-            dev = self.IMA_REGISTERS[vid][dev_name]
-            if ('base' in dev):
-                reg_def['base'] = dev['base']
-            else:
-                reg_def['base'] = "0"
-            if (dev['index'] in self.REGISTERS[vid][dev_name]):
-                reg_def['index'] = dev['index']
-            else:
-                logger().log_error("Index register {} not found".format(dev['index']))
-            if (dev['data'] in self.REGISTERS[vid][dev_name]):
-                reg_def['data'] = dev['data']
-            else:
-                logger().log_error("Data register {} not found".format(dev['data']))
-        return reg_def
-
-    def get_register_obj(self, reg_name, instance=None):
-        reg_def = RegList()
-        scope = self.get_scope(reg_name)
-        vid, dev_name, register, _ = self.convert_internal_scope(scope, reg_name)
-        if vid in self.REGISTERS and dev_name in self.REGISTERS[vid] and register in self.REGISTERS[vid][dev_name]:
-            reg_def.extend(self.REGISTERS[vid][dev_name][register]['obj'])
-        for reg_obj in reg_def:
-            if reg_obj.instance == instance:
-                return reg_obj
-        if instance is not None:
-            return RegList()
-        else:
-            return reg_def
-
-    def get_mmio_def(self, bar_name):
-        ret = None
-        scope = self.get_scope(bar_name)
-        vid, device, bar, _ = self.convert_internal_scope(scope, bar_name)
-        if vid in self.MMIO_BARS and device in self.MMIO_BARS[vid]:
-            if bar in self.MMIO_BARS[vid][device]:
-                ret = self.MMIO_BARS[vid][device][bar]
-        return ret
-
-
-
-
-    def get_device_bus(self, dev_name):
-        scope = self.get_scope(dev_name)
-        vid, device, _, _ = self.convert_internal_scope(scope, dev_name)
-        if vid in self.CONFIG_PCI and device in self.CONFIG_PCI[vid]:
-            return self.CONFIG_PCI[vid][device]["bus"]
-        else:
-            return None
-
-    def is_register_defined(self, reg_name):
-        scope = self.get_scope(reg_name)
-        vid, device, register, _ = self.convert_internal_scope(scope, reg_name)
-        try:
-            return (self.REGISTERS[vid][device].get(register, None) is not None)
-        except KeyError:
-            return False
-
-    def is_device_defined(self, dev_name):
-        scope = self.get_scope(dev_name)
-        vid, device, _, _ = self.convert_internal_scope(scope, dev_name)
-        if self.CONFIG_PCI[vid].get(device, None) is None:
-            return False
-        else:
-            return True
-
-    def get_device_BDF(self, device_name):
-        scope = self.get_scope(device_name)
-        vid, device, _, _ = self.convert_internal_scope(scope, device_name)
-        try:
-            device = self.CONFIG_PCI[vid][device]
-        except KeyError:
-            device = None
-        if device is None or device == {}:
-            raise DeviceNotFoundError('DeviceNotFound: {}'.format(device_name))
-        b = device['bus']
-        d = device['dev']
-        f = device['fun']
-        return (b, d, f)
-
-    def register_has_field(self, reg_name, field_name):
-        scope = self.get_scope(reg_name)
-        vid, device, register, _ = self.convert_internal_scope(scope, reg_name)
-        try:
-            reg_def = self.REGISTERS[vid][device][register]
-        except KeyError:
-            return False
-        if 'FIELDS' not in reg_def:
-            return False
-        return (field_name in reg_def['FIELDS'])
-
-    def get_REGISTERS_match(self, name):
-        vid, device, register, field = self.convert_internal_scope("", name)
-        ret = []
-        if vid is None or vid == '*':
-            vid = self.REGISTERS.keys()
-        else:
-            vid = [vid]
-        for v in vid:
-            if v in self.REGISTERS:
-                if device is None or device == "*":
-                    dev = self.REGISTERS[v].keys()
-                else:
-                    dev = [device]
-                for d in dev:
-                    if d in self.REGISTERS[v]:
-                        if register is None or register == "*":
-                            reg = self.REGISTERS[v][d].keys()
-                        else:
-                            reg = [register]
-                        for r in reg:
-                            if r in self.REGISTERS[v][d]:
-                                if field is None or field == "*":
-                                    fld = self.REGISTERS[v][d][r]['FIELDS'].keys()
-                                else:
-                                    if field in self.REGISTERS[v][d][r]['FIELDS']:
-                                        fld = [field]
-                                    else:
-                                        fld = []
-                                for f in fld:
-                                    ret.append("{}.{}.{}.{}".format(v, d, r, f))
-        return ret
-
-    def get_MMIO_match(self, name):
-        vid, device, inbar, _ = self.convert_internal_scope("", name)
-        ret = []
-        if vid is None or vid == '*':
-            vid = self.REGISTERS.keys()
-        else:
-            vid = [vid]
-        for v in vid:
-            if v in self.MMIO_BARS:
-                if device is None or device == '*':
-                    dev = self.MMIO_BARS[v].keys()
-                else:
-                    dev = [device]
-                for d in dev:
-                    if d in self.MMIO_BARS[v]:
-                        if inbar is None or inbar == '*':
-                            bar = self.MMIO_BARS[v][d]
-                        else:
-                            bar = [inbar]
-                        for b in bar:
-                            if b in self.MMIO_BARS[v][d]:
-                                ret.append("{}.{}.{}".format(v, d, b))
-        return ret
-
-    ###
-    # Locks functions
-    ###
-    def get_lock_list(self):
-        return self.LOCKS.keys()
-
-    def is_lock_defined(self, lock_name):
-        return lock_name in self.LOCKS.keys()
-
-    def get_locked_value(self, lock_name):
-        logger().log_debug('Retrieve value for lock {}'.format(lock_name))
-        return self.LOCKS[lock_name]['value']
-
-    def get_lock_desc(self, lock_name):
-        return self.LOCKS[lock_name]['desc']
-
-    def get_lock_type(self, lock_name):
-        if 'type' in self.LOCKS[lock_name]:
-            mtype = self.LOCKS[lock_name]['type']
-        else:
-            mtype = "RW/L"
-        return mtype
-
-    def get_lockedby(self, lock_name):
-        vid, _, _, _ = self.convert_internal_scope("", lock_name)
-        if lock_name in self.LOCKEDBY[vid]:
-            return self.LOCKEDBY[vid][lock_name]
-        else:
-            return None
+    # TODO: Review for correctness compared to chipsec/library/register.py:has_field()
+    # def register_has_field(self, reg_name, field_name):
+    #     scope = self.get_scope(reg_name)
+    #     vid, device, register, _ = self.convert_internal_scope(scope, reg_name)
+    #     try:
+    #         reg_def = self.REGISTERS[vid][device][register]
+    #     except KeyError:
+    #         return False
+    #     if 'FIELDS' not in reg_def:
+    #         return False
+    #     return (field_name in reg_def['FIELDS'])

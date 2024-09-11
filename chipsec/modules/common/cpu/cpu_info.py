@@ -52,7 +52,7 @@ class cpu_info(BaseModule):
         self.cs.set_scope({
             "IA32_BIOS_SIGN_ID": "8086.MSR.IA32_BIOS_SIGN_ID",
         })
-        self.result.url ='https://chipsec.github.io/modules/chipsec.modules.common.cpu.cpu_info.html'
+        self.result.url = 'https://chipsec.github.io/modules/chipsec.modules.common.cpu.cpu_info.html'
 
     def is_supported(self) -> bool:
         if self.cs.register.has_field('IA32_BIOS_SIGN_ID', 'Microcode'):
@@ -63,7 +63,7 @@ class cpu_info(BaseModule):
     def run(self, module_argv: List[str]) -> int:
         self.logger.start_test('Current Processor Information:')
 
-        signId = self.cs.register.get_obj('IA32_BIOS_SIGN_ID')
+        signId = self.cs.register.get_list_by_name('IA32_BIOS_SIGN_ID')
 
         # thread_count = 1
         # if not self.cs.os_helper.is_efi():
@@ -101,8 +101,6 @@ class cpu_info(BaseModule):
             self.logger.log('[*]')
 
         self.logger.log_information('Processor information displayed')
-        
+
         self.result.setStatusBit(self.result.status.INFORMATION)
         return self.result.getReturnCode(ModuleResult.INFORMATION)
-
-
