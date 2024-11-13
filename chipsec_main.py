@@ -50,11 +50,6 @@ from chipsec.library.exceptions import UnknownChipsetError, OsHelperError
 from chipsec.library.options import Options
 from chipsec.library.module_helper import enumerate_modules, print_modules
 
-try:
-    import importlib
-except ImportError:
-    pass
-
 
 def parse_args(argv: Sequence[str]) -> Optional[Dict[str, Any]]:
     options = Options()
@@ -121,7 +116,6 @@ class ChipsecMain:
         self.Modules_Path = chipsec.library.file.get_module_dir()
         self.Loaded_Modules = []
         self.AVAILABLE_TAGS = []
-        self.MODPATH_RE = re.compile(r"^\w+(\.\w+)*$")
         self.version = defines.get_version()
         self.message = defines.get_message()
         self.__dict__.update(switches)
@@ -132,21 +126,6 @@ class ChipsecMain:
     ##################################################################################
     # Module API
     ##################################################################################
-
-    def import_module(self, module_path):
-        module = None
-        if not self.MODPATH_RE.match(module_path):
-            self.logger.log_error(f'Invalid module path: {module_path}')
-        else:
-            try:
-                module = importlib.import_module(module_path)
-            except BaseException as msg:
-                self.logger.log_error(f'Exception occurred during import of {module_path}: "{str(msg)}"')
-                if self.logger.DEBUG:
-                    self.logger.log_bad(traceback.format_exc())
-                if self.failfast:
-                    raise msg
-        return module
 
     def verify_module_tags(self, module):
         run_it = True
