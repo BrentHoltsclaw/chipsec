@@ -81,8 +81,6 @@ def parse_args(argv: Sequence[str]) -> Optional[Dict[str, Any]]:
     adv_options.add_argument('--pch', dest='_pch', help='Explicitly specify PCH code', choices=chipset.cs().Cfg.pch_codes, type=str.upper)
     adv_options.add_argument('-n', '--no_driver', dest='_no_driver', action='store_true',
                              help="Chipsec won't need kernel mode functions so don't load chipsec driver")
-    adv_options.add_argument('-i', '--ignore_platform', dest='_ignore_platform', action='store_true',
-                             help='Run chipsec even if the platform is not recognized (Deprecated)')
     adv_options.add_argument('--csv', dest='_csv_out', help='Specify filename for CSV output')
     adv_options.add_argument('-j', '--json', dest='_json_out', help='Specify filename for JSON output')
     adv_options.add_argument('-x', '--xml', dest='_xml_out', help='Specify filename for xml output (JUnit style)')
@@ -366,11 +364,6 @@ class ChipsecMain:
         if self._module_argv and len(self._module_argv) == 1 and self._module_argv[0].count(','):
             self.logger.log("[*] Use of the -a command no longer needs to have arguments concatenated with ','")
             self._module_argv = self._module_argv[0].split(',')
-        if self._ignore_platform:
-            self.logger.log_warning("Ignoring unsupported platform warning and continue execution.")
-            self.logger.log_warning("Most results cannot be trusted.")
-            self.logger.log_warning("Unless a platform independent module is being run, do not file issues against this run.")
-
 
     def properties(self):
         ret = OrderedDict()
@@ -396,19 +389,17 @@ class ChipsecMain:
             sys.path.append(os.path.abspath(import_path))
 
         try:
-            self._cs.init(self._platform, self._pch, self._helper, not self._no_driver, self._load_config, self._ignore_platform)
+            self._cs.init(self._platform, self._pch, self._helper, not self._no_driver, self._load_config)
         except UnknownChipsetError as msg:
             self.logger.log_error(f'Platform is not supported ({str(msg)}).')
-            if self._ignore_platform:
-                self.logger.log_error('To specify a cpu please use -p command-line option')
-                self.logger.log_error('To specify a pch please use --pch command-line option\n')
-                self.logger.log_error('If the correct configuration is not loaded, results should not be trusted.')
-                if self.logger.DEBUG:
-                    self.logger.log_bad(traceback.format_exc())
-                if self.failfast:
-                    raise msg
-                return ExitCode.EXCEPTION
-            self.logger.log_warning("Platform dependent functionality is likely to be incorrect")
+            self.logger.log_error('To specify a cpu please use -p command-line option')
+            self.logger.log_error('To specify a pch please use --pch command-line option\n')
+            self.logger.log_error('If the correct configuration is not loaded, results should not be trusted.')
+            if self.logger.DEBUG:
+                self.logger.log_bad(traceback.format_exc())
+            if self.failfast:
+                raise msg
+            return ExitCode.EXCEPTION
         except OsHelperError as os_helper_error:
             self.logger.log_error(str(os_helper_error))
             if self.logger.DEBUG:

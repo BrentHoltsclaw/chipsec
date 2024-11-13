@@ -96,8 +96,6 @@ def parse_args(argv: Sequence[str]) -> Optional[Dict[str, Any]]:
     options.add_argument('--pch', dest='_pch', help='Explicitly specify PCH code', choices=cs().Cfg.pch_codes, type=str.upper)
     options.add_argument('-n', '--no_driver', dest='_no_driver', action='store_true',
                          help="Chipsec won't need kernel mode functions so don't load chipsec driver")
-    options.add_argument('-i', '--ignore_platform', dest='_ignore_platform', action='store_true',
-                         help='Run chipsec even if the platform is not recognized (Deprecated)')
     options.add_argument('--helper', dest='_helper', help='Specify OS Helper', choices=helper().get_available_helpers(), default=default_helper)
     options.add_argument('-nb', '--no_banner', dest='_show_banner', action='store_false', help="Chipsec won't display banner information")
     options.add_argument('--skip_config', dest='_load_config', action='store_false', help='Skip configuration and driver loading')
@@ -164,7 +162,7 @@ class ChipsecUtil:
             return ExitCode.ERROR
 
         try:
-            self._cs.init(self._platform, self._pch, self._helper, reqs.load_driver(), reqs.load_config(), self._ignore_platform)
+            self._cs.init(self._platform, self._pch, self._helper, reqs.load_driver(), reqs.load_config())
         except UnknownChipsetError as msg:
             self.logger.log_error(f'Platform is not supported ({str(msg)}).')
             self.logger.log_error('To specify a cpu please use -p command-line option')

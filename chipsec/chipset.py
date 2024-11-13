@@ -101,7 +101,7 @@ class Chipset:
         _cs.start_helper()
         return _cs
 
-    def init(self, platform_code, req_pch_code, helper_name=None, start_helper=True, load_config=True, ignore_platform=False):
+    def init(self, platform_code, req_pch_code, helper_name=None, start_helper=True, load_config=True):
         self.using_return_codes = False
         self.consistency_checking = False
 
@@ -133,18 +133,17 @@ class Chipset:
         if load_config:
             self.init_cfg_bus()
             self.init_topology()
-            if not ignore_platform:
-                self.Cfg.platform_detection(platform_code, req_pch_code, self.cpuid)
-                _unknown_proc = not bool(self.Cfg.get_chipset_code())
-                if self.Cfg.is_pch_req() is False or self.Cfg.get_pch_code() != CHIPSET_CODE_UNKNOWN:
-                    _unknown_pch = False
-                if _unknown_proc:
-                    msg.append(f'Unknown Platform: VID = 0x{self.Cfg.vid:04X}, DID = 0x{self.Cfg.did:04X}, RID = 0x{self.Cfg.rid:02X}, CPUID = 0x{self.cpuid:X}')
-                    if start_helper:
-                        self.logger.log_error(msg[-1])
-                        raise_unknown_platform = True
-                    else:
-                        self.logger.log(f'[!]       {msg}; Using Default.')
+            self.Cfg.platform_detection(platform_code, req_pch_code, self.cpuid)
+            _unknown_proc = not bool(self.Cfg.get_chipset_code())
+            if self.Cfg.is_pch_req() is False or self.Cfg.get_pch_code() != CHIPSET_CODE_UNKNOWN:
+                _unknown_pch = False
+            if _unknown_proc:
+                msg.append(f'Unknown Platform: VID = 0x{self.Cfg.vid:04X}, DID = 0x{self.Cfg.did:04X}, RID = 0x{self.Cfg.rid:02X}, CPUID = 0x{self.cpuid:X}')
+                if start_helper:
+                    self.logger.log_error(msg[-1])
+                    raise_unknown_platform = True
+                else:
+                    self.logger.log(f'[!]       {msg}; Using Default.')
             if not _unknown_proc:  # Don't initialize config if platform is unknown
                 self.Cfg.load_platform_config()
                 # Load Bus numbers for this platform.
