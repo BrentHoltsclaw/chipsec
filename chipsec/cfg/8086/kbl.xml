@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <configuration platform="KBL" req_pch="True">
-<!-- XML configuration file for Ice Lake -->
+<!-- XML configuration file for Kaby Lake -->
 <!--
 CHIPSEC: Platform Security Assessment Framework
 Copyright (c) 2018-2021, Intel Corporation
@@ -27,15 +27,19 @@ chipsec@intel.com
   </info>
 
   <pci>
-    <device name="HOSTCTL" bus="0x00" dev="0x00" fun="0" config="HOSTCTL.hostctl1.xml"/>
-    <device name="HOSTCTL" bus="0x00" dev="0x00" fun="0" config="IOMMU.iommu.xml"/>
+    <device name="HOSTCTL" bus="0x00" dev="0x00" fun="0" config="HOSTCTL.hostctl1.xml, IOMMU.iommu.xml"/>
     <device name="IGD"     bus="0x00" dev="0x02" fun="0" config="IGD.igd0.xml" />
-    <device name="MEI1"    bus="0x00" dev="0x16" fun="0" config="ME.mei0.xml" />
-    <device name="P2SBC"   bus="0x00" dev="0x1F" fun="1" config="P2SB.p2sbc0.xml" />
-    <device name="SMBUS"   bus="0x00" dev="0x1F" fun="4" config="SMBUS.smbus0.xml" />
-    <device name="SPI"     bus="0x00" dev="0x1F" fun="5" config="SPI.spi0.xml" />
-    <device name="SPI"     bus="0x00" dev="0x1F" fun="5" config="SPI.descriptor0.xml" />
   </pci>
+
+  <mmiobar>
+    <bar name="PXPEPBAR" device="HOSTCTL"  register="PXPEPBAR" base_field="PXPEPBAR" size="0x1000" enable_field="PXPEPBAREN" desc="PCI Express Egress Port Register Range"/>
+    <bar name="MCHBAR"   device="HOSTCTL"  register="MCHBAR"   base_field="MCHBAR"   size="0x8000" enable_field="MCHBAREN"   desc="Host Memory Mapped Register Range"/>
+    <bar name="MMCFG"    device="HOSTCTL"  register="PCIEXBAR" base_field="PXPEPBAR" size="0x1000" enable_field="PCIEXBAREN" desc="PCI Express Register Range"/>
+    <bar name="DMIBAR"   device="HOSTCTL"  register="DMIBAR"   base_field="DMIBAR"   size="0x1000" enable_field="DMIBAREN"   desc="Root Complex Register Range"/>
+    <bar name="VTBAR"    device="MCHBAR"   register="VTBAR"    base_field="Base"     size="0x1000" enable_field="Enable"     desc="Intel VT-d Register Register Range"/>
+    <bar name="GFXVTBAR" device="MCHBAR"   register="GFXVTBAR" base_field="Base"     size="0x1000" enable_field="Enable"     desc="Intel Processor Graphics VT-d Register Range"/>
+    <bar name="GTTMMADR" device="IGD"      register="GTTMMADR" base_field="MBA"      size="0x1000000" desc="Graphics Translation Table Range"/>
+  </mmiobar>
 
   <msr>
     <definition name="MSR" config="MSR.msr2.xml" />
@@ -43,6 +47,7 @@ chipsec@intel.com
 
   <memory>
     <range name="TPM" access="mmio" address="0xFED40000" size="0x10000" config="TPM.tpm12.xml" />
+    <range name="LT_PUBLIC_SPACE" access="mmio" address="0xFED30000" limit="0xFED3FFFF" config="TPM.txt.xml" />
   </memory>
 
 </configuration>

@@ -1,10 +1,6 @@
 <?xml version="1.0"?>
 <configuration>
 
-  <mmio>
-    <bar name="GTTMMADR" register="GTTMMADR" base_field="MBA" size="0x1000000" desc="Graphics Translation Table Range"/>
-  </mmio>
-
   <!-- #################################### -->
   <!--                                      -->
   <!-- Configuration registers              -->

@@ -4,23 +4,6 @@
 
     <!-- #################################### -->
     <!--                                      -->
-    <!-- Memory Mapped I/O spaces (MMIO BARs) -->
-    <!--                                      -->
-    <!-- #################################### -->
-    <mmio>
-        <bar name="SPIBAR"  register="SPIBAR0" base_field="MEMBAR" size="0x1000" desc="SPI Controller Register Range" />
-    </mmio>
-
-    <!-- #################################### -->
-    <!--                                      -->
-    <!-- I/O spaces (I/O BARs)                -->
-    <!--                                      -->
-    <!-- #################################### -->
-    <io>
-    </io>
-
-    <!-- #################################### -->
-    <!--                                      -->
     <!-- Configuration registers              -->
     <!--                                      -->
     <!-- #################################### -->
@@ -206,7 +189,6 @@
         <control name="BiosLockEnable"         register="BC"    field="BLE"      desc="BIOS Lock Enable"/>
         <control name="BiosWriteEnable"        register="BC"    field="BIOSWE"   desc="BIOS Write Enable"/>
         <control name="TopSwapStatus"          register="BC"    field="TSS"      desc="Top Swap Status"/>
-        <control name="FlashLockDown"          register="HSFS"  field="FLOCKDN"  desc="Flash Configuration Lock-Down"/>
         <control name="BiosInterfaceLockDown"  register="BC"   field="BILD"     desc="BIOS Interface Lock-Down"/>
     </controls>
 
