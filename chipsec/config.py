@@ -441,9 +441,9 @@ class Cfg:
             if not pch_code:
                 vid_str = make_hex_key_str(self.pch_vid)
                 did_str = make_hex_key_str(self.pch_did)
-                for cfg_data in self.CONFIG_PCI_RAW[vid_str][did_str]:
-                    if 0x31 == cfg_data['dev'] and 0x0 == cfg_data['fun']:
-                        self.rid = cfg_data['rid']
+                for cfg_data in self.CONFIG_PCI_RAW[vid_str][did_str].instances.values():
+                    if 0x31 == cfg_data.dev and 0x0 == cfg_data.fun:
+                        self.rid = cfg_data.rid
             else:
                 raise CSConfigError('There is already a PCH detected, are you adding a new config?')
             self.pch_longname = sku['longname']
