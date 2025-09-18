@@ -250,7 +250,7 @@ class Logger:
         fields = ['name', 'result', 'code', 'output']
         if not file_name.endswith('.csv'):
             file_name = file_name + '.csv'
-        with open(file_name, 'w') as csv_file:
+        with open(file_name, 'w', newline='') as csv_file:
             results_csv = csv.DictWriter(csv_file, fieldnames=fields)
             results_csv.writeheader()
             for test_case in test_cases:
@@ -301,7 +301,14 @@ class Logger:
         while self.chipsecLogger.filters:
             self.chipsecLogger.removeFilter(self.chipsecLogger.filters[0])
         while self.chipsecLogger.handlers:
-            self.chipsecLogger.removeHandler(self.chipsecLogger.handlers[0])
+            handler = self.chipsecLogger.handlers[0]
+            self.chipsecLogger.removeHandler(handler)
+            # Close file handlers to prevent resource warnings
+            if hasattr(handler, 'close'):
+                try:
+                    handler.close()
+                except Exception:
+                    pass
 
     def disable(self) -> None:
         """Disables the logging to file and closes the file if any."""

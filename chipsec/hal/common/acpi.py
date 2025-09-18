@@ -204,7 +204,7 @@ class ACPI(HALBase):
         self.tableList: Dict[str, List[int]] = defaultdict(list)
         self.get_ACPI_table_list()
 
-    def read_RSDP(self, rsdp_pa: int) -> acpi_tables.RSDP:
+    def read_RSDP(self, rsdp_pa: int) -> Optional[acpi_tables.RSDP]:
         rsdp_buf = self.cs.hals.Memory.read_physical_mem(rsdp_pa, acpi_tables.ACPI_RSDP_SIZE)
         rsdp = acpi_tables.RSDP()
         rsdp.parse(rsdp_buf)
@@ -212,7 +212,10 @@ class ACPI(HALBase):
             rsdp_buf = self.cs.hals.Memory.read_physical_mem(rsdp_pa, acpi_tables.ACPI_RSDP_EXT_SIZE)
             rsdp = acpi_tables.RSDP()
             rsdp.parse(rsdp_buf)
-        return rsdp
+        # Check if RSDP is valid
+        if rsdp.is_RSDP_valid():
+            return rsdp
+        return None
 
     #
     # Check RSDP in Extended BIOS Data Area

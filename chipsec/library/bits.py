@@ -102,7 +102,7 @@ def is_set(val: int, bit_mask: int) -> bool:
 
 def scan_single_bit_mask(bit_mask: int) -> Optional[int]:
     for bit_num in range(0, 7):
-        if bit_mask >> bit_num == 1:
+        if (bit_mask >> bit_num) & 1 == 1:
             return bit_num
     return None
 

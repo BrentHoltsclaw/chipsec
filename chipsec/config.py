@@ -161,7 +161,7 @@ class PlatformDetector:
         return {
             'did': [dev000['did']],
             'name': 'Unknown',
-            'code': 'UNKN',
+            'code': CHIPSET_CODE_UNKNOWN,
             'longname': 'Unknown Platform',
             'vid': dev000['vid'],
             'req_pch': None,

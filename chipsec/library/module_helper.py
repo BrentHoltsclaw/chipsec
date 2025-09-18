@@ -19,25 +19,36 @@
 #
 
 import os
-import fnmatch
 from chipsec.library.logger import logger
 from chipsec.library.file import get_module_dir
 from typing import List
 
 
 def enumerate_modules() -> List[str]:
-    mod_path = get_module_dir()
-    tools_path = os.path.join(mod_path)
-    files = []
-    for dirname, _, mod_fnames in os.walk(os.path.abspath(tools_path)):
-        for modx in mod_fnames:
-            if fnmatch.fnmatch(modx, '*.py') and not fnmatch.fnmatch(modx, '__init__.py'):
-                module_path = os.path.relpath(dirname, mod_path).replace('\\', '.').replace('/', '.')
-                files.append(f'{module_path}.{modx[:-3]}')
-    return files
+    try:
+        mod_path = get_module_dir()
+        tools_path = os.path.join(mod_path)
+        files = []
+        for dirname, _, mod_fnames in os.walk(os.path.abspath(tools_path)):
+            for modx in mod_fnames:
+                # Only include Python files, exclude __init__.py files
+                if modx.endswith('.py') and not modx.startswith('__init__'):
+                    module_path = os.path.relpath(dirname, mod_path).replace('\\', '.').replace('/', '.')
+                    if module_path and module_path != '.':
+                        files.append(f'{module_path}.{modx[:-3]}')
+                    else:
+                        files.append(f'{modx[:-3]}')
+        return files
+    except (OSError, IOError):
+        # Handle filesystem errors gracefully
+        return []
 
 
 def print_modules(module_list: List[str]) -> None:
-    logger().log('Enumerating modules...')
-    for module in module_list:
-        logger().log(f'\t{module}')
+    try:
+        logger().log('Enumerating modules...')
+        for module in module_list:
+            logger().log(f'\t{module}')
+    except Exception:
+        # Handle logging errors gracefully
+        pass

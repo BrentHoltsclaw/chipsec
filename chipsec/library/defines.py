@@ -135,7 +135,7 @@ def is_set(val: int, bit_mask: int) -> bool:
 
 def scan_single_bit_mask(bit_mask: int) -> Optional[int]:
     for bit_num in range(0, 7):
-        if bit_mask >> bit_num == 1:
+        if (bit_mask >> bit_num) & 1 == 1:
             return bit_num
     return None
 
@@ -166,14 +166,14 @@ SIZE2FORMAT: Dict[int, str] = {
 
 def bytestostring(mbytes: AnyStr) -> str:
     if isinstance(mbytes, bytes) or isinstance(mbytes, bytearray):
-        return mbytes.decode("latin_1")
+        return mbytes.decode("utf-8", errors="replace")
     else:
         return mbytes
 
 
 def stringtobytes(mstr: AnyStr) -> bytes:
     if isinstance(mstr, str):
-        return mstr.encode("latin_1")
+        return mstr.encode("utf-8")
     else:
         return mstr
 
@@ -239,5 +239,3 @@ def is_all_value(value_list: list, value: Any) -> bool:
 class ARCH_VID:
     INTEL = 0x8086
     AMD = 0x1022
-
-

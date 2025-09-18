@@ -62,12 +62,11 @@ def write_file(filename: str, buffer: Any, append: bool = False) -> bool:
     if isinstance(buffer, bytes) or isinstance(buffer, bytearray):
         perm += 'b'
     try:
-        f = open(filename, perm)
+        with open(filename, perm) as f:
+            f.write(buffer)
     except OSError:
         logger().log_error(f"Unable to open file '{filename:.256}' for write access")
         return False
-    f.write(buffer)
-    f.close()
 
     logger().log_debug(f"[file] Wrote {len(buffer):d} bytes to '{filename:.256}'")
     return True

@@ -23,7 +23,7 @@ import platform
 import struct
 from typing import Dict, List
 
-from chipsec.hal.uefi_fv import EFI_SECTION_ZLIB_AMD_HEADER_FORMAT, EFI_SECTION_ZLIB_AMD_HEADER_LENGTH
+from chipsec.library.uefi.fv import EFI_SECTION_ZLIB_AMD_HEADER_FORMAT, EFI_SECTION_ZLIB_AMD_HEADER_LENGTH
 from chipsec.library.logger import logger
 
 modules: Dict[str, bool] = {}
