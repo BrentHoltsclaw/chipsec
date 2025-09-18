@@ -1,0 +1,264 @@
+name: CHIPSEC CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, '3.10', '3.11']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest pytest-cov pytest-html
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Run CHIPSEC Test Suite
+      run: |
+        python tests/test_runner.py --report test_report.html
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-py${{ matrix.python-version }}
+        path: |
+          test_report.html
+          tests/
+
+    - name: Generate coverage report
+      run: |
+        python -m pytest --cov=chipsec --cov-report=html --cov-report=xml tests/
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      if: always()
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  security-test:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install security testing tools
+      run: |
+        pip install bandit safety
+
+    - name: Run Bandit security linter
+      run: |
+        bandit -r chipsec/ -f json -o bandit-report.json || true
+
+    - name: Run Safety vulnerability check
+      run: |
+        safety check --json > safety-report.json || true
+
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run integration tests
+      run: |
+        python -m pytest tests/test_integration.py -v --tb=short
+
+    - name: Run cross-platform compatibility tests
+      run: |
+        python -c "
+        import sys
+        sys.path.insert(0, '.')
+        from tests.test_integration import TestCrossPlatformIntegration
+        import unittest
+
+        suite = unittest.TestLoader().loadTestsFromTestCase(TestCrossPlatformIntegration)
+        runner = unittest.TextTestRunner(verbosity=2)
+        result = runner.run(suite)
+        exit(0 if result.wasSuccessful() else 1)
+        "
+
+  performance-test:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Run performance benchmarks
+      run: |
+        python -c "
+        import time
+        import sys
+        sys.path.insert(0, '.')
+
+        # Basic performance test
+        start_time = time.time()
+
+        from tests.test_utils import MockFactory
+        cs = MockFactory.create_mock_chipsec_cs()
+
+        # Test mock creation performance
+        mocks_created = 0
+        for i in range(100):
+            MockFactory.create_mock_chipsec_cs()
+            mocks_created += 1
+
+        end_time = time.time()
+        print(f'Created {mocks_created} mock objects in {end_time - start_time:.2f} seconds')
+        print(f'Average time per mock: {(end_time - start_time) / mocks_created * 1000:.2f} ms')
+        "
+
+  release-validation:
+    runs-on: ubuntu-latest
+    needs: [test, security-test, integration-test]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install build twine
+
+    - name: Build package
+      run: |
+        python -m build
+
+    - name: Validate package
+      run: |
+        python -m twine check dist/*
+
+    - name: Run comprehensive test suite
+      run: |
+        python tests/test_runner.py --verbose
+
+    - name: Validate test coverage
+      run: |
+        python -c "
+        import sys
+        sys.path.insert(0, '.')
+        from tests.test_runner import TestRunner
+
+        runner = TestRunner()
+        results = runner.run_all_tests()
+
+        min_success_rate = 95.0
+        actual_rate = results['summary']['success_rate']
+
+        print(f'Test success rate: {actual_rate:.1f}%')
+        print(f'Minimum required: {min_success_rate:.1f}%')
+
+        if actual_rate < min_success_rate:
+            print(f'ERROR: Test success rate {actual_rate:.1f}% is below minimum {min_success_rate:.1f}%')
+            sys.exit(1)
+        else:
+            print('SUCCESS: Test coverage meets requirements')
+        "
+
+  nightly-regression:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run full regression test suite
+      run: |
+        python tests/test_runner.py --report nightly_report.html --verbose
+
+    - name: Upload nightly report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: nightly-regression-report
+        path: nightly_report.html
+
+    - name: Check for regressions
+      run: |
+        python -c "
+        import sys
+        sys.path.insert(0, '.')
+        from tests.test_runner import TestRunner
+
+        runner = TestRunner()
+        results = runner.run_all_tests()
+
+        # Check for any failures or errors
+        if results['summary']['failures'] > 0 or results['summary']['errors'] > 0:
+            print('REGRESSION DETECTED!')
+            print(f'Failures: {results[\"summary\"][\"failures\"]}')
+            print(f'Errors: {results[\"summary\"][\"errors\"]}')
+            sys.exit(1)
+        else:
+            print('No regressions detected - all tests passed!')
+        "
