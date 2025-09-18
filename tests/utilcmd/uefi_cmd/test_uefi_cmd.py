@@ -1,4 +1,5 @@
 # CHIPSEC: Platform Security Assessment Framework
+from chipsec.command import toLoad
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -61,21 +62,21 @@ class TestUEFICommand:
         """Test requirements for decode command."""
         command = UEFICommand(['decode', 'test.rom'], cs=mock_cs)
         reqs = command.requirements()
-        assert reqs == command.toLoad.Nil
+        assert reqs == toLoad.Nil
 
     @pytest.mark.unit
     def test_requirements_var_list_spi(self, mock_cs):
         """Test requirements for var-list-spi command."""
         command = UEFICommand(['var-list-spi', 'test.rom'], cs=mock_cs)
         reqs = command.requirements()
-        assert reqs == command.toLoad.All
+        assert reqs == toLoad.All
 
     @pytest.mark.unit
     def test_requirements_other_commands(self, mock_cs):
         """Test requirements for other commands."""
         command = UEFICommand(['var-list'], cs=mock_cs)
         reqs = command.requirements()
-        assert reqs == command.toLoad.Driver
+        assert reqs == toLoad.Driver
 
     @pytest.mark.unit
     def test_parse_arguments_var_read(self, mock_cs):

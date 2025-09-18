@@ -41,7 +41,7 @@ class TestEFIStatusCodes:
     @pytest.mark.unit
     def test_efi_status_dict(self):
         """Test EFI_STATUS_DICT contains expected mappings."""
-        assert len(EFI_STATUS_DICT) == 30
+        assert len(EFI_STATUS_DICT) == 33
         assert EFI_STATUS_DICT[StatusCode.EFI_SUCCESS] == "EFI_SUCCESS"
         assert EFI_STATUS_DICT[StatusCode.EFI_NOT_FOUND] == "EFI_NOT_FOUND"
         assert EFI_STATUS_DICT[StatusCode.EFI_SECURITY_VIOLATION] == "EFI_SECURITY_VIOLATION"
@@ -148,7 +148,7 @@ class TestEFITableHeaders:
         # Test string representation contains key information
         header_str = str(header)
         assert 'SYSTIBI' in header_str
-        assert '2.80' in header_str  # Revision formatting
+        assert '2.128' in header_str  # Revision formatting
         assert '0x0000005C' in header_str
 
     @pytest.mark.unit
@@ -295,7 +295,7 @@ class TestEFITableSignatures:
     def test_efi_system_table_revision(self):
         """Test EFI_SYSTEM_TABLE_REVISION function."""
         # Test various revision values
-        assert EFI_SYSTEM_TABLE_REVISION(0x00020080) == '2.80'
+        assert EFI_SYSTEM_TABLE_REVISION(0x00020080) == '2.128'
         assert EFI_SYSTEM_TABLE_REVISION(0x00010002) == '1.2'
         assert EFI_SYSTEM_TABLE_REVISION(0x00000000) == '0.0'
 

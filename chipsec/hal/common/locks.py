@@ -30,6 +30,7 @@ class LockResult:
     DEFINED = bit(0)  # lock exists within configuration
     HAS_CONFIG = bit(1)  # lock configuration exists
     LOCKED = bit(2)  # lock matches value within xml
+    UNLOCKED = bit(5)  # lock does not match value within xml
     CAN_READ = bit(3)  # system is able to access the lock
     INCONSISTENT = bit(4)  # all lock results do not match
 
@@ -164,14 +165,14 @@ class Locks(HALBase):
         Returns:
             An integer indicating the lock state.
             Returns LockResult.LOCKED if all registers have the expected value.
-            Returns 0 if they do not match.
+            Returns LockResult.UNLOCKED if they do not match.
         """
         lock_obj, reg_list = self.get_cache()
         locked_value = lock_obj.lock_value
         reg_list.read()
         if reg_list.is_all_field_value(locked_value, lock_obj.get_field()):
             return LockResult.LOCKED
-        return 0
+        return LockResult.UNLOCKED
 
     def validate_lock_definition(self, lock_name: str) -> int:
         """

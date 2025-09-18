@@ -144,7 +144,7 @@ KEY:
             res_str = 'RW/O'
         elif is_set(is_locked, LockResult.LOCKED):
             res_str = 'Locked'
-        elif not is_set(is_locked, LockResult.LOCKED):
+        elif is_set(is_locked, LockResult.UNLOCKED):
             res_str = 'UnLocked'
         else:
             res_str = 'Unknown'

@@ -33,7 +33,7 @@ def run_chipsec_util(csu: ChipsecUtil, util_replay_file: str) -> int:
     comm = csu.commands[csu._cmd](csu._cmd_args, cs=csu._cs)
     comm.parse_arguments()
     reqs = comm.requirements()
-    csu._cs.init(csu._platform, csu._pch, csu._helper, reqs.load_driver(), reqs.load_config(), csu._ignore_platform)
+    csu.cs.init(csu._platform, csu._pch, csu._helper, reqs.load_driver(), reqs.load_config(), csu._ignore_platform)
     if util_replay_file:
         csu._helper.config_file = util_replay_file
         csu._helper._load()  

@@ -251,8 +251,11 @@ class TestCommandIntegration:
         integrated_cs.hals.SPI.get_SPI_JEDEC_ID.return_value = 0x123456
 
         # Mock SPI class for set_up
-        with patch('chipsec.hal.intel.spi.SPI') as mock_spi_class:
+        with patch('chipsec.utilcmd.spi_cmd.SPI') as mock_spi_class:
             mock_spi_instance = Mock()
+            mock_spi_instance.get_SPI_region.return_value = (0x0, 0x7FFFFF, 0x800000)
+            mock_spi_instance.read_spi_to_file.return_value = b'spi_flash_data'
+            mock_spi_instance.get_SPI_JEDEC_ID.return_value = 0x123456
             mock_spi_class.return_value = mock_spi_instance
 
             # Test info command
@@ -266,6 +269,7 @@ class TestCommandIntegration:
             # Test dump command
             spi_cmd2 = SPICommand(['dump', 'test.bin'], cs=integrated_cs)
             spi_cmd2.parse_arguments()
+            spi_cmd2.set_up()
             spi_cmd2._spi = mock_spi_instance
             spi_cmd2.spi_dump()
 

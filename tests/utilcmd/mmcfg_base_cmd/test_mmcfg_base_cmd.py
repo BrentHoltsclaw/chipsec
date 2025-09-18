@@ -17,6 +17,7 @@
 import pytest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.mmcfg_base_cmd import MMCfgBaseCommand
+from chipsec.command import toLoad
 from tests.test_utils import MockFactory
 
 
@@ -44,7 +45,7 @@ class TestMMCfgBaseCommand:
     def test_requirements(self, mmcfg_base_command):
         """Test command requirements."""
         reqs = mmcfg_base_command.requirements()
-        assert reqs == mmcfg_base_command.toLoad.All
+        assert reqs == toLoad.All
 
     @pytest.mark.unit
     def test_parse_arguments(self, mmcfg_base_command, mock_cs):

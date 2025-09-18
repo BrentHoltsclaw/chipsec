@@ -137,7 +137,7 @@ class TestLOCKCHECKCommand:
         mock_cs.hals.Locks.get_locks.return_value = ['DebugLock', 'BiosLock']
         mock_cs.hals.Locks.is_locked.side_effect = [
             LockResult.LOCKED | LockResult.DEFINED | LockResult.HAS_CONFIG | LockResult.CAN_READ,
-            LockResult.UNLOCKED | LockResult.DEFINED | LockResult.HAS_CONFIG | LockResult.CAN_READ
+            LockResult.DEFINED | LockResult.HAS_CONFIG | LockResult.CAN_READ  # Not locked = unlocked
         ]
 
         mock_lock_obj = Mock()
@@ -188,7 +188,7 @@ class TestLOCKCHECKCommand:
         lock_check_command.lockname = ['DebugLock', 'BiosLock']
         mock_cs.hals.Locks.is_locked.side_effect = [
             LockResult.LOCKED | LockResult.DEFINED | LockResult.HAS_CONFIG | LockResult.CAN_READ,
-            LockResult.UNLOCKED | LockResult.DEFINED | LockResult.HAS_CONFIG | LockResult.CAN_READ
+            LockResult.DEFINED | LockResult.HAS_CONFIG | LockResult.CAN_READ  # Not locked = unlocked
         ]
 
         mock_lock_obj = Mock()

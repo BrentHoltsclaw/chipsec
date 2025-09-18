@@ -17,6 +17,7 @@
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from chipsec.utilcmd.iommu_cmd import IOMMUCommand
+from chipsec.command import toLoad
 from chipsec.library.exceptions import IOMMUError, AcpiRuntimeError
 from tests.test_utils import MockFactory
 
@@ -51,7 +52,7 @@ class TestIOMMUCommand:
     def test_requirements(self, iommu_command):
         """Test command requirements."""
         reqs = iommu_command.requirements()
-        assert reqs == iommu_command.toLoad.All
+        assert reqs == toLoad.All
 
     @pytest.mark.unit
     def test_parse_arguments_list(self, mock_cs):

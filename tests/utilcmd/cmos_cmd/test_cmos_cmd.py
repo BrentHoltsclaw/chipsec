@@ -14,198 +14,179 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-import pytest
+import unittest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.cmos_cmd import CMOSCommand
 from tests.test_utils import MockFactory
 
 
-class TestCMOSCommand:
+class TestCMOSCommand(unittest.TestCase):
     """Comprehensive tests for CMOS utility command functionality."""
 
-    @pytest.fixture
-    def mock_cs(self):
-        """Create mock ChipsecCs object for CMOS testing."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
-        # Mock CMOS HAL
-        cs_mock.hals.CMOS = Mock()
-        cs_mock.hals.CMOS.dump.return_value = None
-        cs_mock.hals.CMOS.read_cmos_low.return_value = 0x12
-        cs_mock.hals.CMOS.write_cmos_low.return_value = None
-        cs_mock.hals.CMOS.read_cmos_high.return_value = 0x34
-        cs_mock.hals.CMOS.write_cmos_high.return_value = None
-        return cs_mock
+    def setUp(self):
+        """Set up test fixtures."""
+        self.mock_cs = MockFactory.create_mock_chipsec_cs()
 
-    @pytest.fixture
-    def cmos_command(self, mock_cs):
-        """Create CMOSCommand instance."""
-        return CMOSCommand(['dump'], cs=mock_cs)
+        # Mock CMOS HAL component
+        self.mock_cs.hals.CMOS = Mock()
+        self.mock_cs.hals.CMOS.dump.return_value = None
+        self.mock_cs.hals.CMOS.read_cmos_low.return_value = 0x12
+        self.mock_cs.hals.CMOS.write_cmos_low.return_value = None
+        self.mock_cs.hals.CMOS.read_cmos_high.return_value = 0x34
+        self.mock_cs.hals.CMOS.write_cmos_high.return_value = None
 
-    @pytest.mark.unit
-    def test_cmos_command_initialization(self, cmos_command, mock_cs):
+        self.cmos_command = CMOSCommand(['dump'], cs=self.mock_cs)
+
+    def test_cmos_command_initialization(self):
         """Test CMOSCommand initialization."""
-        assert cmos_command.cs == mock_cs
-        assert cmos_command.argv == ['dump']
+        self.assertEqual(self.cmos_command.cs, self.mock_cs)
+        self.assertEqual(self.cmos_command.argv, ['dump'])
 
-    @pytest.mark.unit
-    def test_parse_arguments_dump(self, mock_cs):
-        """Test parsing dump command arguments."""
-        command = CMOSCommand(['dump'], cs=mock_cs)
-        command.parse_arguments()
-        assert command.func == command.cmos_dump
-
-    @pytest.mark.unit
-    def test_parse_arguments_readl(self, mock_cs):
-        """Test parsing readl command arguments."""
-        command = CMOSCommand(['readl', '0x10'], cs=mock_cs)
-        command.parse_arguments()
-        assert command.func == command.cmos_readl
-        assert command.offset == 0x10
-
-    @pytest.mark.unit
-    def test_parse_arguments_writel(self, mock_cs):
-        """Test parsing writel command arguments."""
-        command = CMOSCommand(['writel', '0x10', '0xAB'], cs=mock_cs)
-        command.parse_arguments()
-        assert command.func == command.cmos_writel
-        assert command.offset == 0x10
-        assert command.value == 0xAB
-
-    @pytest.mark.unit
-    def test_parse_arguments_readh(self, mock_cs):
-        """Test parsing readh command arguments."""
-        command = CMOSCommand(['readh', '0x20'], cs=mock_cs)
-        command.parse_arguments()
-        assert command.func == command.cmos_readh
-        assert command.offset == 0x20
-
-    @pytest.mark.unit
-    def test_parse_arguments_writeh(self, mock_cs):
-        """Test parsing writeh command arguments."""
-        command = CMOSCommand(['writeh', '0x20', '0xCD'], cs=mock_cs)
-        command.parse_arguments()
-        assert command.func == command.cmos_writeh
-        assert command.offset == 0x20
-        assert command.value == 0xCD
-
-    @pytest.mark.unit
-    def test_parse_arguments_decimal_values(self, mock_cs):
-        """Test parsing arguments with decimal values."""
-        command = CMOSCommand(['readl', '16'], cs=mock_cs)
-        command.parse_arguments()
-        assert command.offset == 16  # 0x10
-
-        command2 = CMOSCommand(['writel', '32', '171'], cs=mock_cs)
-        command2.parse_arguments()
-        assert command2.offset == 32  # 0x20
-        assert command2.value == 171  # 0xAB
-
-    @pytest.mark.unit
-    def test_requirements(self, cmos_command):
+    def test_requirements(self):
         """Test command requirements."""
-        reqs = cmos_command.requirements()
-        assert hasattr(reqs, 'load_driver')
+        reqs = self.cmos_command.requirements()
+        self.assertTrue(hasattr(reqs, 'load_driver'))
 
-    @pytest.mark.unit
-    def test_set_up(self, cmos_command, mock_cs):
+    def test_parse_arguments_dump(self):
+        """Test parsing dump command arguments."""
+        command = CMOSCommand(['dump'], cs=self.mock_cs)
+        command.parse_arguments()
+        self.assertEqual(command.func, command.cmos_dump)
+
+    def test_parse_arguments_readl(self):
+        """Test parsing readl command arguments."""
+        command = CMOSCommand(['readl', '0x10'], cs=self.mock_cs)
+        command.parse_arguments()
+        self.assertEqual(command.func, command.cmos_readl)
+        self.assertEqual(command.offset, 0x10)
+
+    def test_parse_arguments_writel(self):
+        """Test parsing writel command arguments."""
+        command = CMOSCommand(['writel', '0x10', '0xAB'], cs=self.mock_cs)
+        command.parse_arguments()
+        self.assertEqual(command.func, command.cmos_writel)
+        self.assertEqual(command.offset, 0x10)
+        self.assertEqual(command.value, 0xAB)
+
+    def test_parse_arguments_readh(self):
+        """Test parsing readh command arguments."""
+        command = CMOSCommand(['readh', '0x20'], cs=self.mock_cs)
+        command.parse_arguments()
+        self.assertEqual(command.func, command.cmos_readh)
+        self.assertEqual(command.offset, 0x20)
+
+    def test_parse_arguments_writeh(self):
+        """Test parsing writeh command arguments."""
+        command = CMOSCommand(['writeh', '0x20', '0xCD'], cs=self.mock_cs)
+        command.parse_arguments()
+        self.assertEqual(command.func, command.cmos_writeh)
+        self.assertEqual(command.offset, 0x20)
+        self.assertEqual(command.value, 0xCD)
+
+    def test_parse_arguments_decimal_values(self):
+        """Test parsing arguments with decimal values."""
+        command = CMOSCommand(['readl', '16'], cs=self.mock_cs)
+        command.parse_arguments()
+        self.assertEqual(command.offset, 16)  # 0x10
+
+        command2 = CMOSCommand(['writel', '32', '171'], cs=self.mock_cs)
+        command2.parse_arguments()
+        self.assertEqual(command2.offset, 32)  # 0x20
+        self.assertEqual(command2.value, 171)  # 0xAB
+
+    def test_set_up(self):
         """Test set_up method."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_class.return_value = mock_cmos_instance
 
-            cmos_command.set_up()
+            self.cmos_command.set_up()
 
-            assert hasattr(cmos_command, '_cmos')
-            mock_cmos_class.assert_called_once_with(cmos_command.cs)
+            self.assertTrue(hasattr(self.cmos_command, '_cmos'))
+            mock_cmos_class.assert_called_once_with(self.cmos_command.cs)
 
-    @pytest.mark.unit
-    def test_cmos_dump(self, cmos_command, mock_cs):
+    def test_cmos_dump(self):
         """Test cmos_dump command."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_class.return_value = mock_cmos_instance
-            cmos_command.set_up()
+            self.cmos_command.set_up()
 
-            with patch.object(cmos_command.logger, 'log') as mock_log:
-                cmos_command.cmos_dump()
+            with patch.object(self.cmos_command.logger, 'log') as mock_log:
+                self.cmos_command.cmos_dump()
 
                 mock_log.assert_called_once_with('[CHIPSEC] Dumping CMOS memory..')
                 mock_cmos_instance.dump.assert_called_once()
 
-    @pytest.mark.unit
-    def test_cmos_readl(self, cmos_command, mock_cs):
+    def test_cmos_readl(self):
         """Test cmos_readl command."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_instance.read_cmos_low.return_value = 0xAB
             mock_cmos_class.return_value = mock_cmos_instance
-            cmos_command.set_up()
-            cmos_command.offset = 0x10
+            self.cmos_command.set_up()
+            self.cmos_command.offset = 0x10
 
-            with patch.object(cmos_command.logger, 'log') as mock_log:
-                cmos_command.cmos_readl()
+            with patch.object(self.cmos_command.logger, 'log') as mock_log:
+                self.cmos_command.cmos_readl()
 
                 mock_log.assert_called_once_with('[CHIPSEC] CMOS low byte 0x10 = 0xAB')
                 mock_cmos_instance.read_cmos_low.assert_called_once_with(0x10)
 
-    @pytest.mark.unit
-    def test_cmos_writel(self, cmos_command, mock_cs):
+    def test_cmos_writel(self):
         """Test cmos_writel command."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_instance.write_cmos_low.return_value = None
             mock_cmos_class.return_value = mock_cmos_instance
-            cmos_command.set_up()
-            cmos_command.offset = 0x10
-            cmos_command.value = 0xAB
+            self.cmos_command.set_up()
+            self.cmos_command.offset = 0x10
+            self.cmos_command.value = 0xAB
 
-            with patch.object(cmos_command.logger, 'log') as mock_log:
-                cmos_command.cmos_writel()
+            with patch.object(self.cmos_command.logger, 'log') as mock_log:
+                self.cmos_command.cmos_writel()
 
                 mock_log.assert_called_once_with('[CHIPSEC] CMOS low byte 0x10 = 0xAB')
                 mock_cmos_instance.write_cmos_low.assert_called_once_with(0x10, 0xAB)
 
-    @pytest.mark.unit
-    def test_cmos_readh(self, cmos_command, mock_cs):
+    def test_cmos_readh(self):
         """Test cmos_readh command."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_instance.read_cmos_high.return_value = 0xCD
             mock_cmos_class.return_value = mock_cmos_instance
-            cmos_command.set_up()
-            cmos_command.offset = 0x20
+            self.cmos_command.set_up()
+            self.cmos_command.offset = 0x20
 
-            with patch.object(cmos_command.logger, 'log') as mock_log:
-                cmos_command.cmos_readh()
+            with patch.object(self.cmos_command.logger, 'log') as mock_log:
+                self.cmos_command.cmos_readh()
 
                 mock_log.assert_called_once_with('[CHIPSEC] CMOS high byte 0x20 = 0xCD')
                 mock_cmos_instance.read_cmos_high.assert_called_once_with(0x20)
 
-    @pytest.mark.unit
-    def test_cmos_writeh(self, cmos_command, mock_cs):
+    def test_cmos_writeh(self):
         """Test cmos_writeh command."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_instance.write_cmos_high.return_value = None
             mock_cmos_class.return_value = mock_cmos_instance
-            cmos_command.set_up()
-            cmos_command.offset = 0x20
-            cmos_command.value = 0xCD
+            self.cmos_command.set_up()
+            self.cmos_command.offset = 0x20
+            self.cmos_command.value = 0xCD
 
-            with patch.object(cmos_command.logger, 'log') as mock_log:
-                cmos_command.cmos_writeh()
+            with patch.object(self.cmos_command.logger, 'log') as mock_log:
+                self.cmos_command.cmos_writeh()
 
                 mock_log.assert_called_once_with('[CHIPSEC] Writing CMOS high byte 0x20 <- 0xCD')
                 mock_cmos_instance.write_cmos_high.assert_called_once_with(0x20, 0xCD)
 
-    @pytest.mark.unit
-    def test_cmos_readl_different_values(self, cmos_command, mock_cs):
+    def test_cmos_readl_different_values(self):
         """Test cmos_readl with different return values."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_class.return_value = mock_cmos_instance
-            cmos_command.set_up()
-            cmos_command.offset = 0x10
+            self.cmos_command.set_up()
+            self.cmos_command.offset = 0x10
 
             # Test with different return values
             test_values = [0x0, 0xFF, 0x12, 0xAB]
@@ -213,21 +194,20 @@ class TestCMOSCommand:
             for expected_value in test_values:
                 mock_cmos_instance.read_cmos_low.return_value = expected_value
 
-                with patch.object(cmos_command.logger, 'log') as mock_log:
-                    cmos_command.cmos_readl()
+                with patch.object(self.cmos_command.logger, 'log') as mock_log:
+                    self.cmos_command.cmos_readl()
 
                     log_call = mock_log.call_args[0][0]
                     expected_hex = f'0x{expected_value:X}'
-                    assert expected_hex in log_call
+                    self.assertIn(expected_hex, log_call)
 
-    @pytest.mark.unit
-    def test_cmos_readh_different_values(self, cmos_command, mock_cs):
+    def test_cmos_readh_different_values(self):
         """Test cmos_readh with different return values."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_class.return_value = mock_cmos_instance
-            cmos_command.set_up()
-            cmos_command.offset = 0x20
+            self.cmos_command.set_up()
+            self.cmos_command.offset = 0x20
 
             # Test with different return values
             test_values = [0x0, 0xFF, 0x34, 0xCD]
@@ -235,85 +215,80 @@ class TestCMOSCommand:
             for expected_value in test_values:
                 mock_cmos_instance.read_cmos_high.return_value = expected_value
 
-                with patch.object(cmos_command.logger, 'log') as mock_log:
-                    cmos_command.cmos_readh()
+                with patch.object(self.cmos_command.logger, 'log') as mock_log:
+                    self.cmos_command.cmos_readh()
 
                     log_call = mock_log.call_args[0][0]
                     expected_hex = f'0x{expected_value:X}'
-                    assert expected_hex in log_call
+                    self.assertIn(expected_hex, log_call)
 
-    @pytest.mark.unit
-    def test_cmos_writel_different_values(self, cmos_command, mock_cs):
+    def test_cmos_writel_different_values(self):
         """Test cmos_writel with different values."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_class.return_value = mock_cmos_instance
-            cmos_command.set_up()
-            cmos_command.offset = 0x10
+            self.cmos_command.set_up()
+            self.cmos_command.offset = 0x10
 
             # Test with different values
             test_values = [0x0, 0xFF, 0xAB, 0x12]
 
             for test_value in test_values:
-                cmos_command.value = test_value
+                self.cmos_command.value = test_value
 
-                with patch.object(cmos_command.logger, 'log') as mock_log:
-                    cmos_command.cmos_writel()
+                with patch.object(self.cmos_command.logger, 'log') as mock_log:
+                    self.cmos_command.cmos_writel()
 
                     log_call = mock_log.call_args[0][0]
                     expected_hex = f'0x{test_value:X}'
-                    assert expected_hex in log_call
+                    self.assertIn(expected_hex, log_call)
                     mock_cmos_instance.write_cmos_low.assert_called_with(0x10, test_value)
 
-    @pytest.mark.unit
-    def test_cmos_writeh_different_values(self, cmos_command, mock_cs):
+    def test_cmos_writeh_different_values(self):
         """Test cmos_writeh with different values."""
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
             mock_cmos_instance = Mock()
             mock_cmos_class.return_value = mock_cmos_instance
-            cmos_command.set_up()
-            cmos_command.offset = 0x20
+            self.cmos_command.set_up()
+            self.cmos_command.offset = 0x20
 
             # Test with different values
             test_values = [0x0, 0xFF, 0xCD, 0x34]
 
             for test_value in test_values:
-                cmos_command.value = test_value
+                self.cmos_command.value = test_value
 
-                with patch.object(cmos_command.logger, 'log') as mock_log:
-                    cmos_command.cmos_writeh()
+                with patch.object(self.cmos_command.logger, 'log') as mock_log:
+                    self.cmos_command.cmos_writeh()
 
                     mock_log.assert_called_once_with(f'[CHIPSEC] Writing CMOS high byte 0x20 <- 0x{test_value:X}')
                     mock_cmos_instance.write_cmos_high.assert_called_with(0x20, test_value)
 
 
-class TestCMOSCommandIntegration:
+class TestCMOSCommandIntegration(unittest.TestCase):
     """Integration tests for CMOS command with HAL components."""
 
-    @pytest.fixture
-    def integrated_cs(self):
-        """Create integrated ChipsecCs for CMOS testing."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
+    def setUp(self):
+        """Set up test fixtures."""
+        # Create integrated ChipsecCs for CMOS testing
+        self.integrated_cs = MockFactory.create_mock_chipsec_cs()
 
         # Mock all required HAL components
-        cs_mock.hals.CMOS = Mock()
-        cs_mock.hals.CMOS.dump.return_value = None
-        cs_mock.hals.CMOS.read_cmos_low.return_value = 0xDE
-        cs_mock.hals.CMOS.write_cmos_low.return_value = None
-        cs_mock.hals.CMOS.read_cmos_high.return_value = 0xAD
-        cs_mock.hals.CMOS.write_cmos_high.return_value = None
+        self.integrated_cs.hals.CMOS = Mock()
+        self.integrated_cs.hals.CMOS.dump.return_value = None
+        self.integrated_cs.hals.CMOS.read_cmos_low.return_value = 0xDE
+        self.integrated_cs.hals.CMOS.write_cmos_low.return_value = None
+        self.integrated_cs.hals.CMOS.read_cmos_high.return_value = 0xAD
+        self.integrated_cs.hals.CMOS.write_cmos_high.return_value = None
 
         # Mock helper
-        cs_mock.helper = Mock()
-        cs_mock.helper.get_threads_count.return_value = 2
+        self.integrated_cs.helper = Mock()
+        self.integrated_cs.helper.get_threads_count.return_value = 2
 
-        return cs_mock
-
-    @pytest.mark.integration
-    def test_cmos_read_write_workflow(self, integrated_cs):
+    def test_cmos_read_write_workflow(self):
         """Test complete CMOS read/write workflow."""
         # Test dump operation
-        dump_cmd = CMOSCommand(['dump'], cs=integrated_cs)
+        dump_cmd = CMOSCommand(['dump'], cs=self.integrated_cs)
         dump_cmd.parse_arguments()
 
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
@@ -327,7 +302,7 @@ class TestCMOSCommandIntegration:
                 mock_cmos_instance.dump.assert_called_once()
 
         # Test readl operation
-        readl_cmd = CMOSCommand(['readl', '0x10'], cs=integrated_cs)
+        readl_cmd = CMOSCommand(['readl', '0x10'], cs=self.integrated_cs)
         readl_cmd.parse_arguments()
 
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
@@ -342,7 +317,7 @@ class TestCMOSCommandIntegration:
                 mock_cmos_instance.read_cmos_low.assert_called_once_with(0x10)
 
         # Test writel operation
-        writel_cmd = CMOSCommand(['writel', '0x10', '0xAB'], cs=integrated_cs)
+        writel_cmd = CMOSCommand(['writel', '0x10', '0xAB'], cs=self.integrated_cs)
         writel_cmd.parse_arguments()
 
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
@@ -355,11 +330,10 @@ class TestCMOSCommandIntegration:
                 mock_log.assert_called_once_with('[CHIPSEC] CMOS low byte 0x10 = 0xAB')
                 mock_cmos_instance.write_cmos_low.assert_called_once_with(0x10, 0xAB)
 
-    @pytest.mark.integration
-    def test_cmos_high_byte_operations_workflow(self, integrated_cs):
+    def test_cmos_high_byte_operations_workflow(self):
         """Test CMOS high byte operations workflow."""
         # Test readh operation
-        readh_cmd = CMOSCommand(['readh', '0x20'], cs=integrated_cs)
+        readh_cmd = CMOSCommand(['readh', '0x20'], cs=self.integrated_cs)
         readh_cmd.parse_arguments()
 
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
@@ -374,7 +348,7 @@ class TestCMOSCommandIntegration:
                 mock_cmos_instance.read_cmos_high.assert_called_once_with(0x20)
 
         # Test writeh operation
-        writeh_cmd = CMOSCommand(['writeh', '0x20', '0xCD'], cs=integrated_cs)
+        writeh_cmd = CMOSCommand(['writeh', '0x20', '0xCD'], cs=self.integrated_cs)
         writeh_cmd.parse_arguments()
 
         with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
@@ -387,8 +361,7 @@ class TestCMOSCommandIntegration:
                 mock_log.assert_called_once_with('[CHIPSEC] Writing CMOS high byte 0x20 <- 0xCD')
                 mock_cmos_instance.write_cmos_high.assert_called_once_with(0x20, 0xCD)
 
-    @pytest.mark.integration
-    def test_cmos_mixed_operations_workflow(self, integrated_cs):
+    def test_cmos_mixed_operations_workflow(self):
         """Test CMOS mixed operations workflow."""
         # Test sequence of operations
         operations = [
@@ -400,7 +373,7 @@ class TestCMOSCommandIntegration:
         ]
 
         for op_name, args in operations:
-            cmd = CMOSCommand(args, cs=integrated_cs)
+            cmd = CMOSCommand(args, cs=self.integrated_cs)
             cmd.parse_arguments()
 
             with patch('chipsec.utilcmd.cmos_cmd.CMOS') as mock_cmos_class:
@@ -423,163 +396,148 @@ class TestCMOSCommandIntegration:
                         mock_cmos_instance.write_cmos_high.assert_called_once_with(0x3, 0xAA)
 
 
-class TestCMOSCommandEdgeCases:
+class TestCMOSCommandEdgeCases(unittest.TestCase):
     """Test edge cases and error conditions for CMOS command."""
 
-    @pytest.fixture
-    def mock_cs(self):
-        """Create mock ChipsecCs for edge case testing."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
-        cs_mock.hals.CMOS = Mock()
-        return cs_mock
+    def setUp(self):
+        """Set up test fixtures."""
+        self.mock_cs = MockFactory.create_mock_chipsec_cs()
+        self.mock_cs.hals.CMOS = Mock()
 
-    @pytest.mark.unit
-    def test_empty_argv_handling(self, mock_cs):
+    def test_empty_argv_handling(self):
         """Test handling of empty argv."""
-        cmos_cmd = CMOSCommand([], cs=mock_cs)
+        command = CMOSCommand([], cs=self.mock_cs)
 
         # Should raise SystemExit due to missing required arguments
-        with pytest.raises(SystemExit):
-            cmos_cmd.parse_arguments()
+        with self.assertRaises(SystemExit):
+            command.parse_arguments()
 
-    @pytest.mark.unit
-    def test_invalid_subcommand(self, mock_cs):
+    def test_invalid_subcommand(self):
         """Test handling of invalid subcommand."""
-        cmos_cmd = CMOSCommand(['invalid'], cs=mock_cs)
+        command = CMOSCommand(['invalid'], cs=self.mock_cs)
 
         # Should raise SystemExit due to invalid subcommand
-        with pytest.raises(SystemExit):
-            cmos_cmd.parse_arguments()
+        with self.assertRaises(SystemExit):
+            command.parse_arguments()
 
-    @pytest.mark.unit
-    def test_readl_missing_offset(self, mock_cs):
+    def test_readl_missing_offset(self):
         """Test readl command with missing offset."""
-        cmos_cmd = CMOSCommand(['readl'], cs=mock_cs)
+        command = CMOSCommand(['readl'], cs=self.mock_cs)
 
         # Should raise SystemExit due to missing offset
-        with pytest.raises(SystemExit):
-            cmos_cmd.parse_arguments()
+        with self.assertRaises(SystemExit):
+            command.parse_arguments()
 
-    @pytest.mark.unit
-    def test_writel_missing_value(self, mock_cs):
+    def test_writel_missing_value(self):
         """Test writel command with missing value."""
-        cmos_cmd = CMOSCommand(['writel', '0x10'], cs=mock_cs)
+        command = CMOSCommand(['writel', '0x10'], cs=self.mock_cs)
 
         # Should raise SystemExit due to missing value
-        with pytest.raises(SystemExit):
-            cmos_cmd.parse_arguments()
+        with self.assertRaises(SystemExit):
+            command.parse_arguments()
 
-    @pytest.mark.unit
-    def test_readh_missing_offset(self, mock_cs):
+    def test_readh_missing_offset(self):
         """Test readh command with missing offset."""
-        cmos_cmd = CMOSCommand(['readh'], cs=mock_cs)
+        command = CMOSCommand(['readh'], cs=self.mock_cs)
 
         # Should raise SystemExit due to missing offset
-        with pytest.raises(SystemExit):
-            cmos_cmd.parse_arguments()
+        with self.assertRaises(SystemExit):
+            command.parse_arguments()
 
-    @pytest.mark.unit
-    def test_writeh_missing_value(self, mock_cs):
+    def test_writeh_missing_value(self):
         """Test writeh command with missing value."""
-        cmos_cmd = CMOSCommand(['writeh', '0x20'], cs=mock_cs)
+        command = CMOSCommand(['writeh', '0x20'], cs=self.mock_cs)
 
         # Should raise SystemExit due to missing value
-        with pytest.raises(SystemExit):
-            cmos_cmd.parse_arguments()
+        with self.assertRaises(SystemExit):
+            command.parse_arguments()
 
-    @pytest.mark.unit
-    def test_zero_offset_values(self, mock_cs):
+    def test_zero_offset_values(self):
         """Test operations with zero offset values."""
         # Test readl with zero offset
-        readl_cmd = CMOSCommand(['readl', '0x0'], cs=mock_cs)
+        readl_cmd = CMOSCommand(['readl', '0x0'], cs=self.mock_cs)
         readl_cmd.parse_arguments()
-        assert readl_cmd.offset == 0x0
+        self.assertEqual(readl_cmd.offset, 0x0)
 
         # Test readh with zero offset
-        readh_cmd = CMOSCommand(['readh', '0x0'], cs=mock_cs)
+        readh_cmd = CMOSCommand(['readh', '0x0'], cs=self.mock_cs)
         readh_cmd.parse_arguments()
-        assert readh_cmd.offset == 0x0
+        self.assertEqual(readh_cmd.offset, 0x0)
 
-    @pytest.mark.unit
-    def test_maximum_offset_values(self, mock_cs):
+    def test_maximum_offset_values(self):
         """Test operations with maximum offset values."""
         # CMOS memory is typically 256 bytes (0x00-0xFF)
         max_offset = 0xFF
 
         # Test readl with maximum offset
-        readl_cmd = CMOSCommand(['readl', f'0x{max_offset:X}'], cs=mock_cs)
+        readl_cmd = CMOSCommand(['readl', f'0x{max_offset:X}'], cs=self.mock_cs)
         readl_cmd.parse_arguments()
-        assert readl_cmd.offset == max_offset
+        self.assertEqual(readl_cmd.offset, max_offset)
 
         # Test readh with maximum offset
-        readh_cmd = CMOSCommand(['readh', f'0x{max_offset:X}'], cs=mock_cs)
+        readh_cmd = CMOSCommand(['readh', f'0x{max_offset:X}'], cs=self.mock_cs)
         readh_cmd.parse_arguments()
-        assert readh_cmd.offset == max_offset
+        self.assertEqual(readh_cmd.offset, max_offset)
 
-    @pytest.mark.unit
-    def test_zero_value_writes(self, mock_cs):
+    def test_zero_value_writes(self):
         """Test write operations with zero values."""
         # Test writel with zero value
-        writel_cmd = CMOSCommand(['writel', '0x10', '0x0'], cs=mock_cs)
+        writel_cmd = CMOSCommand(['writel', '0x10', '0x0'], cs=self.mock_cs)
         writel_cmd.parse_arguments()
-        assert writel_cmd.value == 0x0
+        self.assertEqual(writel_cmd.value, 0x0)
 
         # Test writeh with zero value
-        writeh_cmd = CMOSCommand(['writeh', '0x20', '0x0'], cs=mock_cs)
+        writeh_cmd = CMOSCommand(['writeh', '0x20', '0x0'], cs=self.mock_cs)
         writeh_cmd.parse_arguments()
-        assert writeh_cmd.value == 0x0
+        self.assertEqual(writeh_cmd.value, 0x0)
 
-    @pytest.mark.unit
-    def test_maximum_value_writes(self, mock_cs):
+    def test_maximum_value_writes(self):
         """Test write operations with maximum values."""
         # Test writel with maximum byte value
-        writel_cmd = CMOSCommand(['writel', '0x10', '0xFF'], cs=mock_cs)
+        writel_cmd = CMOSCommand(['writel', '0x10', '0xFF'], cs=self.mock_cs)
         writel_cmd.parse_arguments()
-        assert writel_cmd.value == 0xFF
+        self.assertEqual(writel_cmd.value, 0xFF)
 
         # Test writeh with maximum byte value
-        writeh_cmd = CMOSCommand(['writeh', '0x20', '0xFF'], cs=mock_cs)
+        writeh_cmd = CMOSCommand(['writeh', '0x20', '0xFF'], cs=self.mock_cs)
         writeh_cmd.parse_arguments()
-        assert writeh_cmd.value == 0xFF
+        self.assertEqual(writeh_cmd.value, 0xFF)
 
-    @pytest.mark.unit
-    def test_hex_value_parsing(self, mock_cs):
+    def test_hex_value_parsing(self):
         """Test hex value parsing in various commands."""
         # Test writel with hex value
-        writel_cmd = CMOSCommand(['writel', '0x10', '0xAB'], cs=mock_cs)
+        writel_cmd = CMOSCommand(['writel', '0x10', '0xAB'], cs=self.mock_cs)
         writel_cmd.parse_arguments()
-        assert writel_cmd.value == 0xAB
+        self.assertEqual(writel_cmd.value, 0xAB)
 
         # Test writel with decimal value
-        writel_cmd2 = CMOSCommand(['writel', '0x10', '171'], cs=mock_cs)
+        writel_cmd2 = CMOSCommand(['writel', '0x10', '171'], cs=self.mock_cs)
         writel_cmd2.parse_arguments()
-        assert writel_cmd2.value == 171
+        self.assertEqual(writel_cmd2.value, 171)
 
         # Test writeh with hex value
-        writeh_cmd = CMOSCommand(['writeh', '0x20', '0xCD'], cs=mock_cs)
+        writeh_cmd = CMOSCommand(['writeh', '0x20', '0xCD'], cs=self.mock_cs)
         writeh_cmd.parse_arguments()
-        assert writeh_cmd.value == 0xCD
+        self.assertEqual(writeh_cmd.value, 0xCD)
 
-    @pytest.mark.unit
-    def test_case_insensitive_hex_parsing(self, mock_cs):
+    def test_case_insensitive_hex_parsing(self):
         """Test case insensitive hex value parsing."""
         # Test with uppercase hex
-        writel_cmd1 = CMOSCommand(['writel', '0x10', '0xAB'], cs=mock_cs)
+        writel_cmd1 = CMOSCommand(['writel', '0x10', '0xAB'], cs=self.mock_cs)
         writel_cmd1.parse_arguments()
-        assert writel_cmd1.value == 0xAB
+        self.assertEqual(writel_cmd1.value, 0xAB)
 
         # Test with lowercase hex
-        writel_cmd2 = CMOSCommand(['writel', '0x10', '0xab'], cs=mock_cs)
+        writel_cmd2 = CMOSCommand(['writel', '0x10', '0xab'], cs=self.mock_cs)
         writel_cmd2.parse_arguments()
-        assert writel_cmd2.value == 0xAB
+        self.assertEqual(writel_cmd2.value, 0xAB)
 
         # Test with mixed case hex
-        writel_cmd3 = CMOSCommand(['writel', '0x10', '0xAb'], cs=mock_cs)
+        writel_cmd3 = CMOSCommand(['writel', '0x10', '0xAb'], cs=self.mock_cs)
         writel_cmd3.parse_arguments()
-        assert writel_cmd3.value == 0xAB
+        self.assertEqual(writel_cmd3.value, 0xAB)
 
-    @pytest.mark.unit
-    def test_common_cmos_offsets(self, mock_cs):
+    def test_common_cmos_offsets(self):
         """Test operations on common CMOS offsets."""
         common_offsets = {
             'rtc_seconds': 0x00,
@@ -596,31 +554,27 @@ class TestCMOSCommandEdgeCases:
 
         for offset_name, offset_addr in common_offsets.items():
             # Test readl operation
-            readl_cmd = CMOSCommand(['readl', f'0x{offset_addr:X}'], cs=mock_cs)
+            readl_cmd = CMOSCommand(['readl', f'0x{offset_addr:X}'], cs=self.mock_cs)
             readl_cmd.parse_arguments()
-            assert readl_cmd.offset == offset_addr
+            self.assertEqual(readl_cmd.offset, offset_addr)
 
             # Test readh operation
-            readh_cmd = CMOSCommand(['readh', f'0x{offset_addr:X}'], cs=mock_cs)
+            readh_cmd = CMOSCommand(['readh', f'0x{offset_addr:X}'], cs=self.mock_cs)
             readh_cmd.parse_arguments()
-            assert readh_cmd.offset == offset_addr
+            self.assertEqual(readh_cmd.offset, offset_addr)
 
 
-class TestCMOSCommandConfigurationValidation:
+class TestCMOSCommandConfigurationValidation(unittest.TestCase):
     """Test configuration validation aspects of CMOS command."""
 
-    @pytest.fixture
-    def config_cs(self):
-        """Create ChipsecCs with CMOS-specific configuration."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
+    def setUp(self):
+        """Set up test fixtures."""
+        # Create ChipsecCs with CMOS-specific configuration
+        self.config_cs = MockFactory.create_mock_chipsec_cs()
 
-        # Mock CMOS HAL with configuration
-        cs_mock.hals.CMOS = Mock()
-        cs_mock.hals.CMOS.read_cmos_low.return_value = 0x12
-
-        # Mock CMOS configuration data
-        cs_mock.Cfg = Mock()
-        cs_mock.Cfg.CMOS_CONFIG = {
+        # Mock CMOS configuration
+        self.config_cs.Cfg = Mock()
+        self.config_cs.Cfg.CMOS_CONFIG = {
             'max_offset': 0xFF,
             'cmos_size': 256,
             'supported_operations': ['dump', 'readl', 'writel', 'readh', 'writeh'],
@@ -651,37 +605,41 @@ class TestCMOSCommandConfigurationValidation:
             }
         }
 
-        return cs_mock
+        self.config_cs.hals.CMOS = Mock()
+        self.config_cs.hals.CMOS.read_cmos_low.return_value = 0x12
 
-    @pytest.mark.unit
-    def test_cmos_configuration_access(self, config_cs):
-        """Test access to CMOS configuration data."""
-        cmos_config = config_cs.Cfg.CMOS_CONFIG
+    def test_cmos_configuration_structure(self):
+        """Test CMOS configuration structure."""
+        cmos_config = self.config_cs.Cfg.CMOS_CONFIG
 
-        assert cmos_config['max_offset'] == 0xFF
-        assert cmos_config['cmos_size'] == 256
-        assert 'dump' in cmos_config['supported_operations']
-        assert 'readl' in cmos_config['supported_operations']
-        assert 'rtc_seconds' in cmos_config['common_offsets']
-        assert cmos_config['common_offsets']['rtc_seconds'] == 0x00
+        # Test that required CMOS configuration exists
+        self.assertIn('max_offset', cmos_config)
+        self.assertIn('cmos_size', cmos_config)
+        self.assertIn('supported_operations', cmos_config)
+        self.assertIn('common_offsets', cmos_config)
 
-    @pytest.mark.unit
-    def test_supported_operations_validation(self, config_cs):
+        # Test configuration values are reasonable
+        self.assertEqual(cmos_config['max_offset'], 0xFF)
+        self.assertEqual(cmos_config['cmos_size'], 256)
+        self.assertIn('dump', cmos_config['supported_operations'])
+        self.assertIn('readl', cmos_config['supported_operations'])
+        self.assertIsInstance(cmos_config['common_offsets'], dict)
+
+    def test_supported_operations_validation(self):
         """Test validation of supported CMOS operations."""
-        supported_ops = config_cs.Cfg.CMOS_CONFIG['supported_operations']
+        supported_ops = self.config_cs.Cfg.CMOS_CONFIG['supported_operations']
 
         # Test that all documented operations are supported
         expected_ops = ['dump', 'readl', 'writel', 'readh', 'writeh']
         for op in expected_ops:
-            assert op in supported_ops
+            self.assertIn(op, supported_ops)
 
         # Test that operations list is not empty
-        assert len(supported_ops) > 0
+        self.assertGreater(len(supported_ops), 0)
 
-    @pytest.mark.unit
-    def test_common_offsets_validation(self, config_cs):
+    def test_common_offsets_validation(self):
         """Test validation of common CMOS offsets."""
-        common_offsets = config_cs.Cfg.CMOS_CONFIG['common_offsets']
+        common_offsets = self.config_cs.Cfg.CMOS_CONFIG['common_offsets']
 
         # Test that all expected common offsets are defined
         expected_offsets = [
@@ -691,19 +649,19 @@ class TestCMOSCommandConfigurationValidation:
         ]
 
         for offset_name in expected_offsets:
-            assert offset_name in common_offsets
-            assert isinstance(common_offsets[offset_name], int)
-            assert 0 <= common_offsets[offset_name] <= 0xFF
+            self.assertIn(offset_name, common_offsets)
+            self.assertIsInstance(common_offsets[offset_name], int)
+            self.assertGreaterEqual(common_offsets[offset_name], 0)
+            self.assertLessEqual(common_offsets[offset_name], 0xFF)
 
         # Test specific offset values
-        assert common_offsets['rtc_seconds'] == 0x00
-        assert common_offsets['rtc_hours'] == 0x04
-        assert common_offsets['equipment_byte'] == 0x14
+        self.assertEqual(common_offsets['rtc_seconds'], 0x00)
+        self.assertEqual(common_offsets['rtc_hours'], 0x04)
+        self.assertEqual(common_offsets['equipment_byte'], 0x14)
 
-    @pytest.mark.unit
-    def test_security_offsets_validation(self, config_cs):
+    def test_security_offsets_validation(self):
         """Test validation of security-related CMOS offsets."""
-        security_offsets = config_cs.Cfg.CMOS_CONFIG['security_offsets']
+        security_offsets = self.config_cs.Cfg.CMOS_CONFIG['security_offsets']
 
         # Test that all expected security offsets are defined
         expected_security_offsets = [
@@ -713,54 +671,60 @@ class TestCMOSCommandConfigurationValidation:
         ]
 
         for offset_name in expected_security_offsets:
-            assert offset_name in security_offsets
-            assert isinstance(security_offsets[offset_name], int)
-            assert 0 <= security_offsets[offset_name] <= 0xFF
+            self.assertIn(offset_name, security_offsets)
+            self.assertIsInstance(security_offsets[offset_name], int)
+            self.assertGreaterEqual(security_offsets[offset_name], 0)
+            self.assertLessEqual(security_offsets[offset_name], 0xFF)
 
         # Test specific security offset values
-        assert security_offsets['bios_checksum_low'] == 0x2E
-        assert security_offsets['bios_checksum_high'] == 0x2F
-        assert security_offsets['century_byte'] == 0x32
+        self.assertEqual(security_offsets['bios_checksum_low'], 0x2E)
+        self.assertEqual(security_offsets['bios_checksum_high'], 0x2F)
+        self.assertEqual(security_offsets['century_byte'], 0x32)
 
-    @pytest.mark.unit
-    def test_nvram_area_validation(self, config_cs):
+    def test_nvram_area_validation(self):
         """Test validation of NVRAM area configuration."""
-        nvram_area = config_cs.Cfg.CMOS_CONFIG['nvram_area']
+        nvram_area = self.config_cs.Cfg.CMOS_CONFIG['nvram_area']
 
         # Test NVRAM area configuration
-        assert nvram_area['start'] == 0x0E
-        assert nvram_area['end'] == 0x7F
-        assert 'description' in nvram_area
-        assert nvram_area['start'] < nvram_area['end']
+        self.assertIn('start', nvram_area)
+        self.assertIn('end', nvram_area)
+        self.assertIn('description', nvram_area)
+        self.assertEqual(nvram_area['start'], 0x0E)
+        self.assertEqual(nvram_area['end'], 0x7F)
+        self.assertLess(nvram_area['start'], nvram_area['end'])
 
         # Test that NVRAM area is within valid CMOS range
-        max_offset = config_cs.Cfg.CMOS_CONFIG['max_offset']
-        assert 0 <= nvram_area['start'] <= max_offset
-        assert 0 <= nvram_area['end'] <= max_offset
+        max_offset = self.config_cs.Cfg.CMOS_CONFIG['max_offset']
+        self.assertGreaterEqual(nvram_area['start'], 0)
+        self.assertLessEqual(nvram_area['start'], max_offset)
+        self.assertGreaterEqual(nvram_area['end'], 0)
+        self.assertLessEqual(nvram_area['end'], max_offset)
 
-    @pytest.mark.unit
-    def test_offset_range_validation(self, config_cs):
+    def test_offset_range_validation(self):
         """Test CMOS offset range validation."""
-        max_offset = config_cs.Cfg.CMOS_CONFIG['max_offset']
-        cmos_size = config_cs.Cfg.CMOS_CONFIG['cmos_size']
+        max_offset = self.config_cs.Cfg.CMOS_CONFIG['max_offset']
+        cmos_size = self.config_cs.Cfg.CMOS_CONFIG['cmos_size']
 
         # Test that maximum offset matches CMOS size - 1
-        assert max_offset == cmos_size - 1
+        self.assertEqual(max_offset, cmos_size - 1)
 
         # Test that all configured offsets are within valid range
         all_offsets = {}
-        all_offsets.update(config_cs.Cfg.CMOS_CONFIG['common_offsets'])
-        all_offsets.update(config_cs.Cfg.CMOS_CONFIG['security_offsets'])
+        all_offsets.update(self.config_cs.Cfg.CMOS_CONFIG['common_offsets'])
+        all_offsets.update(self.config_cs.Cfg.CMOS_CONFIG['security_offsets'])
 
         for offset_name, offset_addr in all_offsets.items():
-            assert 0 <= offset_addr <= max_offset, f"CMOS offset {offset_name} address 0x{offset_addr:X} exceeds maximum 0x{max_offset:X}"
+            self.assertGreaterEqual(offset_addr, 0, f"CMOS offset {offset_name} address 0x{offset_addr:X} is negative")
+            self.assertLessEqual(offset_addr, max_offset, f"CMOS offset {offset_name} address 0x{offset_addr:X} exceeds maximum 0x{max_offset:X}")
 
         # Test NVRAM area bounds
-        nvram_start = config_cs.Cfg.CMOS_CONFIG['nvram_area']['start']
-        nvram_end = config_cs.Cfg.CMOS_CONFIG['nvram_area']['end']
-        assert 0 <= nvram_start <= max_offset, f"NVRAM start address 0x{nvram_start:X} exceeds maximum 0x{max_offset:X}"
-        assert 0 <= nvram_end <= max_offset, f"NVRAM end address 0x{nvram_end:X} exceeds maximum 0x{max_offset:X}"
+        nvram_start = self.config_cs.Cfg.CMOS_CONFIG['nvram_area']['start']
+        nvram_end = self.config_cs.Cfg.CMOS_CONFIG['nvram_area']['end']
+        self.assertGreaterEqual(nvram_start, 0, f"NVRAM start address 0x{nvram_start:X} is negative")
+        self.assertLessEqual(nvram_start, max_offset, f"NVRAM start address 0x{nvram_start:X} exceeds maximum 0x{max_offset:X}")
+        self.assertGreaterEqual(nvram_end, 0, f"NVRAM end address 0x{nvram_end:X} is negative")
+        self.assertLessEqual(nvram_end, max_offset, f"NVRAM end address 0x{nvram_end:X} exceeds maximum 0x{max_offset:X}")
 
 
 if __name__ == '__main__':
-    pytest.main([__file__])
+    unittest.main()

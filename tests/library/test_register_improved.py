@@ -69,8 +69,17 @@ class TestRegister:
     @pytest.mark.unit
     def test_get_def_pcicfg_register(self, register_instance, mock_cs):
         """Test get_def for PCI configuration register."""
+        # Create a mock object that behaves like a dictionary
         mock_reg = Mock()
         mock_reg.register_type = RegisterType.PCICFG
+
+        # Make the mock support dictionary-like access
+        reg_dict = {'bus': None, 'dev': None, 'fun': None}
+        mock_reg.__getitem__ = lambda self, key: reg_dict[key]
+        mock_reg.__setitem__ = lambda self, key, value: reg_dict.__setitem__(key, value)
+        mock_reg.__contains__ = lambda self, key: key in reg_dict
+        mock_reg.keys = lambda self: reg_dict.keys()
+
         mock_cs.Cfg.platform.get_register_from_scope.return_value = mock_reg
 
         # Mock PCI device
@@ -84,11 +93,15 @@ class TestRegister:
         assert 'bus' in result
         assert 'dev' in result
         assert 'fun' in result
+        assert result['bus'] == 0
+        assert result['dev'] == 0
+        assert result['fun'] == 0
 
     @pytest.mark.unit
     def test_get_list_by_name(self, register_instance, mock_cs):
         """Test get_list_by_name method."""
-        mock_reg_list = [Mock()]
+        mock_reg = Mock()
+        mock_reg_list = ObjList([mock_reg])
         mock_cs.Cfg.get_reglist.return_value = mock_reg_list
 
         result = register_instance.get_list_by_name('TEST_REG')
@@ -136,6 +149,9 @@ class TestRegister:
     @pytest.mark.unit
     def test_get_match_with_wildcards(self, register_instance, mock_cs):
         """Test get_match with wildcard patterns."""
+        # Mock convert_internal_scope to return proper tuple
+        mock_cs.Cfg.convert_internal_scope.return_value = ('8086', '0', 'TEST_REG', '*')
+
         # Mock platform structure
         mock_vendor = Mock()
         mock_device = Mock()
@@ -257,7 +273,9 @@ class TestNullRegister:
     @pytest.mark.unit
     def test_null_register_read(self, null_register):
         """Test NullRegister read method."""
-        with patch('chipsec.library.register.logger') as mock_logger:
+        with patch('chipsec.library.register.logger') as mock_logger_func:
+            mock_logger = Mock()
+            mock_logger_func.return_value = mock_logger
             result = null_register.read()
             assert result == 0
             mock_logger.log_warning.assert_called_once()
@@ -265,7 +283,9 @@ class TestNullRegister:
     @pytest.mark.unit
     def test_null_register_write(self, null_register):
         """Test NullRegister write method."""
-        with patch('chipsec.library.register.logger') as mock_logger:
+        with patch('chipsec.library.register.logger') as mock_logger_func:
+            mock_logger = Mock()
+            mock_logger_func.return_value = mock_logger
             null_register.write(0x1234)
             mock_logger.log_warning.assert_called_once()
 
@@ -277,7 +297,9 @@ class TestNullRegister:
     @pytest.mark.unit
     def test_null_register_get_field(self, null_register):
         """Test NullRegister get_field method."""
-        with patch('chipsec.library.register.logger') as mock_logger:
+        with patch('chipsec.library.register.logger') as mock_logger_func:
+            mock_logger = Mock()
+            mock_logger_func.return_value = mock_logger
             result = null_register.get_field('TEST_FIELD')
             assert result == 0
             mock_logger.log_warning.assert_called_once()

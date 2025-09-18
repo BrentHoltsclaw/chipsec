@@ -17,6 +17,7 @@
 import pytest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.spidesc_cmd import SPIDescCommand
+from chipsec.command import toLoad
 from tests.test_utils import MockFactory
 
 
@@ -49,7 +50,7 @@ class TestSPIDescCommand:
     def test_requirements(self, spidesc_command):
         """Test command requirements."""
         reqs = spidesc_command.requirements()
-        assert reqs == spidesc_command.toLoad.Config
+        assert reqs == toLoad.Config
 
     @pytest.mark.unit
     def test_parse_arguments_valid_file(self, mock_cs):

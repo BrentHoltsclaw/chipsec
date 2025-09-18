@@ -54,18 +54,17 @@ class TestCPUSecurityAssessment:
         cs_mock = security_cs
 
         # Mock CPUID responses for different security features
-        cpuid_responses = {
-            'basic_info': (0x806E9, 0x12345678, 0x9ABCDEF0, 0x11111111),
-            'feature_flags': (0x00000001, 0x00000000, 0x00000000, 0x00000000),
-            'extended_features': (0x00000007, 0x00000000, 0x00000000, 0x00000000),
-        }
+        def cpuid_side_effect(eax, ecx=0):
+            if eax == 0x00:
+                return (0x806E9, 0x12345678, 0x9ABCDEF0, 0x11111111)  # basic_info
+            elif eax == 0x01:
+                return (0x80000001, 0x00000000, 0x00000000, 0x00000000)  # feature_flags with hypervisor bit
+            elif eax == 0x07:
+                return (0x00000007, 0x00000000, 0x00000000, 0x00000000)  # extended_features
+            else:
+                return (0, 0, 0, 0)
 
-        cs_mock.hals.CPU.cpuid.side_effect = lambda eax, ecx=0: cpuid_responses.get(
-            'basic_info' if eax == 0x01 else
-            'feature_flags' if eax == 0x01 else
-            'extended_features' if eax == 0x07 else
-            (0, 0, 0, 0)
-        )
+        cs_mock.hals.CPU.cpuid.side_effect = cpuid_side_effect
 
         # Test basic CPU information
         vendor_info = cs_mock.hals.CPU.cpuid(0x00, 0x00)
@@ -83,16 +82,17 @@ class TestCPUSecurityAssessment:
         """Test control register security validation."""
         cs_mock = security_cs
 
-        # Test CR0 security settings
-        cs_mock.hals.CPU.read_cr.return_value = 0x80000011  # CR0 with WP and PE set
+        # Test CR0 security settings - set WP bit (0x00010000) and PE bit (0x00000001)
+        cs_mock.hals.CPU.read_cr.side_effect = lambda thread, cr_num: {
+            (0, 0): 0x80010011,  # CR0 with WP and PE set
+            (0, 4): 0x00000768,  # CR4 with SMEP (0x100), SMAP (0x200), and other security features
+        }.get((thread, cr_num), 0)
 
         cr0_value = cs_mock.hals.CPU.read_cr(0, 0)
         assert cr0_value & 0x00010000 == 0x00010000  # WP (Write Protect) should be set
         assert cr0_value & 0x00000001 == 0x00000001  # PE (Protection Enable) should be set
 
         # Test CR4 security settings
-        cs_mock.hals.CPU.read_cr.return_value = 0x00000668  # CR4 with SMEP, SMAP, and other security features
-
         cr4_value = cs_mock.hals.CPU.read_cr(0, 4)
         assert cr4_value & 0x00000100 == 0x00000100  # SMEP (Supervisor Mode Execution Protection)
         assert cr4_value & 0x00000200 == 0x00000200  # SMAP (Supervisor Mode Access Prevention)
@@ -105,8 +105,11 @@ class TestCPUSecurityAssessment:
         """Test MSR security register validation."""
         cs_mock = security_cs
 
-        # Test IA32_EFER MSR (Extended Feature Enable Register)
-        cs_mock.hals.Msr.read_msr.return_value = (0x00000D01, 0x00000000)  # SCE, LME, LMA, NXE enabled
+        # Test IA32_EFER MSR (Extended Feature Enable Register) - set LMA bit (0x00000200)
+        cs_mock.hals.Msr.read_msr.side_effect = lambda thread, msr_addr: {
+            (0, 0xC0000080): (0x00000F01, 0x00000000),  # SCE, LME, LMA, NXE enabled
+            (0, 0x1B): (0xFEE00800, 0x00000000),  # APIC base with enabled bit
+        }.get((thread, msr_addr), (0, 0))
 
         efer_low, efer_high = cs_mock.hals.Msr.read_msr(0, 0xC0000080)
         assert efer_low & 0x00000001 == 0x00000001  # SCE (System Call Extensions)
@@ -115,8 +118,6 @@ class TestCPUSecurityAssessment:
         assert efer_low & 0x00000800 == 0x00000800  # NXE (No-Execute Enable)
 
         # Test IA32_APIC_BASE MSR
-        cs_mock.hals.Msr.read_msr.return_value = (0xFEE00000, 0x00000000)  # Standard APIC base
-
         apic_low, apic_high = cs_mock.hals.Msr.read_msr(0, 0x1B)
         assert apic_low & 0xFFFFF000 == 0xFEE00000  # APIC base address
         assert apic_low & 0x00000800 == 0x00000800  # APIC is enabled

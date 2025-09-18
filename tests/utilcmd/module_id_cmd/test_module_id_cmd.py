@@ -17,6 +17,7 @@
 import pytest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.module_id_cmd import ModuleIdCommand
+from chipsec.command import toLoad
 from tests.test_utils import MockFactory
 
 
@@ -44,7 +45,7 @@ class TestModuleIdCommand:
     def test_requirements(self, module_id_command):
         """Test command requirements."""
         reqs = module_id_command.requirements()
-        assert reqs == module_id_command.toLoad.Nil
+        assert reqs == toLoad.Nil
 
     @pytest.mark.unit
     def test_parse_arguments_name(self, mock_cs):

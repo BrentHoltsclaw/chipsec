@@ -17,6 +17,7 @@
 import pytest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.hals_cmd import HALsCommand
+from chipsec.command import toLoad
 from tests.test_utils import MockFactory
 
 
@@ -58,7 +59,7 @@ class TestHALsCommand:
     def test_requirements(self, hals_command):
         """Test command requirements."""
         reqs = hals_command.requirements()
-        assert reqs == hals_command.toLoad.Driver
+        assert reqs == toLoad.Driver
 
     @pytest.mark.unit
     def test_parse_arguments_list(self, mock_cs):

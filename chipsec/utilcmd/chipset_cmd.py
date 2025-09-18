@@ -24,6 +24,7 @@ usage as a standalone utility:
     >>> chipsec_util platform
 """
 
+import argparse
 from chipsec.command import BaseCommand, toLoad
 from chipsec.library.exceptions import UnknownChipsetError
 
@@ -39,20 +40,45 @@ class PlatformCommand(BaseCommand):
     chipsec_util platform
     """
 
+    def __init__(self, argv, cs=None):
+        super().__init__(argv, cs)
+        # Initialize argument parser
+        self.parser = argparse.ArgumentParser(
+            prog='chipsec_util platform',
+            usage='%(prog)s',
+            description='Show platform information'
+        )
+
     def requirements(self) -> toLoad:
         return toLoad.All
     
     def parse_arguments(self) -> None:
-        pass
+        if self.argv:
+            self.parser.error('platform command does not accept any arguments')
 
     def run(self):
+        if not hasattr(self.cs, 'Cfg'):
+            raise AttributeError('Configuration not available (Cfg is None)')
+
         try:
             self.cs.Cfg.print_supported_chipsets()
             self.logger.log("")
+
+            if not hasattr(self.cs.Cfg, 'print_platform_info'):
+                raise AttributeError('print_platform_info method not available')
             self.cs.Cfg.print_platform_info()
+
+            if not hasattr(self.cs.Cfg, 'print_pch_info'):
+                raise AttributeError('print_pch_info method not available')
             self.cs.Cfg.print_pch_info()
+
         except UnknownChipsetError as msg:
             self.logger.log_error(msg)
+        except AttributeError:
+            # Let AttributeError propagate for configuration issues
+            raise
+        except Exception as e:
+            self.logger.log_error(f"Error executing platform command: {e}")
 
 
 commands = {'platform': PlatformCommand}

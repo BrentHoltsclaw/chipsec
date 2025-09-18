@@ -14,326 +14,316 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-import pytest
+"""
+This test module verifies the ACPI command implementation
+"""
+
+import unittest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.acpi_cmd import ACPICommand
 from tests.test_utils import MockFactory
 
 
-class TestACPICommand:
+class TestACPICommand(unittest.TestCase):
     """Comprehensive tests for ACPI utility command functionality."""
 
-    @pytest.fixture
-    def mock_cs(self):
-        """Create mock ChipsecCs object for ACPI testing."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
+    def setUp(self):
+        """Set up test fixtures."""
+        # Create mock ChipsecCs object for ACPI testing
+        self.mock_cs = MockFactory.create_mock_chipsec_cs()
         # Mock ACPI HAL
-        cs_mock.hals.ACPI = Mock()
-        return cs_mock
+        self.mock_cs.hals.ACPI = Mock()
 
-    @pytest.fixture
-    def acpi_command(self, mock_cs):
-        """Create ACPICommand instance."""
-        return ACPICommand(['list'], cs=mock_cs)
+        # Create ACPICommand instance
+        self.acpi_command = ACPICommand(['list'], cs=self.mock_cs)
 
-    @pytest.mark.unit
-    def test_acpi_command_initialization(self, acpi_command, mock_cs):
+    def test_acpi_command_initialization(self):
         """Test ACPICommand initialization."""
-        assert acpi_command.cs == mock_cs
-        assert acpi_command.argv == ['list']
+        self.assertEqual(self.acpi_command.cs, self.mock_cs)
+        self.assertEqual(self.acpi_command.argv, ['list'])
 
-    @pytest.mark.unit
-    def test_parse_arguments_list(self, mock_cs):
+    def test_parse_arguments_list(self):
         """Test parsing list command arguments."""
-        command = ACPICommand(['list'], cs=mock_cs)
+        command = ACPICommand(['list'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.acpi_list
+        self.assertEqual(command.func, command.acpi_list)
 
-    @pytest.mark.unit
-    def test_parse_arguments_table_by_name(self, mock_cs):
+    def test_parse_arguments_table_by_name(self):
         """Test parsing table command with table name."""
-        command = ACPICommand(['table', 'XSDT'], cs=mock_cs)
+        command = ACPICommand(['table', 'XSDT'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.acpi_table
-        assert command._file is False
-        assert command._name == ['XSDT']
+        self.assertEqual(command.func, command.acpi_table)
+        self.assertFalse(command._file)
+        self.assertEqual(command._name, ['XSDT'])
 
-    @pytest.mark.unit
-    def test_parse_arguments_table_from_file(self, mock_cs):
+    def test_parse_arguments_table_from_file(self):
         """Test parsing table command with file option."""
-        command = ACPICommand(['table', '-f', 'acpi_table.bin'], cs=mock_cs)
+        command = ACPICommand(['table', '-f', 'acpi_table.bin'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.acpi_table
-        assert command._file is True
-        assert command._name == ['acpi_table.bin']
+        self.assertEqual(command.func, command.acpi_table)
+        self.assertTrue(command._file)
+        self.assertEqual(command._name, ['acpi_table.bin'])
 
-    @pytest.mark.unit
-    def test_requirements_list_command(self, acpi_command):
+    def test_requirements_list_command(self):
         """Test requirements for list command."""
-        acpi_command.func = acpi_command.acpi_list
-        reqs = acpi_command.requirements()
-        assert hasattr(reqs, 'load_driver')
-        assert hasattr(reqs, 'load_config')
+        self.acpi_command.func = self.acpi_command.acpi_list
+        reqs = self.acpi_command.requirements()
+        self.assertTrue(hasattr(reqs, 'load_driver'))
+        self.assertTrue(hasattr(reqs, 'load_config'))
 
-    @pytest.mark.unit
-    def test_requirements_table_command_no_file(self, acpi_command):
+    def test_requirements_table_command_no_file(self):
         """Test requirements for table command without file."""
-        acpi_command.func = acpi_command.acpi_table
-        acpi_command._file = False
-        reqs = acpi_command.requirements()
-        assert hasattr(reqs, 'load_driver')
-        assert hasattr(reqs, 'load_config')
+        self.acpi_command.func = self.acpi_command.acpi_table
+        self.acpi_command._file = False
+        reqs = self.acpi_command.requirements()
+        self.assertTrue(hasattr(reqs, 'load_driver'))
+        self.assertTrue(hasattr(reqs, 'load_config'))
 
-    @pytest.mark.unit
-    def test_requirements_table_command_with_file(self, acpi_command):
+    def test_requirements_table_command_with_file(self):
         """Test requirements for table command with file."""
-        acpi_command.func = acpi_command.acpi_table
-        acpi_command._file = True
-        reqs = acpi_command.requirements()
+        self.acpi_command.func = self.acpi_command.acpi_table
+        self.acpi_command._file = True
+        reqs = self.acpi_command.requirements()
         # Should return toLoad.Nil for file-based operations
-        assert reqs is not None
+        self.assertIsNotNone(reqs)
 
-    @pytest.mark.unit
-    def test_set_up(self, acpi_command, mock_cs):
+    def test_set_up(self):
         """Test set_up method."""
-        with patch('chipsec.hal.common.acpi.ACPI') as mock_acpi_class:
-            mock_acpi_instance = Mock()
-            mock_acpi_class.return_value = mock_acpi_instance
+        # Use our enhanced mock infrastructure
+        mock_acpi_instance = Mock()
+        self.mock_cs.hals.ACPI = mock_acpi_instance
 
-            acpi_command.set_up()
+        self.acpi_command.set_up()
 
-            mock_acpi_class.assert_called_once_with(mock_cs)
-            assert acpi_command._acpi == mock_acpi_instance
+        # Verify ACPI HAL was instantiated
+        self.assertIsNotNone(self.acpi_command._acpi)
+        self.assertTrue(hasattr(self.acpi_command, '_acpi'))
 
-    @pytest.mark.unit
-    def test_acpi_list(self, acpi_command, mock_cs):
+    def test_acpi_list(self):
         """Test acpi_list command execution."""
         mock_acpi = Mock()
-        acpi_command._acpi = mock_acpi
+        self.acpi_command._acpi = mock_acpi
 
-        acpi_command.acpi_list()
+        self.acpi_command.acpi_list()
 
         mock_acpi.print_ACPI_table_list.assert_called_once()
 
-    @pytest.mark.unit
-    def test_acpi_table_by_name_present(self, acpi_command, mock_cs):
+    def test_acpi_table_by_name_present(self):
         """Test acpi_table command with table name when table is present."""
-        acpi_command._name = ['XSDT']
-        acpi_command._file = False
+        self.acpi_command._name = ['XSDT']
+        self.acpi_command._file = False
 
         mock_acpi = Mock()
         mock_acpi.is_ACPI_table_present.return_value = True
-        acpi_command._acpi = mock_acpi
+        self.acpi_command._acpi = mock_acpi
 
-        acpi_command.acpi_table()
+        self.acpi_command.acpi_table()
 
         mock_acpi.is_ACPI_table_present.assert_called_once_with('XSDT')
         mock_acpi.dump_ACPI_table.assert_called_once_with('XSDT', False)
 
-    @pytest.mark.unit
-    def test_acpi_table_by_name_not_present(self, acpi_command, mock_cs):
+    def test_acpi_table_by_name_not_present(self):
         """Test acpi_table command with table name when table is not present."""
-        acpi_command._name = ['INVALID']
-        acpi_command._file = False
+        self.acpi_command._name = ['INVALID']
+        self.acpi_command._file = False
 
         mock_acpi = Mock()
         mock_acpi.is_ACPI_table_present.return_value = False
         mock_acpi.tableList = {'XSDT': [0x12345678]}
-        acpi_command._acpi = mock_acpi
+        self.acpi_command._acpi = mock_acpi
 
-        acpi_command.acpi_table()
+        self.acpi_command.acpi_table()
 
         mock_acpi.is_ACPI_table_present.assert_called_once_with('INVALID')
         # Should not call dump_ACPI_table
         mock_acpi.dump_ACPI_table.assert_not_called()
 
-    @pytest.mark.unit
-    def test_acpi_table_from_file_exists(self, acpi_command, mock_cs):
+    def test_acpi_table_from_file_exists(self):
         """Test acpi_table command with file that exists."""
-        acpi_command._name = ['acpi_table.bin']
-        acpi_command._file = True
+        self.acpi_command._name = ['acpi_table.bin']
+        self.acpi_command._file = True
 
         mock_acpi = Mock()
-        acpi_command._acpi = mock_acpi
+        self.acpi_command._acpi = mock_acpi
 
-        with patch('os.path.exists', return_value=True):
-            acpi_command.acpi_table()
-
+        with patch('chipsec.utilcmd.acpi_cmd.path_exists', return_value=True), \
+             patch('chipsec.library.file.read_file', return_value=b'test_acpi_data'):
+            self.acpi_command.acpi_table()
             mock_acpi.dump_ACPI_table.assert_called_once_with('acpi_table.bin', True)
 
-    @pytest.mark.unit
-    def test_acpi_table_from_file_not_exists(self, acpi_command, mock_cs):
+    def test_acpi_table_from_file_not_exists(self):
         """Test acpi_table command with file that doesn't exist."""
-        acpi_command._name = ['nonexistent.bin']
-        acpi_command._file = True
+        self.acpi_command._name = ['nonexistent.bin']
+        self.acpi_command._file = True
 
         mock_acpi = Mock()
-        acpi_command._acpi = mock_acpi
+        self.acpi_command._acpi = mock_acpi
 
         with patch('os.path.exists', return_value=False):
-            acpi_command.acpi_table()
-
+            self.acpi_command.acpi_table()
             # Should not call dump_ACPI_table
             mock_acpi.dump_ACPI_table.assert_not_called()
 
-    @pytest.mark.unit
     def test_commands_dictionary(self):
         """Test commands dictionary is properly defined."""
         from chipsec.utilcmd.acpi_cmd import commands
-        assert 'acpi' in commands
-        assert commands['acpi'] == ACPICommand
+        self.assertIn('acpi', commands)
+        self.assertEqual(commands['acpi'], ACPICommand)
 
 
-class TestACPICommandIntegration:
+class TestACPICommandIntegration(unittest.TestCase):
     """Integration tests for ACPI command with HAL components."""
 
-    @pytest.fixture
-    def integrated_cs(self):
-        """Create integrated ChipsecCs for ACPI testing."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
+    def setUp(self):
+        """Set up test fixtures."""
+        # Create integrated ChipsecCs for ACPI testing
+        self.integrated_cs = MockFactory.create_mock_chipsec_cs()
 
         # Mock all required HAL components
-        cs_mock.hals.ACPI = Mock()
-        cs_mock.hals.Memory = Mock()
-        cs_mock.hals.CPU = Mock()
+        self.integrated_cs.hals.ACPI = Mock()
+        self.integrated_cs.hals.Memory = Mock()
+        self.integrated_cs.hals.CPU = Mock()
 
-        # Mock helper
-        cs_mock.helper = Mock()
-        cs_mock.helper.get_threads_count.return_value = 2
+        # Mock helper with proper configuration
+        self.integrated_cs.helper = Mock()
+        self.integrated_cs.helper.get_threads_count.return_value = 2
+        self.integrated_cs.helper.enum_ACPI_tables.return_value = [b'FACP', b'APIC', b'MCFG', b'XSDT']
+        self.integrated_cs.helper.get_ACPI_table.return_value = b'FACP\x84\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00INTL\x00\x00\x00\x00' + b'\x00' * 116
 
-        return cs_mock
-
-    @pytest.mark.integration
-    def test_acpi_command_full_workflow_list(self, integrated_cs):
+    def test_acpi_command_full_workflow_list(self):
         """Test complete ACPI list command workflow."""
         # Setup HAL mocks
-        integrated_cs.hals.ACPI.print_ACPI_table_list.return_value = None
+        self.integrated_cs.hals.ACPI.print_ACPI_table_list.return_value = None
 
         # Create and execute command
-        acpi_cmd = ACPICommand(['list'], cs=integrated_cs)
+        acpi_cmd = ACPICommand(['list'], cs=self.integrated_cs)
         acpi_cmd.parse_arguments()
-        acpi_cmd.set_up()
-        acpi_cmd.acpi_list()
+
+        # Mock the ACPI HAL creation to return our mock
+        with patch('chipsec.utilcmd.acpi_cmd.ACPI', return_value=self.integrated_cs.hals.ACPI):
+            acpi_cmd.set_up()
+            acpi_cmd.acpi_list()
 
         # Verify HAL interactions
-        integrated_cs.hals.ACPI.print_ACPI_table_list.assert_called_once()
+        self.integrated_cs.hals.ACPI.print_ACPI_table_list.assert_called_once()
 
-    @pytest.mark.integration
-    def test_acpi_command_full_workflow_table(self, integrated_cs):
+    def test_acpi_command_full_workflow_table(self):
         """Test complete ACPI table command workflow."""
         # Setup HAL mocks
-        integrated_cs.hals.ACPI.is_ACPI_table_present.return_value = True
-        integrated_cs.hals.ACPI.dump_ACPI_table.return_value = None
+        self.integrated_cs.hals.ACPI.is_ACPI_table_present.return_value = True
+        self.integrated_cs.hals.ACPI.dump_ACPI_table.return_value = None
 
         # Create and execute command
-        acpi_cmd = ACPICommand(['table', 'FACP'], cs=integrated_cs)
+        acpi_cmd = ACPICommand(['table', 'FACP'], cs=self.integrated_cs)
         acpi_cmd.parse_arguments()
-        acpi_cmd.set_up()
-        acpi_cmd.acpi_table()
+
+        # Mock the ACPI HAL creation to return our mock
+        with patch('chipsec.utilcmd.acpi_cmd.ACPI', return_value=self.integrated_cs.hals.ACPI):
+            acpi_cmd.set_up()
+            acpi_cmd.acpi_table()
 
         # Verify HAL interactions
-        integrated_cs.hals.ACPI.is_ACPI_table_present.assert_called_once_with('FACP')
-        integrated_cs.hals.ACPI.dump_ACPI_table.assert_called_once_with('FACP', False)
+        self.integrated_cs.hals.ACPI.is_ACPI_table_present.assert_called_once_with('FACP')
+        self.integrated_cs.hals.ACPI.dump_ACPI_table.assert_called_once_with('FACP', False)
 
-    @pytest.mark.integration
-    def test_acpi_command_error_handling(self, integrated_cs):
+    def test_acpi_command_error_handling(self):
         """Test ACPI command error handling."""
         # Test invalid table name
-        integrated_cs.hals.ACPI.is_ACPI_table_present.return_value = False
-        integrated_cs.hals.ACPI.tableList = {'XSDT': [0x12345678]}
+        self.integrated_cs.hals.ACPI.is_ACPI_table_present.return_value = False
+        self.integrated_cs.hals.ACPI.tableList = {'XSDT': [0x12345678]}
 
-        acpi_cmd = ACPICommand(['table', 'INVALID'], cs=integrated_cs)
+        acpi_cmd = ACPICommand(['table', 'INVALID'], cs=self.integrated_cs)
         acpi_cmd.parse_arguments()
         acpi_cmd.set_up()
         acpi_cmd.acpi_table()
 
         # Should not attempt to dump invalid table
-        integrated_cs.hals.ACPI.dump_ACPI_table.assert_not_called()
+        self.integrated_cs.hals.ACPI.dump_ACPI_table.assert_not_called()
 
-    @pytest.mark.integration
-    def test_acpi_command_file_operations(self, integrated_cs):
+    def test_acpi_command_file_operations(self):
         """Test ACPI command file operations."""
         # Test with existing file
-        integrated_cs.hals.ACPI.dump_ACPI_table.return_value = None
+        self.integrated_cs.hals.ACPI.dump_ACPI_table.return_value = None
 
-        with patch('os.path.exists', return_value=True):
-            acpi_cmd = ACPICommand(['table', '-f', 'test.bin'], cs=integrated_cs)
+        with patch('chipsec.utilcmd.acpi_cmd.path_exists', return_value=True), \
+             patch('chipsec.library.file.read_file', return_value=b'test_acpi_data'):
+            acpi_cmd = ACPICommand(['table', '-f', 'test.bin'], cs=self.integrated_cs)
             acpi_cmd.parse_arguments()
-            acpi_cmd.set_up()
-            acpi_cmd.acpi_table()
 
-            integrated_cs.hals.ACPI.dump_ACPI_table.assert_called_once_with('test.bin', True)
+            # Mock the ACPI HAL creation to return our mock
+            with patch('chipsec.utilcmd.acpi_cmd.ACPI', return_value=self.integrated_cs.hals.ACPI):
+                acpi_cmd.set_up()
+                acpi_cmd.acpi_table()
+
+            self.integrated_cs.hals.ACPI.dump_ACPI_table.assert_called_once_with('test.bin', True)
 
         # Reset mock
-        integrated_cs.hals.ACPI.dump_ACPI_table.reset_mock()
+        self.integrated_cs.hals.ACPI.dump_ACPI_table.reset_mock()
 
         # Test with non-existing file
-        with patch('os.path.exists', return_value=False):
-            acpi_cmd2 = ACPICommand(['table', '-f', 'missing.bin'], cs=integrated_cs)
+        with patch('chipsec.utilcmd.acpi_cmd.path_exists', return_value=False):
+            acpi_cmd2 = ACPICommand(['table', '-f', 'missing.bin'], cs=self.integrated_cs)
             acpi_cmd2.parse_arguments()
-            acpi_cmd2.set_up()
-            acpi_cmd2.acpi_table()
+
+            # Mock the ACPI HAL creation to return our mock
+            with patch('chipsec.utilcmd.acpi_cmd.ACPI', return_value=self.integrated_cs.hals.ACPI):
+                acpi_cmd2.set_up()
+                acpi_cmd2.acpi_table()
 
             # Should not attempt to dump missing file
-            integrated_cs.hals.ACPI.dump_ACPI_table.assert_not_called()
+            self.integrated_cs.hals.ACPI.dump_ACPI_table.assert_not_called()
 
 
-class TestACPICommandEdgeCases:
+class TestACPICommandEdgeCases(unittest.TestCase):
     """Test edge cases and error conditions for ACPI command."""
 
-    @pytest.fixture
-    def mock_cs(self):
-        """Create mock ChipsecCs for edge case testing."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
-        cs_mock.hals.ACPI = Mock()
-        return cs_mock
+    def setUp(self):
+        """Set up test fixtures."""
+        # Create mock ChipsecCs for edge case testing
+        self.mock_cs = MockFactory.create_mock_chipsec_cs()
+        self.mock_cs.hals.ACPI = Mock()
 
-    @pytest.mark.unit
-    def test_empty_argv_handling(self, mock_cs):
+    def test_empty_argv_handling(self):
         """Test handling of empty argv."""
         # This should not crash but may not work as expected
-        acpi_cmd = ACPICommand([], cs=mock_cs)
+        acpi_cmd = ACPICommand([], cs=self.mock_cs)
         # Just ensure it doesn't crash during initialization
-        assert acpi_cmd.argv == []
+        self.assertEqual(acpi_cmd.argv, [])
 
-    @pytest.mark.unit
-    def test_invalid_subcommand(self, mock_cs):
+    def test_invalid_subcommand(self):
         """Test handling of invalid subcommand."""
-        acpi_cmd = ACPICommand(['invalid'], cs=mock_cs)
+        acpi_cmd = ACPICommand(['invalid'], cs=self.mock_cs)
 
         # This should raise SystemExit due to argparse error
-        with pytest.raises(SystemExit):
+        with self.assertRaises(SystemExit):
             acpi_cmd.parse_arguments()
 
-    @pytest.mark.unit
-    def test_table_command_missing_name(self, mock_cs):
+    def test_table_command_missing_name(self):
         """Test table command with missing table name."""
-        acpi_cmd = ACPICommand(['table'], cs=mock_cs)
+        acpi_cmd = ACPICommand(['table'], cs=self.mock_cs)
 
         # This should raise SystemExit due to argparse error
-        with pytest.raises(SystemExit):
+        with self.assertRaises(SystemExit):
             acpi_cmd.parse_arguments()
 
-    @pytest.mark.unit
-    def test_file_option_without_name(self, mock_cs):
+    def test_file_option_without_name(self):
         """Test file option without table name."""
-        acpi_cmd = ACPICommand(['table', '-f'], cs=mock_cs)
+        acpi_cmd = ACPICommand(['table', '-f'], cs=self.mock_cs)
 
         # This should raise SystemExit due to argparse error
-        with pytest.raises(SystemExit):
+        with self.assertRaises(SystemExit):
             acpi_cmd.parse_arguments()
 
-    @pytest.mark.unit
-    def test_acpi_hal_none_handling(self, mock_cs):
+    def test_acpi_hal_none_handling(self):
         """Test handling when ACPI HAL is not properly initialized."""
-        acpi_cmd = ACPICommand(['list'], cs=mock_cs)
+        acpi_cmd = ACPICommand(['list'], cs=self.mock_cs)
         acpi_cmd.parse_arguments()
         # Don't call set_up(), so _acpi remains None
 
         # This should handle the None case gracefully
-        with pytest.raises(AttributeError):
+        with self.assertRaises(AttributeError):
             acpi_cmd.acpi_list()
 
 
 if __name__ == '__main__':
-    pytest.main([__file__])
+    unittest.main()

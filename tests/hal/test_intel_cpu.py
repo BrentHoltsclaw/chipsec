@@ -237,29 +237,41 @@ class TestIntelCPU:
         assert base == 0x00000000FED00000
         # For Intel client: tseg_limit = bgsm - 1 = 0xFF000000 - 1 = 0xFEFFFFFF
         assert limit == 0x00000000FEFFFFFF
-        # tseg_size = tseg_limit - tseg_base + 1 = 0xFEFFFFFF - 0xFED00000 + 1 = 0x01300000
-        assert size == 0x0000000001300000
+        # tseg_size = tseg_limit - tseg_base + 1 = 0xFEFFFFFF - 0xFED00000 + 1 = 0x300000
+        assert size == 0x0000000000300000
 
     @pytest.mark.unit
     def test_get_TSEG_intel_server(self, intel_cpu_instance, mock_cs):
         """Test getting TSEG for Intel server system."""
         mock_cs.is_server.return_value = True
 
-        mock_register_list = Mock()
-        mock_register_list.read_field.side_effect = [
-            [0x00000000FED00000],  # TSEG base - return as list
-            [0x00000000FEFFFFFF],  # TSEG limit - return as list
-        ]
+        # Mock for TSEG base register
+        mock_tseg_base_reg = Mock()
+        mock_tseg_base_reg.read_field.return_value = [0x00000000FED00000]
 
-        mock_cs.register.get_list_by_name.return_value = mock_register_list
+        # Mock for TSEG limit register
+        mock_tseg_limit_reg = Mock()
+        mock_tseg_limit_reg.read_field.return_value = [0x00000000FEDFFFFF]
+
+        def mock_get_list_by_name(name):
+            if name == '8086.MEMMAP_VTD.TSEG':
+                return mock_tseg_base_reg
+            elif name == '8086.MEMMAP_VTD.TSEG_LIMIT':
+                return mock_tseg_limit_reg
+            return Mock()
+
+        mock_cs.register.get_list_by_name.side_effect = mock_get_list_by_name
 
         base, limit, size = intel_cpu_instance.get_TSEG()
 
         assert base == 0x00000000FED00000
-        # For Intel server: tseg_limit = tseg_limit + 0xFFFFF = 0xFEFFFFFF + 0xFFFFF = 0xFFFFFFFF
-        assert limit == 0x00000000FFFFFFFF
-        # tseg_size = tseg_limit - tseg_base + 1 = 0xFFFFFFFF - 0xFED00000 + 1 = 0x01300000
-        assert size == 0x0000000001300000
+        # For Intel server: tseg_limit = tseg_limit + 0xFFFFF = 0xFEDFFFFF + 0xFFFFF = 0xFEFFFFFF
+        # The actual calculation in the code: tseg_limit += 0xFFFFF
+        expected_limit = 0x00000000FEDFFFFF + 0xFFFFF
+        assert limit == expected_limit
+        # tseg_size = tseg_limit - tseg_base + 1 = 0xFEFFFFFF - 0xFED00000 + 1 = 0x300000
+        expected_size = expected_limit - 0x00000000FED00000 + 1
+        assert size == expected_size
 
     @pytest.mark.unit
     def test_check_SMRR_supported_intel_true(self, intel_cpu_instance, mock_cs):
@@ -348,8 +360,8 @@ class TestIntelCPU:
         # Mock TSEG registers
         mock_register_list = Mock()
         mock_register_list.read_field.side_effect = [
-            0x00000000FED00000,  # TSEGMB
-            0x00000000FF000000,  # BGSM
+            [0x00000000FED00000],  # TSEGMB
+            [0x00000000FF000000],  # BGSM
         ]
 
         mock_cs.register.get_list_by_name.side_effect = [
@@ -361,8 +373,8 @@ class TestIntelCPU:
         base, limit, size = intel_cpu_instance.get_SMRAM()
 
         assert base == 0x00000000FED00000
-        assert limit == 0x00000000FF000000 - 1
-        assert size == (0x00000000FF000000 - 1) - 0x00000000FED00000 + 1
+        assert limit == 0x00000000FEFFFFFF  # BGSM - 1
+        assert size == 0x0000000000300000  # limit - base + 1
 
 
 if __name__ == '__main__':

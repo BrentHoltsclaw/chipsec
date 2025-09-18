@@ -14,29 +14,27 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+import unittest
 import pytest
 from unittest.mock import Mock
 from chipsec.utilcmd.cpu_cmd import CPUCommand
 from tests.test_utils import MockFactory
 
 
-class TestCPUCommand:
+class TestCPUCommand(unittest.TestCase):
     """Test CPU utility command functionality."""
 
-    @pytest.fixture
-    def mock_cs(self):
-        """Create mock ChipsecCs object."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
+    def setUp(self):
+        """Set up test fixtures."""
+        # Create mock ChipsecCs object
+        self.mock_cs = MockFactory.create_mock_chipsec_cs()
         # Mock CPU HAL
-        cs_mock.hals.CPU = Mock()
-        cs_mock.hals.Msr = Mock()
-        cs_mock.helper = Mock()
-        return cs_mock
+        self.mock_cs.hals.CPU = Mock()
+        self.mock_cs.hals.Msr = Mock()
+        self.mock_cs.helper = Mock()
 
-    @pytest.fixture
-    def cpu_command(self, mock_cs):
-        """Create CPUCommand instance."""
-        return CPUCommand(['info'], cs=mock_cs)
+        # Create CPUCommand instance
+        self.cpu_command = CPUCommand(['info'], cs=self.mock_cs)
 
     @pytest.mark.unit
     def test_cpu_command_initialization(self, cpu_command, mock_cs):

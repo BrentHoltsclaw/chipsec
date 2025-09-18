@@ -17,10 +17,53 @@
 import pytest
 import sys
 import os
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
+from typing import Any, Dict, List, Optional, Union
 
 # Add the project root to the Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+
+class ChipsecMock(MagicMock):
+    """Enhanced mock for CHIPSEC objects with proper format string handling."""
+    def __format__(self, format_spec: str) -> str:
+        """Handle format string operations properly."""
+        if hasattr(self, '_mock_return_value'):
+            return format(self._mock_return_value, format_spec)
+        return '0' * 16  # Default for hex format
+
+    def __len__(self) -> int:
+        """Handle len() operations."""
+        if hasattr(self, '_mock_return_value') and isinstance(self._mock_return_value, (bytes, list, str)):
+            return len(self._mock_return_value)
+        return 16  # Default length for buffers
+
+    def __iter__(self):
+        """Handle iteration operations."""
+        if hasattr(self, '_mock_return_value') and isinstance(self._mock_return_value, (list, tuple)):
+            return iter(self._mock_return_value)
+        return iter([0] * 16)  # Default iteration
+
+
+class BaseCommandMock(ChipsecMock):
+    """Base mock for command testing with common attributes."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.toLoad = True
+        self._smbus = ChipsecMock()
+        self._spd = ChipsecMock()
+        self.func = ChipsecMock()
+        self.port = 0x00
+        self.module_name = "test_module"
+        self.module_id = 12345
+        self.ucode_filename = "test.bin"
+        self.fd_file = ChipsecMock()
+        self._force_32 = False
+        self._thread = 0
+        self.engine = ChipsecMock()
+        self.interrupts = ChipsecMock()
+        self._prev_log = ChipsecMock()
+        self.dev_addr = 0x50
 
 
 @pytest.fixture(scope="session")
@@ -47,13 +90,28 @@ def mock_modules():
 @pytest.fixture
 def mock_chipsec_cs():
     """Mock ChipsecCs object for testing."""
-    cs_mock = Mock()
-    cs_mock.Cfg = Mock()
-    cs_mock.Cfg.get_reglist = Mock(return_value=[])
-    cs_mock.Cfg.get_scope = Mock(return_value='')
-    cs_mock.Cfg.convert_platform_scope = Mock(return_value=['8086', '0', 'TEST_REG'])
-    cs_mock.Cfg.platform = Mock()
-    cs_mock.Cfg.platform.get_register_from_scope = Mock(return_value=Mock())
+    cs_mock = ChipsecMock()
+    cs_mock.Cfg = ChipsecMock()
+    cs_mock.Cfg.get_reglist = ChipsecMock(return_value=[])
+    cs_mock.Cfg.get_scope = ChipsecMock(return_value='')
+    cs_mock.Cfg.convert_platform_scope = ChipsecMock(return_value=['8086', '0', 'TEST_REG'])
+    cs_mock.Cfg.platform = ChipsecMock()
+    cs_mock.Cfg.platform.get_register_from_scope = ChipsecMock(return_value=ChipsecMock())
+    
+    # Add hardware interface mocks
+    cs_mock.hals = ChipsecMock()
+    cs_mock.hals.Pci = ChipsecMock()
+    cs_mock.hals.Mmio = ChipsecMock()
+    cs_mock.hals.Vmm = ChipsecMock()
+    cs_mock.hals.CPU = ChipsecMock()
+    cs_mock.hals.Memory = ChipsecMock()
+    cs_mock.hals.SPI = ChipsecMock()
+    
+    # Configure default returns for common operations
+    cs_mock.hals.Pci.dump_pci_config = ChipsecMock(return_value=bytes(range(256)))
+    cs_mock.hals.Memory.read_physical_mem = ChipsecMock(return_value=bytes(range(16)))
+    cs_mock.hals.Vmm.hypercall = ChipsecMock(return_value=0)
+    
     return cs_mock
 
 
@@ -80,13 +138,28 @@ def sample_register_data():
 @pytest.fixture
 def mock_helper():
     """Mock helper for testing."""
-    helper_mock = Mock()
-    helper_mock.create = Mock(return_value=True)
-    helper_mock.start = Mock(return_value=True)
-    helper_mock.delete = Mock(return_value=True)
-    helper_mock.read_pci_reg = Mock(return_value=0x8086)
-    helper_mock.write_pci_reg = Mock(return_value=True)
+    helper_mock = ChipsecMock()
+    helper_mock.create = ChipsecMock(return_value=True)
+    helper_mock.start = ChipsecMock(return_value=True)
+    helper_mock.delete = ChipsecMock(return_value=True)
+    helper_mock.read_pci_reg = ChipsecMock(return_value=0x8086)
+    helper_mock.write_pci_reg = ChipsecMock(return_value=True)
     return helper_mock
+
+
+def configure_mock_for_hardware(mock_obj: ChipsecMock, operations: Dict[str, Any]) -> None:
+    """Configure hardware operation mocks properly."""
+    for op, return_value in operations.items():
+        if isinstance(return_value, Exception):
+            setattr(mock_obj, op, ChipsecMock(side_effect=return_value))
+        else:
+            setattr(mock_obj, op, ChipsecMock(return_value=return_value))
+
+
+@pytest.fixture
+def configure_mock():
+    """Fixture to provide the configure_mock_for_hardware function."""
+    return configure_mock_for_hardware
 
 
 @pytest.fixture(autouse=True)
@@ -129,12 +202,12 @@ def temp_test_file(tmp_path):
 @pytest.fixture
 def mock_logger():
     """Mock logger for testing."""
-    logger_mock = Mock()
-    logger_mock.log = Mock()
-    logger_mock.log_error = Mock()
-    logger_mock.log_warning = Mock()
-    logger_mock.log_good = Mock()
-    logger_mock.log_bad = Mock()
+    logger_mock = ChipsecMock()
+    logger_mock.log = ChipsecMock()
+    logger_mock.log_error = ChipsecMock()
+    logger_mock.log_warning = ChipsecMock()
+    logger_mock.log_good = ChipsecMock()
+    logger_mock.log_bad = ChipsecMock()
     return logger_mock
 
 
@@ -146,31 +219,52 @@ def mock_cs(mock_chipsec_cs):
 
 # Command fixtures for utilcmd tests
 @pytest.fixture
-def decode_command():
+def base_command():
+    """Base command fixture with common attributes."""
+    return BaseCommandMock()
+
+
+@pytest.fixture
+def decode_command(base_command):
     """Mock decode command for testing."""
-    cmd_mock = Mock()
-    cmd_mock.run = Mock(return_value=True)
+    cmd_mock = base_command
+    cmd_mock.run = ChipsecMock(return_value=True)
     return cmd_mock
 
 
 @pytest.fixture
-def smbus_command():
+def smbus_command(base_command):
     """Mock SMBus command for testing."""
-    cmd_mock = Mock()
-    cmd_mock.run = Mock(return_value=True)
-    cmd_mock._smbus = Mock()
-    cmd_mock._smbus.read_byte = Mock(return_value=0x12)
-    cmd_mock._smbus.read_word = Mock(return_value=0x1234)
-    cmd_mock._smbus.write_byte = Mock(return_value=True)
-    cmd_mock._smbus.write_word = Mock(return_value=True)
+    cmd_mock = base_command
+    cmd_mock.run = ChipsecMock(return_value=True)
+    cmd_mock._smbus.read_byte = ChipsecMock(return_value=0x12)
+    cmd_mock._smbus.read_word = ChipsecMock(return_value=0x1234)
+    cmd_mock._smbus.write_byte = ChipsecMock(return_value=True)
+    cmd_mock._smbus.write_word = ChipsecMock(return_value=True)
     return cmd_mock
 
 
 @pytest.fixture
-def vmm_command():
+def vmm_command(base_command):
     """Mock VMM command for testing."""
-    cmd_mock = Mock()
-    cmd_mock.run = Mock(return_value=True)
+    cmd_mock = base_command
+    cmd_mock.run = ChipsecMock(return_value=True)
+    
+    # Add VMM-specific mock configurations
+    cmd_mock.cs = ChipsecMock()
+    cmd_mock.cs.hals = ChipsecMock()
+    cmd_mock.cs.hals.Vmm = ChipsecMock()
+    cmd_mock.cs.hals.Vmm.hypercall = ChipsecMock(return_value=0x12345678)
+    cmd_mock.cs.hals.Vmm.dump_ept = ChipsecMock(return_value=True)
+    
+    # Configure PCI operations
+    cmd_mock.cs.hals.Pci = ChipsecMock()
+    cmd_mock.cs.hals.Pci.dump_pci_config = ChipsecMock(return_value=bytes(range(256)))
+    
+    # Configure logger
+    cmd_mock.logger = ChipsecMock()
+    cmd_mock.logger.log = ChipsecMock()
+    
     return cmd_mock
 
 

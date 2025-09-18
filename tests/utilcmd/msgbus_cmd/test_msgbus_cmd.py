@@ -17,6 +17,7 @@
 import pytest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.msgbus_cmd import MsgBusCommand
+from chipsec.command import toLoad
 from tests.test_utils import MockFactory
 
 
@@ -49,7 +50,7 @@ class TestMsgBusCommand:
     def test_requirements(self, msgbus_command):
         """Test command requirements."""
         reqs = msgbus_command.requirements()
-        assert reqs == msgbus_command.toLoad.All
+        assert reqs == toLoad.All
 
     @pytest.mark.unit
     def test_parse_arguments_read(self, mock_cs):

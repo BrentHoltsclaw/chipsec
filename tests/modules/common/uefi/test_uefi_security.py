@@ -122,12 +122,21 @@ class TestUEFISecurityAssessment:
         cs_mock.hals.UEFI.list_EFI_variables.return_value = [
             'Boot0000', 'Boot0001', 'BootOrder', 'BootCurrent'
         ]
-        cs_mock.hals.UEFI.get_EFI_variable.side_effect = [
-            b'boot_entry_0',  # Boot0000
-            b'boot_entry_1',  # Boot0001
-            b'\x00\x00\x01\x00',  # BootOrder
-            b'\x00\x00',  # BootCurrent
-        ]
+
+        # Mock get_EFI_variable to return appropriate values based on variable name
+        def get_efi_variable_side_effect(name, guid):
+            if name == 'Boot0000':
+                return b'boot_entry_0'
+            elif name == 'Boot0001':
+                return b'boot_entry_1'
+            elif name == 'BootOrder':
+                return b'\x00\x00\x01\x00'
+            elif name == 'BootCurrent':
+                return b'\x00\x00'
+            else:
+                return b'default_value'
+
+        cs_mock.hals.UEFI.get_EFI_variable.side_effect = get_efi_variable_side_effect
 
         # Test boot variable enumeration
         boot_vars = cs_mock.hals.UEFI.list_EFI_variables()

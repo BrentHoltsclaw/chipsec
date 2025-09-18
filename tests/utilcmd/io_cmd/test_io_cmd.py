@@ -14,328 +14,300 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-import pytest
+import unittest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.io_cmd import PortIOCommand
 from tests.test_utils import MockFactory
 
 
-class TestPortIOCommand:
+class TestPortIOCommand(unittest.TestCase):
     """Comprehensive tests for I/O port utility command functionality."""
 
-    @pytest.fixture
-    def mock_cs(self):
-        """Create mock ChipsecCs object for I/O testing."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
+    def setUp(self):
+        """Set up test fixtures."""
+        # Create mock ChipsecCs object for I/O testing
+        self.mock_cs = MockFactory.create_mock_chipsec_cs()
         # Mock I/O HAL
-        cs_mock.hals.Io = Mock()
-        cs_mock.hals.Io.read.return_value = 0x12345678
-        cs_mock.hals.Io.write.return_value = None
-        return cs_mock
+        self.mock_cs.hals.Io = Mock()
+        self.mock_cs.hals.Io.read.return_value = 0x12345678
+        self.mock_cs.hals.Io.write.return_value = None
 
-    @pytest.fixture
-    def io_command(self, mock_cs):
-        """Create PortIOCommand instance."""
-        return PortIOCommand(['list'], cs=mock_cs)
+        # Create PortIOCommand instance
+        self.io_command = PortIOCommand(['list'], cs=self.mock_cs)
 
-    @pytest.mark.unit
-    def test_io_command_initialization(self, io_command, mock_cs):
+    def test_io_command_initialization(self):
         """Test PortIOCommand initialization."""
-        assert io_command.cs == mock_cs
-        assert io_command.argv == ['list']
+        self.assertEqual(self.io_command.cs, self.mock_cs)
+        self.assertEqual(self.io_command.argv, ['list'])
 
-    @pytest.mark.unit
-    def test_parse_arguments_list(self, mock_cs):
+    def test_parse_arguments_list(self):
         """Test parsing list command arguments."""
-        command = PortIOCommand(['list'], cs=mock_cs)
+        command = PortIOCommand(['list'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.io_list
+        self.assertEqual(command.func, command.io_list)
 
-    @pytest.mark.unit
-    def test_parse_arguments_read(self, mock_cs):
+    def test_parse_arguments_read(self):
         """Test parsing read command arguments."""
-        command = PortIOCommand(['read', '0x61', '1'], cs=mock_cs)
+        command = PortIOCommand(['read', '0x61', '1'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.io_read
-        assert command._port == 0x61
-        assert command._width == 1
+        self.assertEqual(command.func, command.io_read)
+        self.assertEqual(command._port, 0x61)
+        self.assertEqual(command._width, 1)
 
-    @pytest.mark.unit
-    def test_parse_arguments_read_width_2(self, mock_cs):
+    def test_parse_arguments_read_width_2(self):
         """Test parsing read command with 2-byte width."""
-        command = PortIOCommand(['read', '0x430', '2'], cs=mock_cs)
+        command = PortIOCommand(['read', '0x430', '2'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.io_read
-        assert command._port == 0x430
-        assert command._width == 2
+        self.assertEqual(command.func, command.io_read)
+        self.assertEqual(command._port, 0x430)
+        self.assertEqual(command._width, 2)
 
-    @pytest.mark.unit
-    def test_parse_arguments_read_width_4(self, mock_cs):
+    def test_parse_arguments_read_width_4(self):
         """Test parsing read command with 4-byte width."""
-        command = PortIOCommand(['read', '0xCF8', '4'], cs=mock_cs)
+        command = PortIOCommand(['read', '0xCF8', '4'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.io_read
-        assert command._port == 0xCF8
-        assert command._width == 4
+        self.assertEqual(command.func, command.io_read)
+        self.assertEqual(command._port, 0xCF8)
+        self.assertEqual(command._width, 4)
 
-    @pytest.mark.unit
-    def test_parse_arguments_write(self, mock_cs):
+    def test_parse_arguments_write(self):
         """Test parsing write command arguments."""
-        command = PortIOCommand(['write', '0x430', '1', '0x0'], cs=mock_cs)
+        command = PortIOCommand(['write', '0x430', '1', '0x0'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.io_write
-        assert command._port == 0x430
-        assert command._width == 1
-        assert command._value == 0x0
+        self.assertEqual(command.func, command.io_write)
+        self.assertEqual(command._port, 0x430)
+        self.assertEqual(command._width, 1)
+        self.assertEqual(command._value, 0x0)
 
-    @pytest.mark.unit
-    def test_parse_arguments_write_width_2(self, mock_cs):
+    def test_parse_arguments_write_width_2(self):
         """Test parsing write command with 2-byte width."""
-        command = PortIOCommand(['write', '0x61', '2', '0x1234'], cs=mock_cs)
+        command = PortIOCommand(['write', '0x61', '2', '0x1234'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.io_write
-        assert command._port == 0x61
-        assert command._width == 2
-        assert command._value == 0x1234
+        self.assertEqual(command.func, command.io_write)
+        self.assertEqual(command._port, 0x61)
+        self.assertEqual(command._width, 2)
+        self.assertEqual(command._value, 0x1234)
 
-    @pytest.mark.unit
-    def test_parse_arguments_write_width_4(self, mock_cs):
+    def test_parse_arguments_write_width_4(self):
         """Test parsing write command with 4-byte width."""
-        command = PortIOCommand(['write', '0xCF8', '4', '0x8000F8C0'], cs=mock_cs)
+        command = PortIOCommand(['write', '0xCF8', '4', '0x8000F8C0'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command.func == command.io_write
-        assert command._port == 0xCF8
-        assert command._width == 4
-        assert command._value == 0x8000F8C0
+        self.assertEqual(command.func, command.io_write)
+        self.assertEqual(command._port, 0xCF8)
+        self.assertEqual(command._width, 4)
+        self.assertEqual(command._value, 0x8000F8C0)
 
-    @pytest.mark.unit
-    def test_parse_arguments_decimal_values(self, mock_cs):
+    def test_parse_arguments_decimal_values(self):
         """Test parsing arguments with decimal values."""
-        command = PortIOCommand(['read', '97', '1'], cs=mock_cs)
+        command = PortIOCommand(['read', '97', '1'], cs=self.mock_cs)
         command.parse_arguments()
-        assert command._port == 97  # 0x61
-        assert command._width == 1
+        self.assertEqual(command._port, 97)  # 0x61
+        self.assertEqual(command._width, 1)
 
-    @pytest.mark.unit
-    def test_requirements(self, io_command):
+    def test_requirements(self):
         """Test command requirements."""
-        reqs = io_command.requirements()
-        assert hasattr(reqs, 'load_driver')
-        assert hasattr(reqs, 'load_config')
+        reqs = self.io_command.requirements()
+        self.assertTrue(hasattr(reqs, 'load_driver'))
+        self.assertTrue(hasattr(reqs, 'load_config'))
 
-    @pytest.mark.unit
-    def test_set_up(self, io_command, mock_cs):
+    def test_set_up(self):
         """Test set_up method."""
         with patch('chipsec.utilcmd.io_cmd.iobar.IOBAR') as mock_iobar_class:
             mock_iobar_instance = Mock()
             mock_iobar_class.return_value = mock_iobar_instance
 
-            io_command.set_up()
+            self.io_command.set_up()
 
-            assert hasattr(io_command, '_iobar')
-            mock_iobar_class.assert_called_once_with(io_command.cs)
+            self.assertTrue(hasattr(self.io_command, '_iobar'))
+            mock_iobar_class.assert_called_once_with(self.io_command.cs)
 
-    @pytest.mark.unit
-    def test_io_list(self, io_command, mock_cs):
+    def test_io_list(self):
         """Test io_list command."""
         with patch('chipsec.utilcmd.io_cmd.iobar.IOBAR') as mock_iobar_class:
             mock_iobar_instance = Mock()
             mock_iobar_class.return_value = mock_iobar_instance
-            io_command.set_up()
+            self.io_command.set_up()
 
-            io_command.io_list()
+            self.io_command.io_list()
 
             mock_iobar_instance.list_IO_BARs.assert_called_once()
 
-    @pytest.mark.unit
-    def test_io_read_byte(self, io_command, mock_cs):
+    def test_io_read_byte(self):
         """Test io_read command for byte (1-byte) access."""
-        io_command._port = 0x61
-        io_command._width = 1
+        self.io_command._port = 0x61
+        self.io_command._width = 1
 
-        with patch.object(io_command.logger, 'log') as mock_log:
-            io_command.io_read()
+        with patch.object(self.io_command.logger, 'log') as mock_log:
+            self.io_command.io_read()
 
-            mock_cs.hals.Io.read.assert_called_once_with(0x61, 1)
+            self.mock_cs.hals.Io.read.assert_called_once_with(0x61, 1)
             mock_log.assert_called_once()
             # Verify the log message format
             log_call = mock_log.call_args[0][0]
-            assert 'IN 0x0061' in log_call
-            assert 'size = 0x01' in log_call
+            self.assertIn('IN 0x0061', log_call)
+            self.assertIn('size = 0x01', log_call)
 
-    @pytest.mark.unit
-    def test_io_read_word(self, io_command, mock_cs):
+    def test_io_read_word(self):
         """Test io_read command for word (2-byte) access."""
-        io_command._port = 0x430
-        io_command._width = 2
+        self.io_command._port = 0x430
+        self.io_command._width = 2
 
-        with patch.object(io_command.logger, 'log') as mock_log:
-            io_command.io_read()
+        with patch.object(self.io_command.logger, 'log') as mock_log:
+            self.io_command.io_read()
 
-            mock_cs.hals.Io.read.assert_called_once_with(0x430, 2)
+            self.mock_cs.hals.Io.read.assert_called_once_with(0x430, 2)
             mock_log.assert_called_once()
             # Verify the log message format
             log_call = mock_log.call_args[0][0]
-            assert 'IN 0x0430' in log_call
-            assert 'size = 0x02' in log_call
+            self.assertIn('IN 0x0430', log_call)
+            self.assertIn('size = 0x02', log_call)
 
-    @pytest.mark.unit
-    def test_io_read_dword(self, io_command, mock_cs):
+    def test_io_read_dword(self):
         """Test io_read command for dword (4-byte) access."""
-        io_command._port = 0xCF8
-        io_command._width = 4
+        self.io_command._port = 0xCF8
+        self.io_command._width = 4
 
-        with patch.object(io_command.logger, 'log') as mock_log:
-            io_command.io_read()
+        with patch.object(self.io_command.logger, 'log') as mock_log:
+            self.io_command.io_read()
 
-            mock_cs.hals.Io.read.assert_called_once_with(0xCF8, 4)
+            self.mock_cs.hals.Io.read.assert_called_once_with(0xCF8, 4)
             mock_log.assert_called_once()
             # Verify the log message format
             log_call = mock_log.call_args[0][0]
-            assert 'IN 0x0CF8' in log_call
-            assert 'size = 0x04' in log_call
+            self.assertIn('IN 0x0CF8', log_call)
+            self.assertIn('size = 0x04', log_call)
 
-    @pytest.mark.unit
-    def test_io_read_different_values(self, io_command, mock_cs):
+    def test_io_read_different_values(self):
         """Test io_read command with different return values."""
-        io_command._port = 0x61
-        io_command._width = 1
+        self.io_command._port = 0x61
+        self.io_command._width = 1
 
         # Test with different return values
         test_values = [0x0, 0xFF, 0x1234, 0xFFFFFFFF]
 
         for expected_value in test_values:
-            mock_cs.hals.Io.read.return_value = expected_value
+            self.mock_cs.hals.Io.read.return_value = expected_value
 
-            with patch.object(io_command.logger, 'log') as mock_log:
-                io_command.io_read()
+            with patch.object(self.io_command.logger, 'log') as mock_log:
+                self.io_command.io_read()
 
                 mock_log.assert_called_once()
                 log_call = mock_log.call_args[0][0]
                 # Verify the value is correctly formatted in the log
                 expected_hex = f'0x{expected_value:08X}'
-                assert expected_hex in log_call
+                self.assertIn(expected_hex, log_call)
 
-    @pytest.mark.unit
-    def test_io_write_byte(self, io_command, mock_cs):
+    def test_io_write_byte(self):
         """Test io_write command for byte (1-byte) access."""
-        io_command._port = 0x430
-        io_command._width = 1
-        io_command._value = 0x0
+        self.io_command._port = 0x430
+        self.io_command._width = 1
+        self.io_command._value = 0x0
 
-        with patch.object(io_command.logger, 'log') as mock_log:
-            io_command.io_write()
+        with patch.object(self.io_command.logger, 'log') as mock_log:
+            self.io_command.io_write()
 
-            mock_cs.hals.Io.write.assert_called_once_with(0x430, 0x0, 1)
+            self.mock_cs.hals.Io.write.assert_called_once_with(0x430, 0x0, 1)
             mock_log.assert_called_once()
             # Verify the log message format
             log_call = mock_log.call_args[0][0]
-            assert 'OUT 0x0430' in log_call
-            assert 'size = 0x01' in log_call
+            self.assertIn('OUT 0x0430', log_call)
+            self.assertIn('size = 0x01', log_call)
 
-    @pytest.mark.unit
-    def test_io_write_word(self, io_command, mock_cs):
+    def test_io_write_word(self):
         """Test io_write command for word (2-byte) access."""
-        io_command._port = 0x61
-        io_command._width = 2
-        io_command._value = 0x1234
+        self.io_command._port = 0x61
+        self.io_command._width = 2
+        self.io_command._value = 0x1234
 
-        with patch.object(io_command.logger, 'log') as mock_log:
-            io_command.io_write()
+        with patch.object(self.io_command.logger, 'log') as mock_log:
+            self.io_command.io_write()
 
-            mock_cs.hals.Io.write.assert_called_once_with(0x61, 0x1234, 2)
+            self.mock_cs.hals.Io.write.assert_called_once_with(0x61, 0x1234, 2)
             mock_log.assert_called_once()
             # Verify the log message format
             log_call = mock_log.call_args[0][0]
-            assert 'OUT 0x0061' in log_call
-            assert 'size = 0x02' in log_call
+            self.assertIn('OUT 0x0061', log_call)
+            self.assertIn('size = 0x02', log_call)
 
-    @pytest.mark.unit
-    def test_io_write_dword(self, io_command, mock_cs):
+    def test_io_write_dword(self):
         """Test io_write command for dword (4-byte) access."""
-        io_command._port = 0xCF8
-        io_command._width = 4
-        io_command._value = 0x8000F8C0
+        self.io_command._port = 0xCF8
+        self.io_command._width = 4
+        self.io_command._value = 0x8000F8C0
 
-        with patch.object(io_command.logger, 'log') as mock_log:
-            io_command.io_write()
+        with patch.object(self.io_command.logger, 'log') as mock_log:
+            self.io_command.io_write()
 
-            mock_cs.hals.Io.write.assert_called_once_with(0xCF8, 0x8000F8C0, 4)
+            self.mock_cs.hals.Io.write.assert_called_once_with(0xCF8, 0x8000F8C0, 4)
             mock_log.assert_called_once()
             # Verify the log message format
             log_call = mock_log.call_args[0][0]
-            assert 'OUT 0x0CF8' in log_call
-            assert 'size = 0x04' in log_call
+            self.assertIn('OUT 0x0CF8', log_call)
+            self.assertIn('size = 0x04', log_call)
 
-    @pytest.mark.unit
-    def test_io_write_different_values(self, io_command, mock_cs):
+    def test_io_write_different_values(self):
         """Test io_write command with different values."""
-        io_command._port = 0x61
-        io_command._width = 1
+        self.io_command._port = 0x61
+        self.io_command._width = 1
 
         # Test with different values
         test_values = [0x0, 0xFF, 0x1234, 0xFFFFFFFF]
 
         for test_value in test_values:
-            io_command._value = test_value
+            self.io_command._value = test_value
 
-            with patch.object(io_command.logger, 'log') as mock_log:
-                io_command.io_write()
+            with patch.object(self.io_command.logger, 'log') as mock_log:
+                self.io_command.io_write()
 
-                mock_cs.hals.Io.write.assert_called_with(0x61, test_value, 1)
+                self.mock_cs.hals.Io.write.assert_called_with(0x61, test_value, 1)
                 mock_log.assert_called_once()
                 log_call = mock_log.call_args[0][0]
                 # Verify the value is correctly formatted in the log
                 expected_hex = f'0x{test_value:08X}'
-                assert expected_hex in log_call
+                self.assertIn(expected_hex, log_call)
 
 
-class TestPortIOCommandIntegration:
+class TestPortIOCommandIntegration(unittest.TestCase):
     """Integration tests for I/O command with HAL components."""
 
-    @pytest.fixture
-    def integrated_cs(self):
-        """Create integrated ChipsecCs for I/O testing."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
+    def setUp(self):
+        """Set up integrated test fixtures."""
+        self.integrated_cs = MockFactory.create_mock_chipsec_cs()
 
         # Mock all required HAL components
-        cs_mock.hals.Io = Mock()
-        cs_mock.hals.Io.read.return_value = 0xDEADBEEF
-        cs_mock.hals.Io.write.return_value = None
+        self.integrated_cs.hals.Io = Mock()
+        self.integrated_cs.hals.Io.read.return_value = 0xDEADBEEF
+        self.integrated_cs.hals.Io.write.return_value = None
 
         # Mock helper
-        cs_mock.helper = Mock()
-        cs_mock.helper.get_threads_count.return_value = 2
+        self.integrated_cs.helper = Mock()
+        self.integrated_cs.helper.get_threads_count.return_value = 2
 
-        return cs_mock
-
-    @pytest.mark.integration
-    def test_io_read_write_workflow(self, integrated_cs):
+    def test_io_read_write_workflow(self):
         """Test complete I/O read/write workflow."""
         # Test read operation
-        read_cmd = PortIOCommand(['read', '0x61', '1'], cs=integrated_cs)
+        read_cmd = PortIOCommand(['read', '0x61', '1'], cs=self.integrated_cs)
         read_cmd.parse_arguments()
 
         with patch.object(read_cmd.logger, 'log') as mock_log:
             read_cmd.run()
 
-            integrated_cs.hals.Io.read.assert_called_once_with(0x61, 1)
+            self.integrated_cs.hals.Io.read.assert_called_once_with(0x61, 1)
             mock_log.assert_called_once()
 
         # Test write operation
-        write_cmd = PortIOCommand(['write', '0x430', '1', '0x0'], cs=integrated_cs)
+        write_cmd = PortIOCommand(['write', '0x430', '1', '0x0'], cs=self.integrated_cs)
         write_cmd.parse_arguments()
 
         with patch.object(write_cmd.logger, 'log') as mock_log:
             write_cmd.run()
 
-            integrated_cs.hals.Io.write.assert_called_once_with(0x430, 0x0, 1)
+            self.integrated_cs.hals.Io.write.assert_called_once_with(0x430, 0x0, 1)
             mock_log.assert_called_once()
 
-    @pytest.mark.integration
-    def test_io_list_workflow(self, integrated_cs):
+    def test_io_list_workflow(self):
         """Test I/O list workflow."""
-        list_cmd = PortIOCommand(['list'], cs=integrated_cs)
+        list_cmd = PortIOCommand(['list'], cs=self.integrated_cs)
         list_cmd.parse_arguments()
 
         with patch('chipsec.utilcmd.io_cmd.iobar.IOBAR') as mock_iobar_class:
@@ -347,130 +319,117 @@ class TestPortIOCommandIntegration:
 
             mock_iobar_instance.list_IO_BARs.assert_called_once()
 
-    @pytest.mark.integration
-    def test_io_different_widths_workflow(self, integrated_cs):
+    def test_io_different_widths_workflow(self):
         """Test I/O operations with different widths."""
         # Test byte operations
-        byte_cmd = PortIOCommand(['read', '0x61', '1'], cs=integrated_cs)
+        byte_cmd = PortIOCommand(['read', '0x61', '1'], cs=self.integrated_cs)
         byte_cmd.parse_arguments()
         byte_cmd.run()
-        integrated_cs.hals.Io.read.assert_called_with(0x61, 1)
+        self.integrated_cs.hals.Io.read.assert_called_with(0x61, 1)
 
         # Test word operations
-        word_cmd = PortIOCommand(['write', '0x430', '2', '0x1234'], cs=integrated_cs)
+        word_cmd = PortIOCommand(['write', '0x430', '2', '0x1234'], cs=self.integrated_cs)
         word_cmd.parse_arguments()
         word_cmd.run()
-        integrated_cs.hals.Io.write.assert_called_with(0x430, 0x1234, 2)
+        self.integrated_cs.hals.Io.write.assert_called_with(0x430, 0x1234, 2)
 
         # Test dword operations
-        dword_cmd = PortIOCommand(['read', '0xCF8', '4'], cs=integrated_cs)
+        dword_cmd = PortIOCommand(['read', '0xCF8', '4'], cs=self.integrated_cs)
         dword_cmd.parse_arguments()
         dword_cmd.run()
-        integrated_cs.hals.Io.read.assert_called_with(0xCF8, 4)
+        self.integrated_cs.hals.Io.read.assert_called_with(0xCF8, 4)
 
 
-class TestPortIOCommandEdgeCases:
+class TestPortIOCommandEdgeCases(unittest.TestCase):
     """Test edge cases and error conditions for I/O command."""
 
-    @pytest.fixture
-    def mock_cs(self):
-        """Create mock ChipsecCs for edge case testing."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
-        cs_mock.hals.Io = Mock()
-        return cs_mock
+    def setUp(self):
+        """Set up mock ChipsecCs for edge case testing."""
+        self.mock_cs = MockFactory.create_mock_chipsec_cs()
+        self.mock_cs.hals.Io = Mock()
 
-    @pytest.mark.unit
-    def test_empty_argv_handling(self, mock_cs):
+    def test_empty_argv_handling(self):
         """Test handling of empty argv."""
-        io_cmd = PortIOCommand([], cs=mock_cs)
+        io_cmd = PortIOCommand([], cs=self.mock_cs)
 
         # The argument parser may not raise SystemExit for empty args
         # Let's just ensure it doesn't crash and has default behavior
         try:
             io_cmd.parse_arguments()
             # If it doesn't raise, that's also acceptable
-            assert True
+            self.assertTrue(True)
         except SystemExit:
             # If it does raise SystemExit, that's also acceptable
-            assert True
+            self.assertTrue(True)
 
-    @pytest.mark.unit
-    def test_invalid_subcommand(self, mock_cs):
+    def test_invalid_subcommand(self):
         """Test handling of invalid subcommand."""
-        io_cmd = PortIOCommand(['invalid'], cs=mock_cs)
+        io_cmd = PortIOCommand(['invalid'], cs=self.mock_cs)
 
         # Should raise SystemExit due to invalid subcommand
-        with pytest.raises(SystemExit):
+        with self.assertRaises(SystemExit):
             io_cmd.parse_arguments()
 
-    @pytest.mark.unit
-    def test_read_missing_width(self, mock_cs):
+    def test_read_missing_width(self):
         """Test read command with missing width."""
-        io_cmd = PortIOCommand(['read', '0x61'], cs=mock_cs)
+        io_cmd = PortIOCommand(['read', '0x61'], cs=self.mock_cs)
 
         # Should raise SystemExit due to missing width
-        with pytest.raises(SystemExit):
+        with self.assertRaises(SystemExit):
             io_cmd.parse_arguments()
 
-    @pytest.mark.unit
-    def test_write_missing_value(self, mock_cs):
+    def test_write_missing_value(self):
         """Test write command with missing value."""
-        io_cmd = PortIOCommand(['write', '0x430', '1'], cs=mock_cs)
+        io_cmd = PortIOCommand(['write', '0x430', '1'], cs=self.mock_cs)
 
         # Should raise SystemExit due to missing value
-        with pytest.raises(SystemExit):
+        with self.assertRaises(SystemExit):
             io_cmd.parse_arguments()
 
-    @pytest.mark.unit
-    def test_invalid_width_choice(self, mock_cs):
+    def test_invalid_width_choice(self):
         """Test command with invalid width choice."""
-        io_cmd = PortIOCommand(['read', '0x61', '3'], cs=mock_cs)
+        io_cmd = PortIOCommand(['read', '0x61', '3'], cs=self.mock_cs)
 
         # Should raise SystemExit due to invalid width choice
-        with pytest.raises(SystemExit):
+        with self.assertRaises(SystemExit):
             io_cmd.parse_arguments()
 
-    @pytest.mark.unit
-    def test_zero_port_address(self, mock_cs):
+    def test_zero_port_address(self):
         """Test operations with zero port address."""
-        io_cmd = PortIOCommand(['read', '0x0', '1'], cs=mock_cs)
+        io_cmd = PortIOCommand(['read', '0x0', '1'], cs=self.mock_cs)
         io_cmd.parse_arguments()
 
-        assert io_cmd._port == 0x0
-        assert io_cmd._width == 1
+        self.assertEqual(io_cmd._port, 0x0)
+        self.assertEqual(io_cmd._width, 1)
 
-    @pytest.mark.unit
-    def test_maximum_port_address(self, mock_cs):
+    def test_maximum_port_address(self):
         """Test operations with maximum port address."""
-        io_cmd = PortIOCommand(['write', '0xFFFF', '2', '0x1234'], cs=mock_cs)
+        io_cmd = PortIOCommand(['write', '0xFFFF', '2', '0x1234'], cs=self.mock_cs)
         io_cmd.parse_arguments()
 
-        assert io_cmd._port == 0xFFFF
-        assert io_cmd._width == 2
-        assert io_cmd._value == 0x1234
+        self.assertEqual(io_cmd._port, 0xFFFF)
+        self.assertEqual(io_cmd._width, 2)
+        self.assertEqual(io_cmd._value, 0x1234)
 
-    @pytest.mark.unit
-    def test_zero_value_write(self, mock_cs):
+    def test_zero_value_write(self):
         """Test writing zero value."""
-        io_cmd = PortIOCommand(['write', '0x61', '1', '0x0'], cs=mock_cs)
+        io_cmd = PortIOCommand(['write', '0x61', '1', '0x0'], cs=self.mock_cs)
         io_cmd.parse_arguments()
 
-        assert io_cmd._port == 0x61
-        assert io_cmd._width == 1
-        assert io_cmd._value == 0x0
+        self.assertEqual(io_cmd._port, 0x61)
+        self.assertEqual(io_cmd._width, 1)
+        self.assertEqual(io_cmd._value, 0x0)
 
-    @pytest.mark.unit
-    def test_maximum_value_write(self, mock_cs):
+    def test_maximum_value_write(self):
         """Test writing maximum value."""
-        io_cmd = PortIOCommand(['write', '0x430', '4', '0xFFFFFFFF'], cs=mock_cs)
+        io_cmd = PortIOCommand(['write', '0x430', '4', '0xFFFFFFFF'], cs=self.mock_cs)
         io_cmd.parse_arguments()
 
-        assert io_cmd._port == 0x430
-        assert io_cmd._width == 4
-        assert io_cmd._value == 0xFFFFFFFF
+        self.assertEqual(io_cmd._port, 0x430)
+        self.assertEqual(io_cmd._width, 4)
+        self.assertEqual(io_cmd._value, 0xFFFFFFFF)
 
-    @pytest.mark.unit
-    def test_common_io_ports(self, mock_cs):
+    def test_common_io_ports(self):
         """Test operations on common I/O ports."""
         common_ports = {
             'keyboard': 0x60,
@@ -481,26 +440,25 @@ class TestPortIOCommandEdgeCases:
         }
 
         for port_name, port_addr in common_ports.items():
-            io_cmd = PortIOCommand(['read', f'0x{port_addr:X}', '1'], cs=mock_cs)
+            io_cmd = PortIOCommand(['read', f'0x{port_addr:X}', '1'], cs=self.mock_cs)
             io_cmd.parse_arguments()
-            assert io_cmd._port == port_addr
+            self.assertEqual(io_cmd._port, port_addr)
 
 
-class TestPortIOCommandConfigurationValidation:
+class TestPortIOCommandConfigurationValidation(unittest.TestCase):
     """Test configuration validation aspects of I/O command."""
 
-    @pytest.fixture
-    def config_cs(self):
-        """Create ChipsecCs with I/O-specific configuration."""
-        cs_mock = MockFactory.create_mock_chipsec_cs()
+    def setUp(self):
+        """Set up ChipsecCs with I/O-specific configuration."""
+        self.config_cs = MockFactory.create_mock_chipsec_cs()
 
         # Mock I/O HAL with configuration
-        cs_mock.hals.Io = Mock()
-        cs_mock.hals.Io.read.return_value = 0x12345678
+        self.config_cs.hals.Io = Mock()
+        self.config_cs.hals.Io.read.return_value = 0x12345678
 
         # Mock I/O configuration data
-        cs_mock.Cfg = Mock()
-        cs_mock.Cfg.IO_CONFIG = {
+        self.config_cs.Cfg = Mock()
+        self.config_cs.Cfg.IO_CONFIG = {
             'max_port_address': 0xFFFF,
             'supported_widths': [1, 2, 4],
             'common_ports': {
@@ -526,38 +484,33 @@ class TestPortIOCommandConfigurationValidation:
             }
         }
 
-        return cs_mock
-
-    @pytest.mark.unit
-    def test_io_configuration_access(self, config_cs):
+    def test_io_configuration_access(self):
         """Test access to I/O configuration data."""
-        io_config = config_cs.Cfg.IO_CONFIG
+        io_config = self.config_cs.Cfg.IO_CONFIG
 
-        assert io_config['max_port_address'] == 0xFFFF
-        assert 1 in io_config['supported_widths']
-        assert 2 in io_config['supported_widths']
-        assert 4 in io_config['supported_widths']
-        assert 'keyboard_data' in io_config['common_ports']
-        assert io_config['common_ports']['keyboard_data'] == 0x60
+        self.assertEqual(io_config['max_port_address'], 0xFFFF)
+        self.assertIn(1, io_config['supported_widths'])
+        self.assertIn(2, io_config['supported_widths'])
+        self.assertIn(4, io_config['supported_widths'])
+        self.assertIn('keyboard_data', io_config['common_ports'])
+        self.assertEqual(io_config['common_ports']['keyboard_data'], 0x60)
 
-    @pytest.mark.unit
-    def test_supported_widths_validation(self, config_cs):
+    def test_supported_widths_validation(self):
         """Test validation of supported I/O widths."""
-        supported_widths = config_cs.Cfg.IO_CONFIG['supported_widths']
+        supported_widths = self.config_cs.Cfg.IO_CONFIG['supported_widths']
 
         # Test that all documented widths are supported
-        assert 1 in supported_widths  # byte
-        assert 2 in supported_widths  # word
-        assert 4 in supported_widths  # dword
+        self.assertIn(1, supported_widths)  # byte
+        self.assertIn(2, supported_widths)  # word
+        self.assertIn(4, supported_widths)  # dword
 
         # Test that unsupported widths are not included
-        assert 3 not in supported_widths
-        assert 8 not in supported_widths
+        self.assertNotIn(3, supported_widths)
+        self.assertNotIn(8, supported_widths)
 
-    @pytest.mark.unit
-    def test_common_ports_validation(self, config_cs):
+    def test_common_ports_validation(self):
         """Test validation of common I/O ports."""
-        common_ports = config_cs.Cfg.IO_CONFIG['common_ports']
+        common_ports = self.config_cs.Cfg.IO_CONFIG['common_ports']
 
         # Test that all expected common ports are defined
         expected_ports = [
@@ -569,14 +522,14 @@ class TestPortIOCommandConfigurationValidation:
         ]
 
         for port_name in expected_ports:
-            assert port_name in common_ports
-            assert isinstance(common_ports[port_name], int)
-            assert 0 <= common_ports[port_name] <= 0xFFFF
+            self.assertIn(port_name, common_ports)
+            self.assertIsInstance(common_ports[port_name], int)
+            self.assertGreaterEqual(common_ports[port_name], 0)
+            self.assertLessEqual(common_ports[port_name], 0xFFFF)
 
-    @pytest.mark.unit
-    def test_security_ports_validation(self, config_cs):
+    def test_security_ports_validation(self):
         """Test validation of security-related I/O ports."""
-        security_ports = config_cs.Cfg.IO_CONFIG['security_ports']
+        security_ports = self.config_cs.Cfg.IO_CONFIG['security_ports']
 
         # Test that security ports are properly defined
         expected_security_ports = [
@@ -584,26 +537,27 @@ class TestPortIOCommandConfigurationValidation:
         ]
 
         for port_name in expected_security_ports:
-            assert port_name in security_ports
-            assert isinstance(security_ports[port_name], int)
-            assert 0 <= security_ports[port_name] <= 0xFFFF
+            self.assertIn(port_name, security_ports)
+            self.assertIsInstance(security_ports[port_name], int)
+            self.assertGreaterEqual(security_ports[port_name], 0)
+            self.assertLessEqual(security_ports[port_name], 0xFFFF)
 
-    @pytest.mark.unit
-    def test_port_address_limits_validation(self, config_cs):
+    def test_port_address_limits_validation(self):
         """Test I/O port address limits validation."""
-        max_port = config_cs.Cfg.IO_CONFIG['max_port_address']
+        max_port = self.config_cs.Cfg.IO_CONFIG['max_port_address']
 
         # Test that the maximum port address is valid
-        assert max_port == 0xFFFF  # 16-bit I/O address space
+        self.assertEqual(max_port, 0xFFFF)  # 16-bit I/O address space
 
         # Test that all configured ports are within limits
         all_ports = {}
-        all_ports.update(config_cs.Cfg.IO_CONFIG['common_ports'])
-        all_ports.update(config_cs.Cfg.IO_CONFIG['security_ports'])
+        all_ports.update(self.config_cs.Cfg.IO_CONFIG['common_ports'])
+        all_ports.update(self.config_cs.Cfg.IO_CONFIG['security_ports'])
 
         for port_name, port_addr in all_ports.items():
-            assert 0 <= port_addr <= max_port, f"Port {port_name} address 0x{port_addr:X} exceeds maximum 0x{max_port:X}"
+            self.assertGreaterEqual(port_addr, 0)
+            self.assertLessEqual(port_addr, max_port, f"Port {port_name} address 0x{port_addr:X} exceeds maximum 0x{max_port:X}")
 
 
 if __name__ == '__main__':
-    pytest.main([__file__])
+    unittest.main()

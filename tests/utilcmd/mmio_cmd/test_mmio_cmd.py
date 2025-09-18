@@ -17,6 +17,7 @@
 import pytest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.mmio_cmd import MMIOCommand
+from chipsec.command import toLoad
 from tests.test_utils import MockFactory
 
 
@@ -49,7 +50,7 @@ class TestMMIOCommand:
     def test_requirements(self, mmio_command):
         """Test command requirements."""
         reqs = mmio_command.requirements()
-        assert reqs == mmio_command.toLoad.All
+        assert reqs == toLoad.All
 
     @pytest.mark.unit
     def test_parse_arguments_list(self, mock_cs):
