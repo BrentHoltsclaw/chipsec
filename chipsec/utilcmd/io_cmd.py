@@ -71,6 +71,17 @@ class PortIOCommand(BaseCommand):
     def set_up(self) -> None:
         self._iobar = iobar.IOBAR(self.cs)
 
+    def run(self) -> None:
+        try:
+            self.set_up()
+            self.func()
+        except Exception:
+            self.logger.log_error('An error occured during the execution of the command!')
+            self.logger.log_error('Please run with the debug option for further details')
+            if self.logger.DEBUG:
+                import traceback
+                traceback.print_exc()
+
     def io_list(self) -> None:
         self._iobar.list_IO_BARs()
 
@@ -84,5 +95,6 @@ class PortIOCommand(BaseCommand):
         self.logger.log(
             f'[CHIPSEC] OUT 0x{self._port:04X} <- 0x{self._value:08X} (size = 0x{self._width:02X})')
         return
+
 
 commands = {'io': PortIOCommand}

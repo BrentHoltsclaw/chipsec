@@ -113,6 +113,17 @@ class MMIOCommand(BaseCommand):
     def set_up(self) -> None:
         self._mmio = mmio.MMIO(self.cs)
 
+    def run(self) -> None:
+        try:
+            self.set_up()
+            self.func()
+        except Exception:
+            self.logger.log_error('An error occured during the execution of the command!')
+            self.logger.log_error('Please run with the debug option for further details')
+            if self.logger.DEBUG:
+                import traceback
+                traceback.print_exc()
+
     def list_bars(self):
         self._mmio.list_MMIO_BARs()
 
@@ -168,7 +179,6 @@ class MMIOCommand(BaseCommand):
         elif self.width == 8:
             self._mmio.write_MMIO_reg_dword(self.base, self.offset, self.value & 0xFFFFFFFF)
             self._mmio.write_MMIO_reg_dword(self.base, self.offset + 4, (self.value >> 32) & 0xFFFFFFFF)
-
 
 
 commands = {'mmio': MMIOCommand}

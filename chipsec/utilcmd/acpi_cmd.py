@@ -66,6 +66,17 @@ class ACPICommand(BaseCommand):
     def set_up(self) -> None:
         self._acpi = ACPI(self.cs)
 
+    def run(self) -> None:
+        try:
+            self.set_up()
+            self.func()
+        except Exception:
+            self.logger.log_error('An error occured during the execution of the command!')
+            self.logger.log_error('Please run with the debug option for further details')
+            if self.logger.DEBUG:
+                import traceback
+                traceback.print_exc()
+
     def acpi_list(self) -> None:
         self.logger.log('[CHIPSEC] Enumerating ACPI tables..')
         self._acpi.print_ACPI_table_list()

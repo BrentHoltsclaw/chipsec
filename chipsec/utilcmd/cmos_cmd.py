@@ -72,6 +72,17 @@ class CMOSCommand(BaseCommand):
     def set_up(self) -> None:
         self._cmos = CMOS(self.cs)
 
+    def run(self) -> None:
+        try:
+            self.set_up()
+            self.func()
+        except Exception:
+            self.logger.log_error('An error occured during the execution of the command!')
+            self.logger.log_error('Please run with the debug option for further details')
+            if self.logger.DEBUG:
+                import traceback
+                traceback.print_exc()
+
     def cmos_dump(self) -> None:
         self.logger.log("[CHIPSEC] Dumping CMOS memory..")
         self._cmos.dump()
@@ -81,7 +92,7 @@ class CMOSCommand(BaseCommand):
         self.logger.log(f'[CHIPSEC] CMOS low byte 0x{self.offset:X} = 0x{val:X}')
 
     def cmos_writel(self) -> None:
-        val = self._cmos.write_cmos_low(self.offset, self.value)
+        self._cmos.write_cmos_low(self.offset, self.value)
         self.logger.log(f'[CHIPSEC] CMOS low byte 0x{self.offset:X} = 0x{self.value:X}')
 
     def cmos_readh(self) -> None:
@@ -91,5 +102,6 @@ class CMOSCommand(BaseCommand):
     def cmos_writeh(self) -> None:
         self.logger.log(f'[CHIPSEC] Writing CMOS high byte 0x{self.offset:X} <- 0x{self.value:X}')
         self._cmos.write_cmos_high(self.offset, self.value)
+
 
 commands = {'cmos': CMOSCommand}

@@ -105,6 +105,17 @@ class VMemCommand(BaseCommand):
     def set_up(self) -> None:
         self._vmem = virtmem.VirtMemory(self.cs)
 
+    def run(self) -> None:
+        try:
+            self.set_up()
+            self.func()
+        except Exception:
+            self.logger.log_error('An error occured during the execution of the command!')
+            self.logger.log_error('Please run with the debug option for further details')
+            if self.logger.DEBUG:
+                import traceback
+                traceback.print_exc()
+
     def vmem_read(self):
         self.logger.log('[CHIPSEC] Reading buffer from memory: VA = 0x{:016X}, len = 0x{:X}.'.format(self.virt_address, self.size))
         try:
@@ -128,7 +139,7 @@ class VMemCommand(BaseCommand):
             else:
                 try:
                     width = int(self.length, 16)
-                except:
+                except ValueError:
                     width = 0
 
         self.logger.log('[CHIPSEC] Reading {:X}-byte value from VA 0x{:016X}.'.format(width, self.virt_address))

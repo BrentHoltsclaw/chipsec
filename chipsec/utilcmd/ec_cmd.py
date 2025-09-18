@@ -87,6 +87,17 @@ class ECCommand(BaseCommand):
     def set_up(self) -> None:
         self._ec = EC(self.cs)
 
+    def run(self) -> None:
+        try:
+            self.set_up()
+            self.func()
+        except Exception:
+            self.logger.log_error('An error occured during the execution of the command!')
+            self.logger.log_error('Please run with the debug option for further details')
+            if self.logger.DEBUG:
+                import traceback
+                traceback.print_exc()
+
     def dump(self) -> None:
         self.logger.log("[CHIPSEC] EC dump")
 
@@ -125,7 +136,6 @@ class ECCommand(BaseCommand):
             self.logger.log("[CHIPSEC] EC index I/O: dumping memory...")
             mem = [self._ec.read_idx(off) for off in range(0x10000)]
             print_buffer_bytes(mem)
-
 
 
 commands = {'ec': ECCommand}

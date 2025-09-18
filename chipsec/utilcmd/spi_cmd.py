@@ -98,6 +98,17 @@ class SPICommand(BaseCommand):
         self._spi = SPI(self.cs)
         self._msg = "it may take a few minutes (use DEBUG or VERBOSE logger options to see progress)"
 
+    def run(self) -> None:
+        try:
+            self.set_up()
+            self.func()
+        except Exception:
+            self.logger.log_error('An error occured during the execution of the command!')
+            self.logger.log_error('Please run with the debug option for further details')
+            if self.logger.DEBUG:
+                import traceback
+                traceback.print_exc()
+
     def spi_info(self):
         self.logger.log("[CHIPSEC] SPI flash memory information\n")
         self._spi.display_SPI_map()
@@ -174,5 +185,6 @@ class SPICommand(BaseCommand):
                 self.logger.log('')
             else:
                 self.logger.log(' JEDEC ID command is not supported')
+
 
 commands = {'spi': SPICommand}

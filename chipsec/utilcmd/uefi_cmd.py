@@ -198,9 +198,20 @@ class UEFICommand(BaseCommand):
     def set_up(self) -> None:
         self._uefi = UEFI(self.cs)
 
+    def run(self) -> None:
+        try:
+            self.set_up()
+            self.func()
+        except Exception:
+            self.logger.log_error('An error occured during the execution of the command!')
+            self.logger.log_error('Please run with the debug option for further details')
+            if self.logger.DEBUG:
+                import traceback
+                traceback.print_exc()
+
     def var_read(self):
         self.logger.log("[CHIPSEC] Reading EFI variable Name='{}' GUID={{{}}} to '{}' via Variable API..".format(self.name, self.guid, self.filename))
-        var = self._uefi.get_EFI_variable(self.name, self.guid, self.filename)
+        self._uefi.get_EFI_variable(self.name, self.guid, self.filename)
 
     def var_write(self):
         self.logger.log("[CHIPSEC] writing EFI variable Name='{}' GUID={{{}}} from '{}' via Variable API..".format(self.name, self.guid, self.filename))
@@ -357,7 +368,7 @@ class UEFICommand(BaseCommand):
             self.logger.log('[*] Reading S3 boot-script from memory at 0x{:016X}..'.format(self.bootscript_pa))
             script_all = self.cs.hals.Memory.read_physical_mem(self.bootscript_pa, 0x100000)
             self.logger.log('[*] Decoding S3 boot-script opcodes..')
-            script_entries = parse_script(script_all, True)
+            parse_script(script_all, True)
         else:
             (bootscript_PAs, parsed_scripts) = self._uefi.get_s3_bootscript(True)
 

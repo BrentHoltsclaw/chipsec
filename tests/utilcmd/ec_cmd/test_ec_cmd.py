@@ -135,42 +135,54 @@ class TestECCommand(unittest.TestCase):
 
     def test_dump(self):
         """Test dump method."""
-        self.ec_command.set_up()
-        self.ec_command.size = 0x160
-        test_buffer = b'\x00' * 0x160
-        self.ec_command._ec.read_range.return_value = test_buffer
+        with patch('chipsec.utilcmd.ec_cmd.EC') as mock_ec_class:
+            mock_ec_instance = Mock()
+            mock_ec_class.return_value = mock_ec_instance
+            
+            self.ec_command.set_up()
+            self.ec_command.size = 0x160
+            test_buffer = b'\x00' * 0x160
+            mock_ec_instance.read_range.return_value = test_buffer
 
-        with patch('chipsec.utilcmd.ec_cmd.print_buffer_bytes') as mock_print_buffer, \
-             patch.object(self.ec_command.logger, 'log') as mock_log:
-            self.ec_command.dump()
+            with patch('chipsec.utilcmd.ec_cmd.print_buffer_bytes') as mock_print_buffer, \
+                 patch.object(self.ec_command.logger, 'log') as mock_log:
+                self.ec_command.dump()
 
-            self.ec_command._ec.read_range.assert_called_once_with(0, 0x160)
-            mock_log.assert_called_with('[CHIPSEC] EC dump')
-            mock_print_buffer.assert_called_once_with(test_buffer)
+                mock_ec_instance.read_range.assert_called_once_with(0, 0x160)
+                mock_log.assert_called_with('[CHIPSEC] EC dump')
+                mock_print_buffer.assert_called_once_with(test_buffer)
 
     def test_command(self):
         """Test command method."""
-        self.ec_command.set_up()
-        self.ec_command.cmd = 0x001
+        with patch('chipsec.utilcmd.ec_cmd.EC') as mock_ec_class:
+            mock_ec_instance = Mock()
+            mock_ec_class.return_value = mock_ec_instance
+            
+            self.ec_command.set_up()
+            self.ec_command.cmd = 0x001
 
-        with patch.object(self.ec_command.logger, 'log') as mock_log:
-            self.ec_command.command()
+            with patch.object(self.ec_command.logger, 'log') as mock_log:
+                self.ec_command.command()
 
-            self.ec_command._ec.write_command.assert_called_once_with(0x001)
-            mock_log.assert_called_with('[CHIPSEC] Sending EC command 0x1')
+                mock_ec_instance.write_command.assert_called_once_with(0x001)
+                mock_log.assert_called_with('[CHIPSEC] Sending EC command 0x1')
 
     def test_read_single_standard(self):
         """Test read method for single byte in standard memory."""
-        self.ec_command.set_up()
-        self.ec_command.offset = 0x2F
-        self.ec_command.size = None
-        self.ec_command._ec.read_memory.return_value = 0xAB
+        with patch('chipsec.utilcmd.ec_cmd.EC') as mock_ec_class:
+            mock_ec_instance = Mock()
+            mock_ec_class.return_value = mock_ec_instance
+            
+            self.ec_command.set_up()
+            self.ec_command.offset = 0x2F
+            self.ec_command.size = None
+            mock_ec_instance.read_memory.return_value = 0xAB
 
-        with patch.object(self.ec_command.logger, 'log') as mock_log:
-            self.ec_command.read()
+            with patch.object(self.ec_command.logger, 'log') as mock_log:
+                self.ec_command.read()
 
-            self.ec_command._ec.read_memory.assert_called_once_with(0x2F)
-            mock_log.assert_called_with('[CHIPSEC] EC memory read: offset 0x2F = 0xAB')
+                mock_ec_instance.read_memory.assert_called_once_with(0x2F)
+                mock_log.assert_called_with('[CHIPSEC] EC memory read: offset 0x2F = 0xAB')
 
     def test_read_single_extended(self):
         """Test read method for single byte in extended memory."""
