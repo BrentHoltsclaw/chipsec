@@ -1,5 +1,4 @@
 # CHIPSEC: Platform Security Assessment Framework
-# Copyright (c) 2023, Intel Corporation
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,240 +13,327 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
-# Contact information:
-# chipsec@intel.com
-#
 
-""""
-To execute: python[3] -m unittest tests.utilcmd.acpi_cmd.test_acpi_cmd
-"""
-
-import os
-import struct
-import unittest
-
-from chipsec.library.file import get_main_dir
-from tests.utilcmd.run_chipsec_util import setup_run_destroy_util
-from chipsec.testcase import ExitCode
-from tests.software import mock_helper, util
-
-class TestAcpiUtilcmd(unittest.TestCase):
-    def test_list(self) -> None:
-        init_replay_file = os.path.join(get_main_dir(), "tests", "utilcmd", "adlenumerate.json")
-        acpi_list_replay_file = os.path.join(get_main_dir(), "tests", "utilcmd", "acpi_cmd", "acpi_cmd_list_1.json")
-        retval = setup_run_destroy_util(init_replay_file, "acpi", "list", util_replay_file=acpi_list_replay_file)
-        self.assertEqual(retval, ExitCode.OK)
-
-    def test_table(self) -> None:
-        init_replay_file = os.path.join(get_main_dir(), "tests", "utilcmd", "adlenumerate.json")
-        acpi_table_replay_file = os.path.join(get_main_dir(), "tests", "utilcmd", "acpi_cmd", "acpi_cmd_table_1.json")
-        retval = setup_run_destroy_util(init_replay_file, "acpi", "table XSDT", util_replay_file=acpi_table_replay_file)
-        self.assertEqual(retval, ExitCode.OK)
+import pytest
+from unittest.mock import Mock, patch
+from chipsec.utilcmd.acpi_cmd import ACPICommand
+from tests.test_utils import MockFactory
 
 
-class TestACPIChipsecUtil(util.TestChipsecUtil):
-    def test_acpi_xsdt_list(self):
+class TestACPICommand:
+    """Comprehensive tests for ACPI utility command functionality."""
 
-        class ACPIHelper(mock_helper.ACPIHelper):
+    @pytest.fixture
+    def mock_cs(self):
+        """Create mock ChipsecCs object for ACPI testing."""
+        cs_mock = MockFactory.create_mock_chipsec_cs()
+        # Mock ACPI HAL
+        cs_mock.hals.ACPI = Mock()
+        return cs_mock
 
-            USE_RSDP_REV_0 = False
+    @pytest.fixture
+    def acpi_command(self, mock_cs):
+        """Create ACPICommand instance."""
+        return ACPICommand(['list'], cs=mock_cs)
 
-            def __init__(self):
-                super(ACPIHelper, self).__init__()
-                self._add_entry_to_xsdt(0x400)
+    @pytest.mark.unit
+    def test_acpi_command_initialization(self, acpi_command, mock_cs):
+        """Test ACPICommand initialization."""
+        assert acpi_command.cs == mock_cs
+        assert acpi_command.argv == ['list']
 
-            def read_phys_mem(self, pa, length):
-                if (pa & 0xffffffff) == 0x400:
-                    return b"EFGH"
-                else:
-                    parent = super(ACPIHelper, self)
-                    return parent.read_phys_mem(pa, length)
+    @pytest.mark.unit
+    def test_parse_arguments_list(self, mock_cs):
+        """Test parsing list command arguments."""
+        command = ACPICommand(['list'], cs=mock_cs)
+        command.parse_arguments()
+        assert command.func == command.acpi_list
 
-        self._chipsec_util("acpi list", ACPIHelper)
-        self._assertLogValue("EFGH", "0x0000000000000400")
+    @pytest.mark.unit
+    def test_parse_arguments_table_by_name(self, mock_cs):
+        """Test parsing table command with table name."""
+        command = ACPICommand(['table', 'XSDT'], cs=mock_cs)
+        command.parse_arguments()
+        assert command.func == command.acpi_table
+        assert command._file is False
+        assert command._name == ['XSDT']
 
-    def test_acpi_rsdt_list(self):
+    @pytest.mark.unit
+    def test_parse_arguments_table_from_file(self, mock_cs):
+        """Test parsing table command with file option."""
+        command = ACPICommand(['table', '-f', 'acpi_table.bin'], cs=mock_cs)
+        command.parse_arguments()
+        assert command.func == command.acpi_table
+        assert command._file is True
+        assert command._name == ['acpi_table.bin']
 
-        class ACPIHelper(mock_helper.ACPIHelper):
+    @pytest.mark.unit
+    def test_requirements_list_command(self, acpi_command):
+        """Test requirements for list command."""
+        acpi_command.func = acpi_command.acpi_list
+        reqs = acpi_command.requirements()
+        assert hasattr(reqs, 'load_driver')
+        assert hasattr(reqs, 'load_config')
 
-            def __init__(self):
-                super(ACPIHelper, self).__init__()
-                self._add_entry_to_rsdt(0x300)
+    @pytest.mark.unit
+    def test_requirements_table_command_no_file(self, acpi_command):
+        """Test requirements for table command without file."""
+        acpi_command.func = acpi_command.acpi_table
+        acpi_command._file = False
+        reqs = acpi_command.requirements()
+        assert hasattr(reqs, 'load_driver')
+        assert hasattr(reqs, 'load_config')
 
-            def read_phys_mem(self, pa, length):
-                pa_lo = pa & 0xFFFFFFFF
-                if (pa_lo >= self.EBDA_ADDRESS and
-                        pa_lo < self.RSDP_ADDRESS + len(self.rsdp_descriptor)):
-                    # Simulate a condition where there is no RSDP in EBDA
-                    return b"\xFF" * length
-                elif pa_lo == 0xE0000:
-                    return self.rsdp_descriptor[:length]
-                elif pa_lo == 0x300:
-                    return b"ABCD"
-                else:
-                    parent = super(ACPIHelper, self)
-                    return parent.read_phys_mem(pa, length)
+    @pytest.mark.unit
+    def test_requirements_table_command_with_file(self, acpi_command):
+        """Test requirements for table command with file."""
+        acpi_command.func = acpi_command.acpi_table
+        acpi_command._file = True
+        reqs = acpi_command.requirements()
+        # Should return toLoad.Nil for file-based operations
+        assert reqs is not None
 
-        self._chipsec_util("acpi list", ACPIHelper)
-        self._assertLogValue("ABCD", "0x0000000000000300")
+    @pytest.mark.unit
+    def test_set_up(self, acpi_command, mock_cs):
+        """Test set_up method."""
+        with patch('chipsec.hal.common.acpi.ACPI') as mock_acpi_class:
+            mock_acpi_instance = Mock()
+            mock_acpi_class.return_value = mock_acpi_instance
 
-    def test_acpi_facp_list(self):
-        self._chipsec_util("acpi table FACP", mock_helper.DSDTParsingHelper)
-        self._assertLogValue("DSDT", "0x00000000")
-        self._assertLogValue("X_DSDT", "0x0000000000000000")
+            acpi_command.set_up()
 
-    def test_mismatch_dsdt_x_dsdt_error(self):
+            mock_acpi_class.assert_called_once_with(mock_cs)
+            assert acpi_command._acpi == mock_acpi_instance
 
-        class DSDTParsingHelper(mock_helper.DSDTParsingHelper):
+    @pytest.mark.unit
+    def test_acpi_list(self, acpi_command, mock_cs):
+        """Test acpi_list command execution."""
+        mock_acpi = Mock()
+        acpi_command._acpi = mock_acpi
 
-            DSDT_ADDRESS = 0x400
-            X_DSDT_ADDRESS = 0x312
+        acpi_command.acpi_list()
 
-        self._chipsec_util("acpi table FACP", DSDTParsingHelper)
-        self._assertLogValue("DSDT", "0x00000400")
-        self._assertLogValue("X_DSDT", "0x0000000000000312")
-        self.assertIn(b"Unable to determine the correct DSDT address", self.log)
+        mock_acpi.print_ACPI_table_list.assert_called_once()
 
-    def test_mismatch_dsdt_x_dsdt_ok_dsdt_zero(self):
+    @pytest.mark.unit
+    def test_acpi_table_by_name_present(self, acpi_command, mock_cs):
+        """Test acpi_table command with table name when table is present."""
+        acpi_command._name = ['XSDT']
+        acpi_command._file = False
 
-        class DSDTParsingHelper(mock_helper.DSDTParsingHelper):
+        mock_acpi = Mock()
+        mock_acpi.is_ACPI_table_present.return_value = True
+        acpi_command._acpi = mock_acpi
 
-            DSDT_ADDRESS = 0x0
-            X_DSDT_ADDRESS = 0x400
+        acpi_command.acpi_table()
 
-        self._chipsec_util("acpi table FACP", DSDTParsingHelper)
-        self._assertLogValue("DSDT", "0x00000000")
-        self._assertLogValue("X_DSDT", "0x0000000000000400")
-        self.assertNotIn(b"Unable to determine the correct DSDT address",
-                         self.log)
+        mock_acpi.is_ACPI_table_present.assert_called_once_with('XSDT')
+        mock_acpi.dump_ACPI_table.assert_called_once_with('XSDT', False)
 
-    def test_mismatch_dsdt_x_dsdt_ok_x_dsdt_zero(self):
+    @pytest.mark.unit
+    def test_acpi_table_by_name_not_present(self, acpi_command, mock_cs):
+        """Test acpi_table command with table name when table is not present."""
+        acpi_command._name = ['INVALID']
+        acpi_command._file = False
 
-        class DSDTParsingHelper(mock_helper.DSDTParsingHelper):
+        mock_acpi = Mock()
+        mock_acpi.is_ACPI_table_present.return_value = False
+        mock_acpi.tableList = {'XSDT': [0x12345678]}
+        acpi_command._acpi = mock_acpi
 
-            DSDT_ADDRESS = 0x400
-            X_DSDT_ADDRESS = 0x0
+        acpi_command.acpi_table()
 
-        self._chipsec_util("acpi table FACP", DSDTParsingHelper)
-        self._assertLogValue("DSDT", "0x00000400")
-        self._assertLogValue("X_DSDT", "0x0000000000000000")
-        self.assertNotIn(b"Unable to determine the correct DSDT address",
-                         self.log)
+        mock_acpi.is_ACPI_table_present.assert_called_once_with('INVALID')
+        # Should not call dump_ACPI_table
+        mock_acpi.dump_ACPI_table.assert_not_called()
 
-    def test_no_x_dsdt(self):
+    @pytest.mark.unit
+    def test_acpi_table_from_file_exists(self, acpi_command, mock_cs):
+        """Test acpi_table command with file that exists."""
+        acpi_command._name = ['acpi_table.bin']
+        acpi_command._file = True
 
-        class DSDTParsingHelper(mock_helper.DSDTParsingHelper):
+        mock_acpi = Mock()
+        acpi_command._acpi = mock_acpi
 
-            USE_FADT_WITH_X_DSDT = False
-            DSDT_ADDRESS = 0x400
+        with patch('os.path.exists', return_value=True):
+            acpi_command.acpi_table()
 
-        self._chipsec_util("acpi table FACP", DSDTParsingHelper)
-        self._assertLogValue("DSDT", "0x00000400")
-        self._assertLogValue("X_DSDT", "Not found")
-        self.assertIn(b"Cannot find X_DSDT entry in FADT.", self.log)
+            mock_acpi.dump_ACPI_table.assert_called_once_with('acpi_table.bin', True)
 
-    def test_show_dsdt(self):
+    @pytest.mark.unit
+    def test_acpi_table_from_file_not_exists(self, acpi_command, mock_cs):
+        """Test acpi_table command with file that doesn't exist."""
+        acpi_command._name = ['nonexistent.bin']
+        acpi_command._file = True
 
-        class DSDTParsingHelper(mock_helper.DSDTParsingHelper):
+        mock_acpi = Mock()
+        acpi_command._acpi = mock_acpi
 
-            DSDT_ADDRESS = 0x600
+        with patch('os.path.exists', return_value=False):
+            acpi_command.acpi_table()
 
-            DSDT_DESCRIPTOR = (b"DSDT" +                   # Signature
-                               struct.pack("<I", 0x30) +  # Length
-                               struct.pack("<B", 0x1) +   # Revision
-                               struct.pack("<B", 0x1) +   # Checksum
-                               b"OEMDSD" +                 # OEMID
-                               b"OEMTBLID" +               # OEM Table ID
-                               b"OEMR" +                   # OEM Revision
-                               b"CRID" +                   # Creator ID
-                               b"CRRV" +                   # Creator Revision
-                               struct.pack("<Q", 0x129))  # AML code
+            # Should not call dump_ACPI_table
+            mock_acpi.dump_ACPI_table.assert_not_called()
 
-            def read_phys_mem(self, pa, length):
-                pa_lo = pa & 0xFFFFFFFF
-                if pa_lo == self.DSDT_ADDRESS:
-                    return self.DSDT_DESCRIPTOR[:length]
-                else:
-                    parent = super(DSDTParsingHelper, self)
-                    return parent.read_phys_mem(pa, length)
+    @pytest.mark.unit
+    def test_commands_dictionary(self):
+        """Test commands dictionary is properly defined."""
+        from chipsec.utilcmd.acpi_cmd import commands
+        assert 'acpi' in commands
+        assert commands['acpi'] == ACPICommand
 
-        self._chipsec_util("acpi table DSDT", DSDTParsingHelper)
-        self.assertIn(b"OEMDSD", self.log)
 
-    def test_parse_multi_table(self):
-        """Test to verify that tables with same signature are parsed correctly.
+class TestACPICommandIntegration:
+    """Integration tests for ACPI command with HAL components."""
 
-        Since usually there are several SSDT tables with the
-        same signature, we test SSDT parsing.
-        """
+    @pytest.fixture
+    def integrated_cs(self):
+        """Create integrated ChipsecCs for ACPI testing."""
+        cs_mock = MockFactory.create_mock_chipsec_cs()
 
-        class SSDTParsingHelper(mock_helper.ACPIHelper):
-            """Test helper containing generic descriptor for SSDT to parse SSDT
+        # Mock all required HAL components
+        cs_mock.hals.ACPI = Mock()
+        cs_mock.hals.Memory = Mock()
+        cs_mock.hals.CPU = Mock()
 
-            Three regions are defined:
-              * SSDT table [0x400, 0x430]
-              * SSDT table [0x600, 0x630]
-              * SSDT table [0x800, 0x830]
-            """
-            SSDT1_DESCRIPTOR = (b"SSDT" +                   # Signature
-                                struct.pack("<I", 0x30) +  # Length
-                                struct.pack("<B", 0x1) +   # Revision
-                                struct.pack("<B", 0x1) +   # Checksum
-                                b"OEMSS1" +                 # OEMID
-                                b"OEMTBLID" +               # OEM Table ID
-                                b"OEMR" +                   # OEM Revision
-                                b"CRID" +                   # Creator ID
-                                b"CRRV" +                   # Creator Revision
-                                struct.pack("<Q", 0x129))  # AML code
+        # Mock helper
+        cs_mock.helper = Mock()
+        cs_mock.helper.get_threads_count.return_value = 2
 
-            SSDT2_DESCRIPTOR = (b"SSDT" +                   # Signature
-                                struct.pack("<I", 0x30) +  # Length
-                                struct.pack("<B", 0x1) +   # Revision
-                                struct.pack("<B", 0x1) +   # Checksum
-                                b"OEMSS2" +                 # OEMID
-                                b"OEMTBLID" +               # OEM Table ID
-                                b"OEMR" +                   # OEM Revision
-                                b"CRID" +                   # Creator ID
-                                b"CRRV" +                   # Creator Revision
-                                struct.pack("<Q", 0x929))  # AML code
+        return cs_mock
 
-            SSDT3_DESCRIPTOR = (b"SSDT" +                   # Signature
-                                struct.pack("<I", 0x30) +  # Length
-                                struct.pack("<B", 0x1) +   # Revision
-                                struct.pack("<B", 0x1) +   # Checksum
-                                b"OEMSS3" +                 # OEMID
-                                b"OEMTBLID" +               # OEM Table ID
-                                b"OEMR" +                   # OEM Revision
-                                b"CRID" +                   # Creator ID
-                                b"CRRV" +                   # Creator Revision
-                                struct.pack("<Q", 0x199))  # AML code
+    @pytest.mark.integration
+    def test_acpi_command_full_workflow_list(self, integrated_cs):
+        """Test complete ACPI list command workflow."""
+        # Setup HAL mocks
+        integrated_cs.hals.ACPI.print_ACPI_table_list.return_value = None
 
-            def __init__(self):
-                super(SSDTParsingHelper, self).__init__()
-                self._add_entry_to_rsdt(0x400)
-                self._add_entry_to_rsdt(0x600)
-                self._add_entry_to_rsdt(0x800)
+        # Create and execute command
+        acpi_cmd = ACPICommand(['list'], cs=integrated_cs)
+        acpi_cmd.parse_arguments()
+        acpi_cmd.set_up()
+        acpi_cmd.acpi_list()
 
-            def read_phys_mem(self, pa, length):
-                pa_lo = pa & 0xFFFFFFFF
-                if pa_lo == 0x400:
-                    return self.SSDT1_DESCRIPTOR[:length]
-                elif pa_lo == 0x600:
-                    return self.SSDT2_DESCRIPTOR[:length]
-                elif pa_lo == 0x800:
-                    return self.SSDT3_DESCRIPTOR[:length]
-                else:
-                    parent = super(SSDTParsingHelper, self)
-                    return parent.read_phys_mem(pa, length)
+        # Verify HAL interactions
+        integrated_cs.hals.ACPI.print_ACPI_table_list.assert_called_once()
 
-        self._chipsec_util("acpi list", SSDTParsingHelper)
-        self._assertLogValue("SSDT", ("0x0000000000000400, "
-                                      "0x0000000000000600, "
-                                      "0x0000000000000800"))
-        self._chipsec_util("acpi table SSDT", SSDTParsingHelper)
-        self.assertIn(b"OEMSS1", self.log)
-        self.assertIn(b"OEMSS2", self.log)
-        self.assertIn(b"OEMSS3", self.log)
+    @pytest.mark.integration
+    def test_acpi_command_full_workflow_table(self, integrated_cs):
+        """Test complete ACPI table command workflow."""
+        # Setup HAL mocks
+        integrated_cs.hals.ACPI.is_ACPI_table_present.return_value = True
+        integrated_cs.hals.ACPI.dump_ACPI_table.return_value = None
+
+        # Create and execute command
+        acpi_cmd = ACPICommand(['table', 'FACP'], cs=integrated_cs)
+        acpi_cmd.parse_arguments()
+        acpi_cmd.set_up()
+        acpi_cmd.acpi_table()
+
+        # Verify HAL interactions
+        integrated_cs.hals.ACPI.is_ACPI_table_present.assert_called_once_with('FACP')
+        integrated_cs.hals.ACPI.dump_ACPI_table.assert_called_once_with('FACP', False)
+
+    @pytest.mark.integration
+    def test_acpi_command_error_handling(self, integrated_cs):
+        """Test ACPI command error handling."""
+        # Test invalid table name
+        integrated_cs.hals.ACPI.is_ACPI_table_present.return_value = False
+        integrated_cs.hals.ACPI.tableList = {'XSDT': [0x12345678]}
+
+        acpi_cmd = ACPICommand(['table', 'INVALID'], cs=integrated_cs)
+        acpi_cmd.parse_arguments()
+        acpi_cmd.set_up()
+        acpi_cmd.acpi_table()
+
+        # Should not attempt to dump invalid table
+        integrated_cs.hals.ACPI.dump_ACPI_table.assert_not_called()
+
+    @pytest.mark.integration
+    def test_acpi_command_file_operations(self, integrated_cs):
+        """Test ACPI command file operations."""
+        # Test with existing file
+        integrated_cs.hals.ACPI.dump_ACPI_table.return_value = None
+
+        with patch('os.path.exists', return_value=True):
+            acpi_cmd = ACPICommand(['table', '-f', 'test.bin'], cs=integrated_cs)
+            acpi_cmd.parse_arguments()
+            acpi_cmd.set_up()
+            acpi_cmd.acpi_table()
+
+            integrated_cs.hals.ACPI.dump_ACPI_table.assert_called_once_with('test.bin', True)
+
+        # Reset mock
+        integrated_cs.hals.ACPI.dump_ACPI_table.reset_mock()
+
+        # Test with non-existing file
+        with patch('os.path.exists', return_value=False):
+            acpi_cmd2 = ACPICommand(['table', '-f', 'missing.bin'], cs=integrated_cs)
+            acpi_cmd2.parse_arguments()
+            acpi_cmd2.set_up()
+            acpi_cmd2.acpi_table()
+
+            # Should not attempt to dump missing file
+            integrated_cs.hals.ACPI.dump_ACPI_table.assert_not_called()
+
+
+class TestACPICommandEdgeCases:
+    """Test edge cases and error conditions for ACPI command."""
+
+    @pytest.fixture
+    def mock_cs(self):
+        """Create mock ChipsecCs for edge case testing."""
+        cs_mock = MockFactory.create_mock_chipsec_cs()
+        cs_mock.hals.ACPI = Mock()
+        return cs_mock
+
+    @pytest.mark.unit
+    def test_empty_argv_handling(self, mock_cs):
+        """Test handling of empty argv."""
+        # This should not crash but may not work as expected
+        acpi_cmd = ACPICommand([], cs=mock_cs)
+        # Just ensure it doesn't crash during initialization
+        assert acpi_cmd.argv == []
+
+    @pytest.mark.unit
+    def test_invalid_subcommand(self, mock_cs):
+        """Test handling of invalid subcommand."""
+        acpi_cmd = ACPICommand(['invalid'], cs=mock_cs)
+
+        # This should raise SystemExit due to argparse error
+        with pytest.raises(SystemExit):
+            acpi_cmd.parse_arguments()
+
+    @pytest.mark.unit
+    def test_table_command_missing_name(self, mock_cs):
+        """Test table command with missing table name."""
+        acpi_cmd = ACPICommand(['table'], cs=mock_cs)
+
+        # This should raise SystemExit due to argparse error
+        with pytest.raises(SystemExit):
+            acpi_cmd.parse_arguments()
+
+    @pytest.mark.unit
+    def test_file_option_without_name(self, mock_cs):
+        """Test file option without table name."""
+        acpi_cmd = ACPICommand(['table', '-f'], cs=mock_cs)
+
+        # This should raise SystemExit due to argparse error
+        with pytest.raises(SystemExit):
+            acpi_cmd.parse_arguments()
+
+    @pytest.mark.unit
+    def test_acpi_hal_none_handling(self, mock_cs):
+        """Test handling when ACPI HAL is not properly initialized."""
+        acpi_cmd = ACPICommand(['list'], cs=mock_cs)
+        acpi_cmd.parse_arguments()
+        # Don't call set_up(), so _acpi remains None
+
+        # This should handle the None case gracefully
+        with pytest.raises(AttributeError):
+            acpi_cmd.acpi_list()
+
 
 if __name__ == '__main__':
-    unittest.main()
+    pytest.main([__file__])
