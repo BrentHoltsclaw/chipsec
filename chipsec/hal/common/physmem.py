@@ -168,7 +168,11 @@ class Memory(HALBase):
 
 
     def get_value_from_bit_def(self, inputValue, fieldStartBit, fieldSize):
-        return (inputValue >> fieldStartBit) & self.get_bit_mask(fieldSize)
+        # Compute mask locally instead of calling a non-existent helper (previously used self.get_bit_mask)
+        if fieldSize <= 0:
+            return 0
+        mask = (1 << fieldSize) - 1
+        return (inputValue >> fieldStartBit) & mask
     
     def get_def(self, range_name: str) -> Dict[str, Any]:
         '''Return address access of a MEM register'''
