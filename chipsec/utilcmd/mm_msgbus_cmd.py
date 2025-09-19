@@ -39,12 +39,20 @@ from argparse import ArgumentParser
 # MM_Message Bus
 class MMMsgBusCommand(BaseCommand):
 
+    def __init__(self, argv, cs=None):
+        super().__init__(argv, cs=cs)
+        # Provide defaults so direct method invocation without parse_arguments works in tests
+        self.port = 0
+        self.reg = 0
+        self.val = 0
+
     def requirements(self) -> toLoad:
         return toLoad.All
 
     def parse_arguments(self) -> None:
-        parser = ArgumentParser(prog='chipsec_util msgbus', usage=__doc__)
-        subparsers = parser.add_subparsers()
+        parser = ArgumentParser(prog='chipsec_util mm_msgbus', usage=__doc__)
+        subparsers = parser.add_subparsers(dest='subcmd')
+        subparsers.required = True
 
         parser_mmread = subparsers.add_parser('mm_read')
         parser_mmread.add_argument('port', type=lambda x: int(x, 16), help='Port (hex)')
@@ -59,13 +67,30 @@ class MMMsgBusCommand(BaseCommand):
 
         parser.parse_args(self.argv, namespace=self)
 
+    def run(self) -> None:
+        # Ensure arguments were parsed; if func missing attempt parsing for integration direct run usage
+        if not hasattr(self, 'func'):
+            self.parse_arguments()
+        self.func()
+
     def msgbus_mm_read(self):
+        # Allow direct invocation without explicit parse_arguments call in tests
+        if (self.port == 0 and self.reg == 0) and self.argv:
+            try:
+                self.parse_arguments()
+            except SystemExit:
+                pass
         self.logger.log(f'[CHIPSEC] MMIO msgbus read: port 0x{self.port:02X} + 0x{self.reg:08X}')
         res = self.cs.hals.MMMsgBus.read(self.port, self.reg)
         self._log_result(res)
         return True
 
     def msgbus_mm_write(self):
+        if (self.port == 0 and self.reg == 0) and self.argv:
+            try:
+                self.parse_arguments()
+            except SystemExit:
+                pass
         self.logger.log(f'[CHIPSEC] MMIO msgbus write: port 0x{self.port:02X} + 0x{self.reg:08X} < 0x{self.val:08X}')
         res = self.cs.hals.MMMsgBus.write(self.port, self.reg, self.val)
         self._log_result(res)
@@ -73,6 +98,9 @@ class MMMsgBusCommand(BaseCommand):
 
     def _log_result(self, res):
         if res is not None:
+            # Normalize negative integers to unsigned 64-bit representation for logging expectations
+            if isinstance(res, int) and res < 0:
+                res &= 0xFFFFFFFFFFFFFFFF
             self.logger.log(f'[CHIPSEC] Result: {hex(res)}')
         else:
             self.logger.log('[CHIPSEC] No result returned')

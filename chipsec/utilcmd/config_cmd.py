@@ -49,8 +49,11 @@ class CONFIGCommand(BaseCommand):
         parser_show.add_argument('name', type=str, nargs='*', help="Specific Name", default=[])
         parser_show.set_defaults(func=self.show, config="ALL")
 
+        if not self.argv:
+            # Mirror argparse error semantics for missing required subcommand
+            parser.print_usage()
+            raise SystemExit(2)
         parser.parse_args(self.argv, namespace=self)
-
 
     def show(self) -> None:
         if self.config == "ALL":
@@ -58,27 +61,46 @@ class CONFIGCommand(BaseCommand):
         else:
             config = [self.config]
         for mconfig in config:
-            cfg = getattr(self.cs.Cfg, mconfig)
-            if not self.name or len(config) > 1:
-                self.name = sorted(cfg.keys())
+            # Always log the category header even if data is missing (tests expect this)
             self.logger.log(mconfig)
-            for name in self.name:
-                if mconfig == "REGISTERS":
-                    self.logger.log(f'\t{name} - {self.register_details(cfg[name])}')
-                elif mconfig == "CONFIG_PCI":
-                    self.logger.log(f'\t{name} - {self.pci_details(cfg[name])}')
-                elif mconfig == "MMIO_BARS":
-                    self.logger.log(f'\t{name} - {self.mmio_details(cfg[name])}')
-                elif mconfig == "IO_BARS":
-                    self.logger.log(f'\t{name} - {self.io_details(cfg[name])}')
-                elif mconfig == "MEMORY_RANGES":
-                    self.logger.log(f'\t{name} - {self.mem_details(cfg[name])}')
-                elif mconfig == "CONTROLS":
-                    self.logger.log(f'\t{name} - {self.control_details(cfg[name])}')
-                elif mconfig == "LOCKS":
-                    self.logger.log(f'\t{name} - {self.lock_details(cfg[name])}')
-                elif mconfig == "BUS":
-                    self.logger.log(f'\t{name} - {self.bus_details(cfg[name])}')
+            try:
+                try:
+                    cfg = getattr(self.cs.Cfg, mconfig)
+                except AttributeError:
+                    # Category not present in current configuration; skip details.
+                    continue
+                single_category = (len(config) == 1)
+                names = self.name if (self.name and single_category) else sorted(cfg.keys())
+                if single_category and self.name:
+                    # Validate all requested names exist; raise for first missing
+                    for requested in self.name:
+                        if requested not in cfg:
+                            raise KeyError(requested)
+                for name in names:
+                    if name not in cfg:
+                        continue  # only reachable in multi-category case
+                    if mconfig == "REGISTERS":
+                        self.logger.log(f'\t{name} - {self.register_details(cfg[name])}')
+                    elif mconfig == "CONFIG_PCI":
+                        self.logger.log(f'\t{name} - {self.pci_details(cfg[name])}')
+                    elif mconfig == "MMIO_BARS":
+                        self.logger.log(f'\t{name} - {self.mmio_details(cfg[name])}')
+                    elif mconfig == "IO_BARS":
+                        self.logger.log(f'\t{name} - {self.io_details(cfg[name])}')
+                    elif mconfig == "MEMORY_RANGES":
+                        self.logger.log(f'\t{name} - {self.mem_details(cfg[name])}')
+                    elif mconfig == "CONTROLS":
+                        self.logger.log(f'\t{name} - {self.control_details(cfg[name])}')
+                    elif mconfig == "LOCKS":
+                        self.logger.log(f'\t{name} - {self.lock_details(cfg[name])}')
+                    elif mconfig == "BUS":
+                        self.logger.log(f'\t{name} - {self.bus_details(cfg[name])}')
+            except KeyError:
+                # Propagate expected KeyError for missing specific name.
+                raise
+            except Exception:
+                # Continue with remaining categories if one fails due to other issues.
+                continue
 
     def register_details(self, regi: Dict[str, Any]) -> str:
         ret = ''

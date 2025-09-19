@@ -15,7 +15,7 @@
 #
 
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, call
 from chipsec.utilcmd.smbios_cmd import smbios_cmd
 from tests.test_utils import MockFactory
 
@@ -154,8 +154,10 @@ class TestSMBIOSCommand(unittest.TestCase):
             mock_log.assert_any_call('[CHIPSEC] Dumping all requested structures in raw format')
             mock_log.assert_any_call('SMBIOS Header')
             mock_log.assert_any_call('[CHIPSEC] Raw Data')
-            mock_print_buffer.assert_called_with(b'\x01\x02\x03\x04')
-            mock_print_buffer.assert_called_with(b'\x05\x06\x07\x08')
+            mock_print_buffer.assert_has_calls([
+                call(b'\x01\x02\x03\x04'),
+                call(b'\x05\x06\x07\x08')
+            ])
 
     def test_smbios_get_decoded_with_data(self):
         """Test smbios_get method with decoded data."""
@@ -267,7 +269,9 @@ class TestSMBIOSCommand(unittest.TestCase):
             self.smbios_command.run()
 
             mock_log.assert_any_call('[CHIPSEC] Attempting to detect SMBIOS structures')
-            mock_log.assert_called_with(Exception("SMBIOS initialization failed"))
+            # Compare by string to avoid object identity issues
+            logged_args = [c[0][0] for c in mock_log.call_args_list if c[0]]
+            self.assertIn('SMBIOS initialization failed', [str(a) for a in logged_args])
             self.smbios_command.func.assert_not_called()
 
 
@@ -285,10 +289,10 @@ class TestSMBIOSCommandIntegration(unittest.TestCase):
 
     def test_smbios_entrypoint_integration(self):
         """Test complete smbios entrypoint workflow."""
-        smbios_cmd = smbios_cmd(['entrypoint'], cs=self.integrated_cs)
+        smbios_cmd_instance = smbios_cmd(['entrypoint'], cs=self.integrated_cs)
 
         with patch('chipsec.utilcmd.smbios_cmd.SMBIOS') as mock_smbios_class, \
-             patch.object(smbios_cmd.logger, 'log'):
+             patch.object(smbios_cmd_instance.logger, 'log'):
             mock_smbios_instance = Mock()
             mock_smbios_class.return_value = mock_smbios_instance
             mock_smbios_instance.find_smbios_table.return_value = True
@@ -296,39 +300,39 @@ class TestSMBIOSCommandIntegration(unittest.TestCase):
             mock_smbios_instance.smbios_3_pa = None
             mock_smbios_instance.smbios_2_ep = "SMBIOS 2.0 Entry Point"
 
-            smbios_cmd.run()
+            smbios_cmd_instance.run()
 
             mock_smbios_class.assert_called_once_with(self.integrated_cs)
 
     def test_smbios_get_raw_integration(self):
         """Test complete smbios get raw workflow."""
-        smbios_cmd = smbios_cmd(['get', 'raw', '1'], cs=self.integrated_cs)
+        smbios_cmd_instance = smbios_cmd(['get', 'raw', '1'], cs=self.integrated_cs)
 
         with patch('chipsec.utilcmd.smbios_cmd.SMBIOS') as mock_smbios_class, \
              patch('chipsec.utilcmd.smbios_cmd.print_buffer_bytes'), \
-             patch.object(smbios_cmd.logger, 'log'):
+             patch.object(smbios_cmd_instance.logger, 'log'):
             mock_smbios_instance = Mock()
             mock_smbios_class.return_value = mock_smbios_instance
             mock_smbios_instance.find_smbios_table.return_value = True
             mock_smbios_instance.get_raw_structs.return_value = [b'\x01\x02\x03\x04']
             mock_smbios_instance.get_header.return_value = "SMBIOS Header"
 
-            smbios_cmd.run()
+            smbios_cmd_instance.run()
 
             mock_smbios_instance.get_raw_structs.assert_called_once_with(1, False)
 
     def test_smbios_get_decoded_integration(self):
         """Test complete smbios get decoded workflow."""
-        smbios_cmd = smbios_cmd(['get', 'decoded'], cs=self.integrated_cs)
+        smbios_cmd_instance = smbios_cmd(['get', 'decoded'], cs=self.integrated_cs)
 
         with patch('chipsec.utilcmd.smbios_cmd.SMBIOS') as mock_smbios_class, \
-             patch.object(smbios_cmd.logger, 'log'):
+             patch.object(smbios_cmd_instance.logger, 'log'):
             mock_smbios_instance = Mock()
             mock_smbios_class.return_value = mock_smbios_instance
             mock_smbios_instance.find_smbios_table.return_value = True
             mock_smbios_instance.get_decoded_structs.return_value = ["Decoded SMBIOS data"]
 
-            smbios_cmd.run()
+            smbios_cmd_instance.run()
 
             mock_smbios_instance.get_decoded_structs.assert_called_once_with(None, False)
 
@@ -393,10 +397,8 @@ class TestSMBIOSCommandEdgeCases(unittest.TestCase):
 
             # Should call print_buffer_bytes for each structure
             self.assertEqual(mock_print_buffer.call_count, 3)
-            # Should log separator between structures
-            separator_count = mock_log.call_args_list.count(
-                mock_log.call_args == ('==================================================================',)
-            )
+            # Should log separator between structures (one per structure)
+            separator_count = sum(1 for c in mock_log.call_args_list if c == (('==================================================================',), {}))
             self.assertEqual(separator_count, 3)
 
     def test_smbios_ep_no_entry_points(self):

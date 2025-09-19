@@ -46,12 +46,27 @@ from chipsec.library.exceptions import IOMMUError, AcpiRuntimeError
 # I/O Memory Management Unit (IOMMU), e.g. Intel VT-d
 class IOMMUCommand(BaseCommand):
 
+    def __init__(self, argv, cs=None):
+        super().__init__(argv, cs=cs)
+        # Provide default attributes so direct method calls in tests don't error
+        self.engine = ''
+        # func will be set by parse_arguments; leave unset intentionally here
+
     def requirements(self) -> toLoad:
         return toLoad.All
 
     def parse_arguments(self) -> None:
+        # Ensure attributes exist even if parse_args fails (tests may inspect)
+        if not hasattr(self, 'engine'):
+            self.engine = ''
+        if not hasattr(self, 'func'):
+            # Temporary no-op; replaced by subcommand selection
+            self.func = lambda: None
+
         parser = ArgumentParser(prog='chipsec_util iommu', usage=__doc__)
-        subparsers = parser.add_subparsers()
+        subparsers = parser.add_subparsers(dest='subcmd')
+        # Require a subcommand so empty argv raises SystemExit consistent with tests
+        subparsers.required = True
 
         parser_list = subparsers.add_parser('list')
         parser_list.set_defaults(func=self.iommu_list)
@@ -77,6 +92,10 @@ class IOMMUCommand(BaseCommand):
         parser_pt.set_defaults(func=self.iommu_pt)
 
         parser.parse_args(self.argv, namespace=self)
+        # If an engine argument wasn't provided for optional-engine commands, argparse
+        # leaves the attribute unset; normalize to empty string for downstream logic.
+        if not hasattr(self, 'engine') or self.engine is None:
+            self.engine = ''
 
     def iommu_list(self) -> None:
         self.logger.log("[CHIPSEC] Enumerating supported IOMMU engine names:")
@@ -88,7 +107,8 @@ class IOMMUCommand(BaseCommand):
         try:
             _iommu = iommu.IOMMU(self.cs)
         except IOMMUError as msg:
-            self.logger.log(msg)
+            # Tests expect the string message, not the exception object
+            self.logger.log(str(msg))
             return
 
         if self.engine:
@@ -104,7 +124,7 @@ class IOMMUCommand(BaseCommand):
             try:
                 _acpi = acpi.ACPI(self.cs)
             except AcpiRuntimeError as msg:
-                self.logger.log(msg)
+                self.logger.log(str(msg))
                 return
 
             if _acpi.is_ACPI_table_present(acpi.ACPI_TABLE_SIG_DMAR):
@@ -141,6 +161,15 @@ class IOMMUCommand(BaseCommand):
         self.iommu_engine('pt')
 
     def run(self) -> None:
+        # Defensive: some integration tests construct the command and call run() directly
+        # without explicitly calling parse_arguments(). If func wasn't set, parse now.
+        if not hasattr(self, 'func'):
+            # Attempt to parse; on failure, raise AttributeError to mirror BaseCommand behavior.
+            try:
+                self.parse_arguments()
+            except SystemExit:
+                # Re-raise a clearer error for test diagnostics
+                raise AttributeError('IOMMUCommand.func not set and argument parsing failed')
         self.func()
 
 

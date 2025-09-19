@@ -53,7 +53,10 @@ class PlatformCommand(BaseCommand):
         return toLoad.All
     
     def parse_arguments(self) -> None:
-        if self.argv:
+        # When invoked via chipsec_util the argv list includes the command name itself
+        # (e.g. ['platform']). Treat a single element (the command) as having no user
+        # arguments. Only raise an error if additional unexpected parameters are present.
+        if len(self.argv) > 1:
             self.parser.error('platform command does not accept any arguments')
 
     def run(self):

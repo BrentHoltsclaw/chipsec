@@ -42,6 +42,9 @@ class TestDecodeCommand(unittest.TestCase):
         self.mock_cs.os_helper.getcwd.return_value = '/tmp'
 
         self.decode_command = DecodeCommand(['spi.bin'], cs=self.mock_cs)
+        # Set default attributes that would normally be set by parse_arguments()
+        self.decode_command._rom = 'spi.bin'  
+        self.decode_command._fwtype = None
 
     def test_decode_command_initialization(self):
         """Test DecodeCommand initialization."""
@@ -233,6 +236,7 @@ class TestDecodeCommand(unittest.TestCase):
     def test_decode_rom_log_file_handling(self):
         """Test decode_rom log file handling."""
         self.decode_command._rom = 'spi.bin'
+        self.decode_command._fwtype = None  # Set the missing _fwtype attribute
 
         regions = {
             0: Mock(name='FLASH_DESCRIPTOR', base=0x0000, limit=0x0FFF),
@@ -362,7 +366,29 @@ class TestDecodeCommandEdgeCases(unittest.TestCase):
         """Set up test fixtures."""
         self.mock_cs = MockFactory.create_mock_chipsec_cs()
         self.mock_cs.hals.SpiDescriptor = Mock()
+        # Set up proper mock return values to match main test class
+        self.mock_cs.hals.SpiDescriptor.get_spi_flash_descriptor.return_value = (0x1000, b'\xFF' * 0x1000)
+        self.mock_cs.hals.SpiDescriptor.get_spi_regions.return_value = {
+            0: Mock(name='FLASH_DESCRIPTOR', base=0x0000, limit=0x0FFF),
+            1: Mock(name='BIOS', base=0x1000, limit=0x1FFFF),
+            2: Mock(name='ME', base=0x2000, limit=0x2FFFF),
+        }
+        # Set proper name attributes for the region mocks
+        for region_id, region in self.mock_cs.hals.SpiDescriptor.get_spi_regions.return_value.items():
+            if region_id == 0:
+                region.name = 'FLASH_DESCRIPTOR'
+            elif region_id == 1:
+                region.name = 'BIOS'
+            elif region_id == 2:
+                region.name = 'ME'
+        self.mock_cs.hals.SpiDescriptor.parse_spi_flash_descriptor.return_value = None
         self.mock_cs.os_helper.getcwd.return_value = '/tmp'
+        
+        # Create decode_command instance for edge case tests
+        self.decode_command = DecodeCommand(['spi.bin'], cs=self.mock_cs)
+        # Set default attributes that would normally be set by parse_arguments()
+        self.decode_command._rom = 'spi.bin'  
+        self.decode_command._fwtype = None
 
     def test_empty_argv_handling(self):
         """Test handling of empty argv."""
@@ -435,6 +461,7 @@ class TestDecodeCommandEdgeCases(unittest.TestCase):
     def test_decode_rom_empty_file(self):
         """Test decode rom with empty file."""
         self.decode_command._rom = 'empty.bin'
+        self.decode_command._fwtype = None
 
         with patch('chipsec.utilcmd.decode_cmd.read_file', return_value=b''):
             with patch.object(self.decode_command.logger, 'log') as mock_log:

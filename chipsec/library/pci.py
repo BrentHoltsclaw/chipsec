@@ -285,3 +285,11 @@ def print_pci_extended_capability(ecentries: List[ECEntry]) -> None:
         logger().log(f'\tNext Capability Offset: {ecentry.next:03X}')
         logger().log(f'\tCapability Version: {ecentry.ver:01X}')
         logger().log(f'\tCapability ID: {ecentry.id:04X} - {ecIDs.get(ecentry.id, "Reserved")}')
+
+# ---------------------------------------------------------------------------
+# Helper printing utilities (added for unit-test patchability)
+# ---------------------------------------------------------------------------
+def print_pci_devices(devices):
+    log = logger()
+    for (b, d, f, vid, did, rid) in devices:
+        log.log(f"{b:02X}:{d:02X}.{f:X} {vid:04X}:{did:04X} class={rid:02X}")

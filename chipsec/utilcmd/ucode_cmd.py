@@ -57,7 +57,17 @@ class UCodeCommand(BaseCommand):
 
         parser_decode = subparsers.add_parser('decode')
         parser_decode.add_argument('ucode_filename', type=str, help='ucode file name (.PDB format)')
+        # Missing previously: ensure decode sets func so run() executes the action
+        parser_decode.set_defaults(func=self.ucode_decode)
         parser.parse_args(self.argv, namespace=self)
+
+    def run(self) -> None:
+        # Ensure arguments parsed and function selected before executing
+        if not hasattr(self, 'func'):
+            self.parse_arguments()
+        # If func still missing (e.g., empty argv) just return
+        if hasattr(self, 'func'):
+            self.func()
 
     def ucode_id(self):
         if self.cpu_thread_id is None:

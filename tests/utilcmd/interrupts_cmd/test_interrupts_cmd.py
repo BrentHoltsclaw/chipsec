@@ -43,6 +43,13 @@ class TestSMICommand(unittest.TestCase):
         ]
 
         self.smi_command = SMICommand(['count'], cs=self.mock_cs)
+        
+        # Mock the interrupts attribute that gets initialized in run()
+        self.smi_command.interrupts = Mock()
+        self.smi_command.interrupts.send_SMI_APMC.return_value = None
+        self.smi_command.interrupts.send_SW_SMI.return_value = (0, 0x12345678, 0x9ABCDEF0, 0x11111111, 0x22222222, 0x33333333, 0x44444444)
+        self.smi_command.interrupts.find_smmc.return_value = 0x79DF0000
+        self.smi_command.interrupts.send_smmc_SMI.return_value = 0x0
 
     def test_smi_command_initialization(self):
         """Test SMICommand initialization."""
@@ -137,7 +144,7 @@ class TestSMICommand(unittest.TestCase):
 
             # Should log the SMI being sent
             self.assertGreaterEqual(mock_log.call_count, 1)
-            self.mock_cs.hals.Interrupts.send_SMI_APMC.assert_called_once_with(0xDE, 0x0)
+            self.smi_command.interrupts.send_SMI_APMC.assert_called_once_with(0xDE, 0x0)
 
     def test_smi_send_full(self):
         """Test smi_send command with full parameters."""
@@ -156,7 +163,7 @@ class TestSMICommand(unittest.TestCase):
 
             # Should log all parameters and return values
             self.assertGreaterEqual(mock_log.call_count, 8)  # header + 6 register values + return values
-            self.mock_cs.hals.Interrupts.send_SW_SMI.assert_called_once_with(
+            self.smi_command.interrupts.send_SW_SMI.assert_called_once_with(
                 0x1, 0xDE, 0x0, 0x12345678, 0x9ABCDEF0, 0x11111111, 0x22222222, 0x33333333, 0x44444444
             )
 
@@ -176,8 +183,8 @@ class TestSMICommand(unittest.TestCase):
 
             # Should log search and found messages
             self.assertGreaterEqual(mock_log.call_count, 3)
-            self.mock_cs.hals.Interrupts.find_smmc.assert_called_once_with(0x79dfe000, 0x79efdfff)
-            self.mock_cs.hals.Interrupts.send_smmc_SMI.assert_called_once()
+            self.smi_command.interrupts.find_smmc.assert_called_once_with(0x79dfe000, 0x79efdfff)
+            self.smi_command.interrupts.send_smmc_SMI.assert_called_once()
 
     def test_smi_smmc_with_string(self):
         """Test smi_smmc command with string payload."""
@@ -194,8 +201,8 @@ class TestSMICommand(unittest.TestCase):
 
             # Should log search and found messages
             self.assertGreaterEqual(mock_log.call_count, 3)
-            self.mock_cs.hals.Interrupts.find_smmc.assert_called_once_with(0x79dfe000, 0x79efdfff)
-            self.mock_cs.hals.Interrupts.send_smmc_SMI.assert_called_once()
+            self.smi_command.interrupts.find_smmc.assert_called_once_with(0x79dfe000, 0x79efdfff)
+            self.smi_command.interrupts.send_smmc_SMI.assert_called_once()
 
     def test_smi_smmc_not_found(self):
         """Test smi_smmc command when smmc is not found."""
@@ -206,7 +213,7 @@ class TestSMICommand(unittest.TestCase):
         self.smi_command.payload = 'payload.bin'
         self.smi_command.port = 0x0
 
-        self.mock_cs.hals.Interrupts.find_smmc.return_value = 0x0
+        self.smi_command.interrupts.find_smmc.return_value = 0x0
 
         with patch('os.path.isfile', return_value=True), \
              patch('builtins.open', mock_open(read_data=b'test data')), \
@@ -215,8 +222,8 @@ class TestSMICommand(unittest.TestCase):
 
             # Should log search and not found messages
             self.assertGreaterEqual(mock_log.call_count, 2)
-            self.mock_cs.hals.Interrupts.find_smmc.assert_called_once_with(0x79dfe000, 0x79efdfff)
-            self.mock_cs.hals.Interrupts.send_smmc_SMI.assert_not_called()
+            self.smi_command.interrupts.find_smmc.assert_called_once_with(0x79dfe000, 0x79efdfff)
+            self.smi_command.interrupts.send_smmc_SMI.assert_not_called()
 
     def test_run_success(self):
         """Test successful run method."""
@@ -364,7 +371,11 @@ class TestInterruptsCommandIntegration(unittest.TestCase):
         smi_minimal = SMICommand(['send', '0x0', '0xDE', '0x0'], cs=self.integrated_cs)
         smi_minimal.parse_arguments()
 
-        with patch.object(smi_minimal.logger, 'log') as mock_log:
+        with patch('chipsec.utilcmd.interrupts_cmd.Interrupts') as mock_interrupts_class, \
+             patch.object(smi_minimal.logger, 'log') as mock_log:
+            # Make Interrupts constructor return our mocked instance
+            mock_interrupts_class.return_value = self.integrated_cs.hals.Interrupts
+            
             smi_minimal.run()
 
             self.assertGreaterEqual(mock_log.call_count, 1)
@@ -374,7 +385,11 @@ class TestInterruptsCommandIntegration(unittest.TestCase):
         smi_full = SMICommand(['send', '0x1', '0xDE', '0x0', '0x12345678'], cs=self.integrated_cs)
         smi_full.parse_arguments()
 
-        with patch.object(smi_full.logger, 'log') as mock_log:
+        with patch('chipsec.utilcmd.interrupts_cmd.Interrupts') as mock_interrupts_class, \
+             patch.object(smi_full.logger, 'log') as mock_log:
+            # Make Interrupts constructor return our mocked instance
+            mock_interrupts_class.return_value = self.integrated_cs.hals.Interrupts
+            
             smi_full.run()
 
             self.assertGreaterEqual(mock_log.call_count, 8)  # header + 6 registers + return values
@@ -494,6 +509,10 @@ class TestInterruptsCommandEdgeCases(unittest.TestCase):
 
         smi_cmd = SMICommand(['send', '0x0', '0xDE', '0x0', '0x12345678'], cs=self.mock_cs)
         smi_cmd.parse_arguments()
+        
+        # Mock the interrupts attribute that gets initialized in run()
+        smi_cmd.interrupts = Mock()
+        smi_cmd.interrupts.send_SW_SMI.return_value = None
 
         with patch.object(smi_cmd.logger, 'log') as mock_log:
             smi_cmd.smi_send()

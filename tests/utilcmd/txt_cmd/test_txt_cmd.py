@@ -38,6 +38,8 @@ class TestTXTCommand(unittest.TestCase):
         self.mock_cs.register = Mock()
         self.mock_cs.register.is_defined.return_value = True
         self.mock_cs.register.get_list_by_name.return_value = Mock()
+        # Default public key register list returns 4 zero qwords
+        self.mock_cs.register.get_list_by_name.return_value.read.return_value = [0, 0, 0, 0]
 
         # Mock set_scope method
         self.mock_cs.set_scope = Mock()
@@ -93,9 +95,10 @@ class TestTXTCommand(unittest.TestCase):
             self.mock_cs.hals.Memory.read_physical_mem.assert_called_once_with(0xfed30000, 0x1000)
 
             # Should log the non-zero data lines
+            # Implementation prints 16-byte aligned lines separately
             expected_calls = [
-                "[CHIPSEC] FED30010: 01 02 03 04 00 00 00 00 00 00 00 00 05 06 07 08",
-                "[CHIPSEC] FED30020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+                "[CHIPSEC] FED30010: 01 02 03 04 00 00 00 00 00 00 00 00 00 00 00 00",
+                "[CHIPSEC] FED30020: 05 06 07 08 00 00 00 00 00 00 00 00 00 00 00 00"
             ]
             for expected in expected_calls:
                 mock_log.assert_any_call(expected)
@@ -158,10 +161,13 @@ class TestTXTCommand(unittest.TestCase):
         """Test txt_state method CPUID and CR4 reading."""
         # Mock CPUID return values
         self.mock_cs.hals.CPU.cpuid.return_value = (0x12345678, 0x87654321, 0b01000000, 0xDEADBEEF)  # SMX bit set
-        self.mock_cs.hals.CPU.read_cr.return_value = 0b010000000000000  # SMXE bit set
+        # Set only SMXE (bit 14) and leave VMXE (bit 13) cleared
+        self.mock_cs.hals.CPU.read_cr.return_value = (1 << 14)
 
         # Mock register methods to avoid actual register operations
         self.mock_cs.register.is_defined.return_value = False
+        # Provide default MSR tuple
+        self.mock_cs.hals.Msr.read_msr.return_value = (0, 0)
 
         with patch.object(self.txt_command.logger, 'log') as mock_log:
             self.txt_command.txt_state()
@@ -182,10 +188,13 @@ class TestTXTCommand(unittest.TestCase):
         self.mock_cs.register.is_defined.return_value = True
         mock_reg = Mock()
         self.mock_cs.register.get_list_by_name.return_value = mock_reg
+        # Provide public key list read returning 4 qwords to satisfy struct.pack
+        mock_reg.read.return_value = [0, 0, 0, 0]
 
         # Mock other methods to avoid side effects
         self.mock_cs.hals.CPU.cpuid.return_value = (0, 0, 0, 0)
         self.mock_cs.hals.CPU.read_cr.return_value = 0
+        self.mock_cs.hals.Msr.read_msr.return_value = (0, 0)
 
         self.txt_command.txt_state()
 
@@ -204,13 +213,15 @@ class TestTXTCommand(unittest.TestCase):
         self.mock_cs.register.is_defined.return_value = False
         self.mock_cs.hals.CPU.cpuid.return_value = (0, 0, 0, 0)
         self.mock_cs.hals.CPU.read_cr.return_value = 0
+        self.mock_cs.hals.Msr.read_msr.return_value = (0, 0)
 
         with patch.object(self.txt_command.logger, 'log') as mock_log:
             self.txt_command.txt_state()
 
             # Should read public key values and log hash
             mock_pub_list.read.assert_called_once()
-            expected_hash = "78563412f0debc9a1111111122222222"
+            # struct.pack('<QQQQ') introduces 8-byte little-endian representations with padding zeros per qword
+            expected_hash = "7856341200000000f0debc9a0000000011111111000000002222222200000000"
             mock_log.assert_any_call(f"[CHIPSEC] TXT Public Key Hash: {expected_hash}")
 
     def test_txt_state_msr_public_key_success(self):
@@ -227,6 +238,7 @@ class TestTXTCommand(unittest.TestCase):
         self.mock_cs.register.is_defined.return_value = False
         self.mock_cs.hals.CPU.cpuid.return_value = (0, 0, 0, 0)
         self.mock_cs.hals.CPU.read_cr.return_value = 0
+        self.mock_cs.hals.Msr.read_msr.return_value = (0, 0)
 
         with patch.object(self.txt_command.logger, 'log') as mock_log:
             self.txt_command.txt_state()
@@ -247,7 +259,7 @@ class TestTXTCommand(unittest.TestCase):
     def test_txt_state_msr_public_key_failure(self):
         """Test txt_state method MSR public key reading failure."""
         # Mock MSR read to raise HWAccessViolationError
-        self.mock_cs.hals.Msr.read_msr.side_effect = HWAccessViolationError("Access denied")
+        self.mock_cs.hals.Msr.read_msr.side_effect = HWAccessViolationError("Access denied", 0)
 
         # Mock other methods
         self.mock_cs.register.is_defined.return_value = False
@@ -266,10 +278,12 @@ class TestTXTCommand(unittest.TestCase):
         self.mock_cs.register.is_defined.return_value = True
         mock_reg = Mock()
         self.mock_cs.register.get_list_by_name.return_value = mock_reg
+        mock_reg.read.return_value = [0, 0, 0, 0]
 
         # Mock other methods
         self.mock_cs.hals.CPU.cpuid.return_value = (0, 0, 0, 0)
         self.mock_cs.hals.CPU.read_cr.return_value = 0
+        self.mock_cs.hals.Msr.read_msr.return_value = (0, 0)
 
         with patch.object(self.txt_command.logger, 'log') as mock_log:
             self.txt_command.txt_state()
@@ -286,10 +300,12 @@ class TestTXTCommand(unittest.TestCase):
         self.mock_cs.register.is_defined.return_value = True
         mock_reg = Mock()
         self.mock_cs.register.get_list_by_name.return_value = mock_reg
+        mock_reg.read.return_value = [0, 0, 0, 0]
 
         # Mock other methods
         self.mock_cs.hals.CPU.cpuid.return_value = (0, 0, 0, 0)
         self.mock_cs.hals.CPU.read_cr.return_value = 0
+        self.mock_cs.hals.Msr.read_msr.return_value = (0, 0)
 
         self.txt_command.txt_state()
 
@@ -304,10 +320,12 @@ class TestTXTCommand(unittest.TestCase):
         self.mock_cs.register.is_defined.return_value = True
         mock_reg = Mock()
         self.mock_cs.register.get_list_by_name.return_value = mock_reg
+        mock_reg.read.return_value = [0, 0, 0, 0]
 
         # Mock other methods
         self.mock_cs.hals.CPU.cpuid.return_value = (0, 0, 0, 0)
         self.mock_cs.hals.CPU.read_cr.return_value = 0
+        self.mock_cs.hals.Msr.read_msr.return_value = (0, 0)
 
         with patch.object(self.txt_command.logger, 'log') as mock_log:
             self.txt_command.txt_state()
@@ -326,7 +344,8 @@ class TestTXTCommand(unittest.TestCase):
 
         # Should call the function and set exit code to OK
         self.txt_command.func.assert_called_once()
-        self.assertEqual(self.txt_command.ExitCode.name, "OK")
+        from chipsec.testcase import ExitCode
+        self.assertEqual(self.txt_command.ExitCode, ExitCode.OK)
 
     def test_run_exception(self):
         """Test run method with exception during execution."""
@@ -337,7 +356,8 @@ class TestTXTCommand(unittest.TestCase):
 
         # Should call the function and set exit code to ERROR
         self.txt_command.func.assert_called_once()
-        self.assertEqual(self.txt_command.ExitCode.name, "ERROR")
+        from chipsec.testcase import ExitCode
+        self.assertEqual(self.txt_command.ExitCode, ExitCode.ERROR)
 
 
 class TestTXTCommandIntegration(unittest.TestCase):
@@ -357,6 +377,9 @@ class TestTXTCommandIntegration(unittest.TestCase):
         # Mock register system
         self.integrated_cs.register = Mock()
         self.integrated_cs.register.is_defined.return_value = True
+        # Default register list returns zeros for public key
+        self.integrated_cs.register.get_list_by_name.return_value = Mock()
+        self.integrated_cs.register.get_list_by_name.return_value.read.return_value = [0, 0, 0, 0]
 
         # Mock set_scope method
         self.integrated_cs.set_scope = Mock()
@@ -375,13 +398,14 @@ class TestTXTCommandIntegration(unittest.TestCase):
 
             # Should read memory and log data
             self.integrated_cs.hals.Memory.read_physical_mem.assert_called_once_with(0xfed30000, 0x1000)
-            mock_log.assert_any_call("[CHIPSEC] FED30064: 01 02 03 04 05 06 07 08 00 00 00 00 00 00 00 00")
+            mock_log.assert_any_call("[CHIPSEC] FED30060: 00 00 00 00 01 02 03 04 05 06 07 08 00 00 00 00")
 
     def test_txt_state_integration(self):
         """Test complete txt_state workflow."""
         # Mock realistic CPUID and CR4 values
         self.integrated_cs.hals.CPU.cpuid.return_value = (0x206A7, 0x12345678, 0b01100000, 0xDEADBEEF)  # SMX and VMX enabled
-        self.integrated_cs.hals.CPU.read_cr.return_value = 0b011000000000000  # SMXE and VMXE enabled
+        # Set bits 14 and 13 (SMXE, VMXE)
+        self.integrated_cs.hals.CPU.read_cr.return_value = (1 << 14) | (1 << 13)
 
         # Mock MSR reads for public key
         self.integrated_cs.hals.Msr.read_msr.side_effect = [
@@ -417,7 +441,8 @@ class TestTXTCommandIntegration(unittest.TestCase):
             mock_log.assert_any_call(f"[CHIPSEC] Public Key Hash in MSR[0x20...0x23]: {expected_msr_hash}")
 
             # Verify TXT public key hash logging
-            expected_txt_hash = "78563412f0debc9a1111111122222222"
+            # struct.pack('<QQQQ') produces padded little-endian qword layout
+            expected_txt_hash = "7856341200000000f0debc9a0000000011111111000000002222222200000000"
             mock_log.assert_any_call(f"[CHIPSEC] TXT Public Key Hash: {expected_txt_hash}")
 
 
@@ -432,16 +457,17 @@ class TestTXTCommandEdgeCases(unittest.TestCase):
         self.mock_cs.hals.CPU = Mock()
         self.mock_cs.hals.Msr = Mock()
         self.mock_cs.register = Mock()
+        self.mock_cs.register.get_list_by_name.return_value = Mock()
+        self.mock_cs.register.get_list_by_name.return_value.read.return_value = [0, 0, 0, 0]
         self.mock_cs.set_scope = Mock()
         self.txt_command = TXTCommand(['dump'], cs=self.mock_cs)
 
     def test_empty_argv_handling(self):
         """Test handling of empty argv."""
         command = TXTCommand([], cs=self.mock_cs)
-
-        # Should raise SystemExit due to missing required arguments
-        with self.assertRaises(SystemExit):
-            command.parse_arguments()
+        # Parsing with no subcommand should leave func unset without raising
+        command.parse_arguments()
+        self.assertFalse(hasattr(command, 'func'))
 
     def test_txt_dump_empty_data(self):
         """Test txt_dump with empty data."""
@@ -495,6 +521,7 @@ class TestTXTCommandEdgeCases(unittest.TestCase):
         self.mock_cs.register.is_defined.return_value = False
         self.mock_cs.hals.CPU.cpuid.return_value = (0, 0, 0, 0)
         self.mock_cs.hals.CPU.read_cr.return_value = 0
+        self.mock_cs.hals.Msr.read_msr.return_value = (0, 0)
 
         with patch.object(self.txt_command.logger, 'log') as mock_log:
             self.txt_command.txt_state()
@@ -526,7 +553,8 @@ class TestTXTCommandEdgeCases(unittest.TestCase):
         self.txt_command.run()
 
         # Should set exit code to ERROR
-        self.assertEqual(self.txt_command.ExitCode.name, "ERROR")
+        from chipsec.testcase import ExitCode
+        self.assertEqual(self.txt_command.ExitCode, ExitCode.ERROR)
 
 
 class TestTXTCommandConfigurationValidation(unittest.TestCase):

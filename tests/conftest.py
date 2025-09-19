@@ -235,12 +235,56 @@ def decode_command(base_command):
 @pytest.fixture
 def smbus_command(base_command):
     """Mock SMBus command for testing."""
+    from types import MethodType
+    from chipsec.utilcmd.smbus_cmd import SMBusCommand
+
     cmd_mock = base_command
-    cmd_mock.run = ChipsecMock(return_value=True)
-    cmd_mock._smbus.read_byte = ChipsecMock(return_value=0x12)
-    cmd_mock._smbus.read_word = ChipsecMock(return_value=0x1234)
+
+    # Provide a minimal SMBus-like HAL with the methods the real implementation expects
+    cmd_mock._smbus.read_byte = ChipsecMock(return_value=[0x12])
+    cmd_mock._smbus.read_word = ChipsecMock(return_value=[0x12, 0x34])
+    cmd_mock._smbus.read_block = ChipsecMock(return_value=[0x12, 0x34, 0x56, 0x78])
     cmd_mock._smbus.write_byte = ChipsecMock(return_value=True)
     cmd_mock._smbus.write_word = ChipsecMock(return_value=True)
+    cmd_mock._smbus.process_call = ChipsecMock(return_value=[0xAB, 0xCD])
+    cmd_mock._smbus.quick_write = ChipsecMock(return_value=True)
+    cmd_mock._smbus.is_SMBus_supported = ChipsecMock(return_value=True)
+    cmd_mock._smbus.display_SMBus_info = ChipsecMock(return_value=None)
+
+    # Attributes expected by SMBusCommand methods
+    cmd_mock.offset = 0x0
+    cmd_mock.size = 0x4
+    cmd_mock.write_data = 0x1234
+    cmd_mock.is_addr_8b = False
+    cmd_mock.is_OnSemi = False
+    cmd_mock.is_mmio = False
+    cmd_mock.is_i2c = False
+    cmd_mock.command = 'read'
+
+    # Bind real implementations so tests exercise logic instead of MagicMock stubs
+    cmd_mock._read_range = MethodType(SMBusCommand._read_range, cmd_mock)
+    cmd_mock._write_range = MethodType(SMBusCommand._write_range, cmd_mock)
+    cmd_mock.read = MethodType(SMBusCommand.read, cmd_mock)
+    cmd_mock.write = MethodType(SMBusCommand.write, cmd_mock)
+    cmd_mock.readblock = MethodType(SMBusCommand.readblock, cmd_mock)
+    cmd_mock.process_call = MethodType(SMBusCommand.process_call, cmd_mock)
+    cmd_mock.scan = MethodType(SMBusCommand.scan, cmd_mock)
+    cmd_mock.scan_range = MethodType(SMBusCommand.scan_range, cmd_mock)
+    cmd_mock.dump_dev = MethodType(SMBusCommand.dump_dev, cmd_mock)
+    cmd_mock.pretty_print_buffer = MethodType(SMBusCommand.pretty_print_buffer, cmd_mock)
+
+    # Provide a lightweight configure that mirrors successful path
+    def _configure(self):
+        # Real configure sets _smbus and enables it; our mock already has _smbus
+        return True
+    cmd_mock.configure = MethodType(_configure, cmd_mock)
+
+    # Use real run implementation
+    cmd_mock.run = MethodType(SMBusCommand.run, cmd_mock)
+
+    # Default func used when run() is invoked without tests overriding
+    cmd_mock.func = cmd_mock.read
+
     return cmd_mock
 
 

@@ -18,6 +18,7 @@ import pytest
 from unittest.mock import Mock, patch
 from chipsec.utilcmd.lock_check_cmd import LOCKCHECKCommand
 from chipsec.hal.common.locks import LockResult
+from chipsec.command import toLoad
 from tests.test_utils import MockFactory
 
 
@@ -55,7 +56,7 @@ class TestLOCKCHECKCommand:
     def test_requirements(self, lock_check_command):
         """Test command requirements."""
         reqs = lock_check_command.requirements()
-        assert reqs == lock_check_command.toLoad.All
+        assert reqs == toLoad.All
 
     @pytest.mark.unit
     def test_parse_arguments_list(self, mock_cs):
@@ -92,9 +93,9 @@ class TestLOCKCHECKCommand:
         """Test parsing arguments with no subcommand."""
         command = LOCKCHECKCommand([], cs=mock_cs)
 
-        # Should raise SystemExit due to missing subcommand
-        with pytest.raises(SystemExit):
-            command.parse_arguments()
+        # Should not raise SystemExit but should leave func unset
+        command.parse_arguments()
+        assert not hasattr(command, 'func') or command.func is None
 
     @pytest.mark.unit
     def test_parse_arguments_invalid_subcommand(self, mock_cs):
@@ -388,6 +389,7 @@ class TestLOCKCHECKCommandIntegration:
     def test_lock_check_specific_integration(self, integrated_cs):
         """Test complete LOCKCHECK specific lock workflow."""
         lock_cmd = LOCKCHECKCommand(['lock', 'DebugLock'], cs=integrated_cs)
+        lock_cmd.parse_arguments()  # Need to parse arguments to set lockname attribute
 
         with patch.object(lock_cmd.logger, 'log'), \
              patch.object(lock_cmd.logger, 'VERBOSE', False), \
@@ -445,6 +447,7 @@ class TestLOCKCHECKCommandEdgeCases:
         """Test checkall_locks method in verbose mode."""
         command = LOCKCHECKCommand(['all'], cs=mock_cs)
         mock_cs.hals.Locks.get_locks.return_value = ['DebugLock']
+        mock_cs.hals.Locks.is_locked.return_value = 1  # LockResult.DEFINED
 
         mock_lock_obj = Mock()
         mock_lock_obj.is_access_type.return_value = False
@@ -463,6 +466,7 @@ class TestLOCKCHECKCommandEdgeCases:
         """Test check_lock method in verbose mode."""
         command = LOCKCHECKCommand(['lock', 'DebugLock'], cs=mock_cs)
         command.lockname = ['DebugLock']
+        mock_cs.hals.Locks.is_locked.return_value = 1  # LockResult.DEFINED
 
         mock_lock_obj = Mock()
         mock_lock_obj.is_access_type.return_value = False

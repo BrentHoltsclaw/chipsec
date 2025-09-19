@@ -124,7 +124,19 @@ class ReplayHelper(Helper):
     # physical_address is 64 bit integer
     #
     def read_phys_mem(self, phys_address: int, length: int) -> bytes:
-        return stringtobytes(self._get_element("read_phys_mem", (phys_address, length)))
+        # The recorded JSON stores physical memory read results as JSON strings where each
+        # character represents a single raw byte (e.g. "\u00ff" -> 0xFF). When the JSON is
+        # parsed by Python, those sequences become single code points with ordinal 0-255.
+        # The previous implementation routed through stringtobytes(), which encodes using
+        # UTF-8 and expands any non-ASCII byte >0x7F into a multi-byte UTF-8 sequence. This
+        # resulted in returned buffers larger than the requested length and downstream
+        # struct.unpack calls failing with: 'unpack requires a buffer of 4 bytes'.
+        # To preserve a 1:1 mapping of characters to raw bytes we encode using latin-1
+        # (which maps code points 0-255 directly to single-byte representations).
+        element = self._get_element("read_phys_mem", (phys_address, length))
+        if isinstance(element, str):
+            return element.encode('latin-1', errors='ignore')
+        return stringtobytes(element)
 
     def write_phys_mem(self, phys_address: int, length: int, buf: bytes) -> int:
         return self._get_element_eval("write_phys_mem", (phys_address, length, buf))

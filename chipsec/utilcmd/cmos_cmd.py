@@ -67,7 +67,19 @@ class CMOSCommand(BaseCommand):
         parser_writeh = subparsers.add_parser('writeh', parents=[parser_offset, parser_val])
         parser_writeh.set_defaults(func=self.cmos_writeh)
 
-        parser.parse_args(self.argv, namespace=CMOSCommand)
+        # Parse arguments into the instance so that offset/value/func are available
+        # to subsequent handlers. The previous implementation passed the class as
+        # the namespace which prevented attributes from being set on the instance
+        # and also made it impossible to distinguish missing arguments cleanly.
+        if not self.argv:
+            # Mirror argparse error semantics for missing required subcommand.
+            parser.print_usage()
+            raise SystemExit(2)
+        parser.parse_args(self.argv, namespace=self)
+        # If no subparser matched, argparse won't set a 'func' attribute; treat as error.
+        if not hasattr(self, 'func'):
+            parser.print_usage()
+            raise SystemExit(2)
 
     def set_up(self) -> None:
         self._cmos = CMOS(self.cs)

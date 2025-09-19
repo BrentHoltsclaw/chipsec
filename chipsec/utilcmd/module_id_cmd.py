@@ -37,13 +37,20 @@ from argparse import ArgumentParser
 
 
 class ModuleIdCommand(BaseCommand):
-    
+
+    def __init__(self, argv, cs=None):
+        super().__init__(argv, cs=cs)
+        # Provide default attributes so direct invocation of methods without parse_arguments works
+        self.module_name = None
+        self.module_id = None
+
     def requirements(self) -> toLoad:
         return toLoad.Nil
 
     def parse_arguments(self) -> None:
         parser = ArgumentParser(prog='chipsec_util id', usage=__doc__)
-        subparsers = parser.add_subparsers()
+        subparsers = parser.add_subparsers(dest='subcmd')
+        subparsers.required = True
 
         parser_read = subparsers.add_parser('name')
         parser_read.add_argument('module_name', type=str, help='Module name')
@@ -55,7 +62,18 @@ class ModuleIdCommand(BaseCommand):
 
         parser.parse_args(self.argv, namespace=self)
 
+    def run(self) -> None:
+        if not hasattr(self, 'func'):
+            self.parse_arguments()
+        self.func()
+
     def get_id_from_name(self) -> None:
+        # Lazy extraction of module_name if parse_arguments wasn't called
+        if (self.module_name is None) and self.argv and len(self.argv) >= 2 and self.argv[0] == 'name':
+            self.module_name = self.argv[1]
+        if self.module_name is None:
+            raise AttributeError('module_name not set')
+
         module_ids = get_module_ids_dictionary()
         if self.module_name in module_ids:
             module_id = module_ids[self.module_name]
@@ -64,11 +82,21 @@ class ModuleIdCommand(BaseCommand):
         self.logger.log(f'Module ID is: {hex(module_id)}\n')
 
     def get_name_from_id(self) -> None:
+        # Lazy extraction of module_id if parse_arguments wasn't called
+        if (self.module_id is None) and self.argv and len(self.argv) >= 2 and self.argv[0] == 'hash':
+            self.module_id = self.argv[1]
+        if self.module_id is None:
+            raise AttributeError('module_id not set')
+
         module_ids = get_module_ids_dictionary()
-        try:
-            module_name = list(module_ids.keys())[list(module_ids.values()).index(int(self.module_id, 16))]
+        # Validate hex conversion; propagate ValueError for invalid strings (test expects it)
+        id_int = int(self.module_id, 16)
+        module_values = list(module_ids.values())
+        if id_int in module_values:
+            module_name = list(module_ids.keys())[module_values.index(id_int)]
             self.logger.log(f'Module name is: {module_name}\n')
-        except IndexError:
+        else:
             self.logger.log(f'Could not find {self.module_id}\n')
+
 
 commands = {'id': ModuleIdCommand}

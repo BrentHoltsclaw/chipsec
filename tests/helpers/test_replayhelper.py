@@ -67,15 +67,15 @@ class ReplayHelperTest(unittest.TestCase):
 
     def test_read_phyis_mem_align(self):
         mem_value = self.replayhelper.read_phys_mem(0x5000, 0x2)
-        self.assertEqual(mem_value, b'\xc3\x91\xc2\x99')
+        self.assertEqual(mem_value, b'\xd1\x99')
         
     def test_read_phyis_mem_unaligned(self):
         mem_value = self.replayhelper.read_phys_mem(0x5001, 0x2)
-        self.assertEqual(mem_value, b'\xc2\x99\xc2\xaa')
+        self.assertEqual(mem_value, b'\x99\xaa')
 
     def test_read_phyis_mem_oob(self):
         mem_value = self.replayhelper.read_phys_mem(0x5010,0x2)
-        self.assertEqual(mem_value, b'\xc3\xb3\xc2\x99')
+        self.assertEqual(mem_value, b'\xf3\x99')
 
     def test_cpuid_one(self):
         cpuid_value = self.replayhelper.cpuid(1, 0)

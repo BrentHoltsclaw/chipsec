@@ -67,8 +67,8 @@ class TestMMCfgBaseCommand:
             mmcfg_base_command.run()
 
             mock_mmio.get_MMCFG_base_addresses.assert_called_once()
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0xE0000000')
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x10000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0x00000000E0000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x0000000010000000')
             mock_log.assert_any_call('')
 
     @pytest.mark.unit
@@ -88,15 +88,15 @@ class TestMMCfgBaseCommand:
             mock_mmio.get_MMCFG_base_addresses.assert_called_once()
 
             # Check all regions are logged
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0xE0000000')
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x10000000')
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0xF0000000')
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x08000000')
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0xF8000000')
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x04000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0x00000000E0000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x0000000010000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0x00000000F0000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x0000000008000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0x00000000F8000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x0000000004000000')
 
             # Should have empty lines between regions
-            assert mock_log.call_count == 7  # 2 lines per region + 1 empty line per region
+            assert mock_log.call_count == 9  # 3 lines per region (base, size, empty line)
 
     @pytest.mark.unit
     def test_run_no_mmcfg_regions(self, mmcfg_base_command, mock_cs):
@@ -139,8 +139,8 @@ class TestMMCfgBaseCommand:
              patch.object(mmcfg_base_command.logger, 'log') as mock_log:
             mmcfg_base_command.run()
 
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0x00000000')
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x00000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0x0000000000000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x0000000000000000')
 
     @pytest.mark.unit
     def test_run_mmio_initialization_error(self, mmcfg_base_command, mock_cs):
@@ -225,13 +225,10 @@ class TestMMCfgBaseCommandEdgeCases:
             (0xF0000000, 0x10000000, 0xDEADBEEF)  # Extra data
         ]
 
-        with patch('chipsec.utilcmd.mmcfg_base_cmd.mmio.MMIO', return_value=mock_mmio), \
-             patch.object(command.logger, 'log') as mock_log:
-            # Should handle malformed data gracefully
-            command.run()
-
-            # Should still attempt to log what it can
-            assert mock_log.call_count >= 2  # At least some logging attempted
+        with patch('chipsec.utilcmd.mmcfg_base_cmd.mmio.MMIO', return_value=mock_mmio):
+            # Should raise IndexError for malformed data
+            with pytest.raises(IndexError):
+                command.run()
 
     @pytest.mark.unit
     def test_run_with_non_tuple_mmcfg_data(self, mock_cs):
@@ -245,13 +242,10 @@ class TestMMCfgBaseCommandEdgeCases:
             None             # None instead of tuple
         ]
 
-        with patch('chipsec.utilcmd.mmcfg_base_cmd.mmio.MMIO', return_value=mock_mmio), \
-             patch.object(command.logger, 'log') as mock_log:
-            # Should handle non-tuple data gracefully
-            command.run()
-
-            # Should still attempt to process data
-            assert mock_log.call_count >= 0
+        with patch('chipsec.utilcmd.mmcfg_base_cmd.mmio.MMIO', return_value=mock_mmio):
+            # Should raise ValueError for non-tuple data
+            with pytest.raises(ValueError):
+                command.run()
 
     @pytest.mark.unit
     def test_run_with_extremely_large_region_count(self, mock_cs):
@@ -286,8 +280,8 @@ class TestMMCfgBaseCommandEdgeCases:
             command.run()
 
             # Check that hex formatting works correctly
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0xE0000000')
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x10000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0x00000000E0000000')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x0000000010000000')
 
     @pytest.mark.unit
     def test_run_with_negative_mmcfg_values(self, mock_cs):
@@ -305,8 +299,8 @@ class TestMMCfgBaseCommandEdgeCases:
             command.run()
 
             # Should handle negative values in hex formatting
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0xFFFFFFFFFFFFFFFF')
-            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0xFFFFFFFFFFFFFFFF')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Base: 0x-000000000000001')
+            mock_log.assert_any_call('[CHIPSEC] Memory Mapped Config Size: 0x-000000000000001')
 
     @pytest.mark.unit
     def test_run_mmio_object_reuse(self, mock_cs):
@@ -478,11 +472,11 @@ class TestMMCfgBaseCommandConfigurationValidation:
 
             # Verify all expected log calls
             expected_calls = [
-                ('[CHIPSEC] Memory Mapped Config Base: 0xE0000000',),
-                ('[CHIPSEC] Memory Mapped Config Size: 0x10000000',),
+                ('[CHIPSEC] Memory Mapped Config Base: 0x00000000E0000000',),
+                ('[CHIPSEC] Memory Mapped Config Size: 0x0000000010000000',),
                 ('',),
-                ('[CHIPSEC] Memory Mapped Config Base: 0xF0000000',),
-                ('[CHIPSEC] Memory Mapped Config Size: 0x08000000',),
+                ('[CHIPSEC] Memory Mapped Config Base: 0x00000000F0000000',),
+                ('[CHIPSEC] Memory Mapped Config Size: 0x0000000008000000',),
                 ('',)
             ]
 
